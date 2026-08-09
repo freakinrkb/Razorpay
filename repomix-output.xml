@@ -1,0 +1,4976 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.mvn/
+  wrapper/
+    maven-wrapper.properties
+src/
+  main/
+    java/
+      com/
+        example/
+          razorpay/
+            common/
+              audit/
+                AuditorAwareImpl.java
+              config/
+                AppConfig.java
+                RedisConfig.java
+                SecurityConfig.java
+              entity/
+                BaseEntity.java
+                Money.java
+              enums/
+                BusinessType.java
+                CardBrand.java
+                ChaosMode.java
+                Environment.java
+                MerchantStatus.java
+                OrderStatus.java
+                PaymentActor.java
+                PaymentEvent.java
+                PaymentMethod.java
+                PaymentStatus.java
+                RefundStatus.java
+                SettlementStatus.java
+                UserRole.java
+                WebhookEventStatus.java
+              exception/
+                BusinessRuleViolationException.java
+                DuplicateResourceException.java
+                ErrorResponse.java
+                GlobalExceptionHandler.java
+                InvalidStateTransitionException.java
+                RateLimitException.java
+                ResourceNotFoundException.java
+              ratelimit/
+                FixedWindowRateLimiter.java
+                RateLimiter.java
+                RateLimitResult.java
+              util/
+                RandomizerUtil.java
+            merchant/
+              cache/
+                ApiKeyCache.java
+                ApiKeyCacheEntry.java
+                RedisApiKeyCache.java
+              controller/
+                ApiKeyController.java
+                AuthController.java
+              dto/
+                request/
+                  CreateApiKeyRequest.java
+                  LoginRequest.java
+                  MerchantSignupRequest.java
+                response/
+                  ApiKeyCreateResponse.java
+                  ApiKeyResponse.java
+                  LoginResponse.java
+                  MerchantResponse.java
+              entity/
+                ApiKey.java
+                AppUser.java
+                Customer.java
+                Merchant.java
+                MerchantWebhookConfig.java
+              mapper/
+                ApiKeyMapper.java
+                MerchantMapper.java
+              repository/
+                ApiKeyRepository.java
+                AppUserRepository.java
+                MerchantRepository.java
+              security/
+                ApiKeyAuthenticationFilter.java
+                JwtAuthenticationFilter.java
+                JwtUtil.java
+                MerchantContext.java
+                MerchantUserDetailsService.java
+                WebSecurityConfig.java
+              service/
+                impl/
+                  ApiKeyServiceImpl.java
+                  AuthServiceImpl.java
+                ApiKeyService.java
+                AuthService.java
+            operations/
+              entity/
+                DlqEvent.java
+                Settlement.java
+                SettlementPayment.java
+                SettlementPaymentId.java
+                WebhookEvent.java
+            payment/
+              config/
+                PaymentAdapterConfig.java
+                PaymentProcessorConfig.java
+              controller/
+                OrderController.java
+                PaymentController.java
+              dto/
+                request/
+                  CreateOrderRequest.java
+                  PaymentInitRequest.java
+                response/
+                  OrderResponse.java
+                  PaymentResponse.java
+              entity/
+                OrderRecord.java
+                Payment.java
+                PaymentTransitionLog.java
+                Refund.java
+              gateway/
+                adapter/
+                  CardPaymentAdapter.java
+                  NetBankingAdapter.java
+                  UpiPaymentAdapter.java
+                dto/
+                  PaymentRequest.java
+                  PaymentResult.java
+                PaymentAdapter.java
+                PaymentGatewayRouter.java
+              mapper/
+                OrderMapper.java
+                PaymentMapper.java
+              processor/
+                dto/
+                  PaymentProcessorRequest.java
+                  PaymentProcessorResponse.java
+                strategy/
+                  CardPaymentProcessor.java
+                  NetBankingPaymentProcessor.java
+                  UpiPaymentProcessor.java
+                PaymentProcessor.java
+                PaymentProcessorRouter.java
+              repository/
+                OrderRepository.java
+                PaymentRepository.java
+                PaymentTransitionLogRepository.java
+              service/
+                impl/
+                  OrderServiceImpl.java
+                  PaymentServiceImpl.java
+                OrderService.java
+                PaymentService.java
+              simulator/
+                BankCallbackSimulator.java
+                SimulatorConfig.java
+              statemachine/
+                PaymentStateMachine.java
+                PaymentTransitionService.java
+            vault/
+              config/
+                VaultEncryptionConfig.java
+              controller/
+                VaultController.java
+              dto/
+                request/
+                  TokenizeRequest.java
+                response/
+                  TokenizeResponse.java
+              entity/
+                CardToken.java
+                VaultCard.java
+              repository/
+                CardTokenRepository.java
+                VaultCardRepository.java
+              service/
+                impl/
+                  VaultServiceImpl.java
+                VaultService.java
+              validation/
+                ExpiryYear.java
+                ExpiryYearValidator.java
+            RazorpayApplication.java
+    resources/
+      application.yaml
+  test/
+    java/
+      com/
+        example/
+          razorpay/
+            RazorpayApplicationTests.java
+.gitattributes
+.gitignore
+mvnw
+mvnw.cmd
+pom.xml
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path=".mvn/wrapper/maven-wrapper.properties">
+wrapperVersion=3.3.4
+distributionType=only-script
+distributionUrl=https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.9.16/apache-maven-3.9.16-bin.zip
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/audit/AuditorAwareImpl.java">
+package com.example.razorpay.common.audit;
+
+import com.example.razorpay.merchant.security.MerchantContext;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.stereotype.Component;
+
+import java.util.Optional;
+@Component("auditorAwareImpl")
+@RequiredArgsConstructor
+public class AuditorAwareImpl implements AuditorAware<String> {
+    private final MerchantContext merchantContext;
+    @Override
+    public Optional<String> getCurrentAuditor() {
+        try{
+            String keyId = merchantContext.getKeyId();
+            if(keyId != null && !keyId.isBlank()) return Optional.of(keyId);
+            if (merchantContext.getMerchantId() != null) {
+                return Optional.of("merchant_id: " + merchantContext.getMerchantId());
+            }
+        } catch (Exception ignored) {
+        }
+        return Optional.of("SYSTEM");
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/config/AppConfig.java">
+package com.example.razorpay.common.config;
+
+import com.example.razorpay.merchant.security.MerchantUserDetailsService;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+@Configuration
+public class AppConfig {
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+
+        return new BCryptPasswordEncoder();
+    }
+    @Bean
+    public AuthenticationManager authenticationManager(MerchantUserDetailsService userDetailsService,
+                                                       PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+        return new ProviderManager(provider);
+    }
+
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/config/RedisConfig.java">
+package com.example.razorpay.common.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.StringRedisTemplate;
+
+@Configuration
+public class RedisConfig {
+
+    @Bean
+    public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory connectionFactory) {
+        return new StringRedisTemplate(connectionFactory);
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/config/SecurityConfig.java">
+package com.example.razorpay.common.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll()
+                );
+
+        return http.build();
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/entity/BaseEntity.java">
+package com.example.razorpay.common.entity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.MappedSuperclass;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
+
+@MappedSuperclass
+@Getter
+@Setter
+@EntityListeners(AuditingEntityListener.class)
+public class BaseEntity {
+
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+
+    @CreatedBy
+    @Column(updatable = false)
+    private String createdBy;
+
+    @LastModifiedBy
+    private String updatedBy;
+
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/entity/Money.java">
+package com.example.razorpay.common.entity;
+
+import jakarta.persistence.Embeddable;
+import lombok.*;
+
+
+@Embeddable
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
+public class Money {
+    private int amountUnits;
+    private String currency;
+    public static Money of(int amountUnits, String currency){
+        return new Money(amountUnits, currency);
+    }
+    public static Money inr(int amountUnits) {
+
+        return new Money(amountUnits, "INR");
+    }
+    public Money add(Money other) {
+        if(!this.currency.equals(other.currency)) {
+            throw new IllegalArgumentException("Cannot add Money with different currencies");
+        }
+        return new Money(this.amountUnits + other.amountUnits, this.currency);
+    }
+
+    public Money subtract(Money other) {
+        if(!this.currency.equals(other.currency)) {
+            throw new IllegalArgumentException("Cannot subtract Money with different currencies");
+        }
+        return new Money(this.amountUnits - other.amountUnits, this.currency);
+    }
+
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/enums/BusinessType.java">
+package com.example.razorpay.common.enums;
+
+public enum BusinessType {
+    LLP,
+    PROPRIETORSHIP,
+    PARTNERSHIP,
+    PRIVATE_LIMITED,
+    PUBLIC_LIMITED,
+    TRUST,
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/enums/CardBrand.java">
+package com.example.razorpay.common.enums;
+
+public enum CardBrand {
+    VISA,
+    MASTERCARD,
+    RUPAY,
+    AMEX
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/enums/ChaosMode.java">
+package com.example.razorpay.common.enums;
+
+public enum ChaosMode {
+    NORMAL,
+    SLOW,
+    FAILURE,
+    SUCCESS,
+    TIMEOUT
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/enums/Environment.java">
+package com.example.razorpay.common.enums;
+
+public enum Environment {
+    LIVE,
+    TEST
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/enums/MerchantStatus.java">
+package com.example.razorpay.common.enums;
+
+public enum MerchantStatus {
+    PENDING_KYC,
+    ACTIVE,
+    SUSPENDED
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/enums/OrderStatus.java">
+package com.example.razorpay.common.enums;
+
+public enum OrderStatus {
+    CREATED,
+    ATTEMPTED,
+    PAID,
+    CANCELLED,
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/enums/PaymentActor.java">
+package com.example.razorpay.common.enums;
+
+public enum PaymentActor {
+    CUSTOMER,
+    MERCHANT,
+    SYSTEM
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/enums/PaymentEvent.java">
+package com.example.razorpay.common.enums;
+
+public enum PaymentEvent {
+    AUTHORIZE_ATTEMPT,
+    AUTHORIZE_SUCCESS,
+    AUTHORIZE_FAIL,
+    CAPTURE_REQUEST,
+    CAPTURE_SUCCESS,
+    CAPTURE_FAIL,
+    REFUND_INIT,
+    REFUND_COMPLETE,
+    SETTLE,
+    CANCEL,
+    CAPTURE_TIMEOUT
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/enums/PaymentMethod.java">
+package com.example.razorpay.common.enums;
+
+public enum PaymentMethod {
+    CARD,
+    NETBANKING,
+    UPI,
+    WALLET,
+
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/enums/PaymentStatus.java">
+package com.example.razorpay.common.enums;
+
+public enum PaymentStatus {
+    CREATED,
+    AUTHORIZING,
+    AUTHORIZED,
+    CAPTURING,
+    CAPTURED,
+    FAILED,
+    CANCELLED,
+    REFUNDED,
+    PARTIALLY_REFUNDED,
+    SETTLED,
+    AUTH_EXPIRED
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/enums/RefundStatus.java">
+package com.example.razorpay.common.enums;
+
+public enum RefundStatus {
+    PENDING,
+    PROCESSING,
+    PROCESSED,
+    FAILED
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/enums/SettlementStatus.java">
+package com.example.razorpay.common.enums;
+
+public enum SettlementStatus  {
+    INITIATED,
+    PROCESSED,
+    FAILED
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/enums/UserRole.java">
+package com.example.razorpay.common.enums;
+
+public enum UserRole {
+    OWNER,
+    ADMIN,
+    TEAM
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/enums/WebhookEventStatus.java">
+package com.example.razorpay.common.enums;
+
+public enum WebhookEventStatus {
+    PENDING,
+    DELIVERED,
+    FAILED,
+    DEAD
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/exception/BusinessRuleViolationException.java">
+package com.example.razorpay.common.exception;
+
+import lombok.Getter;
+
+@Getter
+public class BusinessRuleViolationException extends RuntimeException{
+    private final String errorCode;
+
+    public BusinessRuleViolationException(String errorCode, String message) {
+        super(message);
+        this.errorCode = errorCode;
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/exception/DuplicateResourceException.java">
+package com.example.razorpay.common.exception;
+
+import lombok.Getter;
+
+@Getter
+public class DuplicateResourceException extends RuntimeException{
+    private final String errorCode;
+
+    public DuplicateResourceException(String errorCode, String message) {
+        super(message);
+        this.errorCode = errorCode;
+    }
+
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/exception/ErrorResponse.java">
+package com.example.razorpay.common.exception;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public record ErrorResponse(
+        String errorCode,
+        String errorDescription,
+        LocalDateTime timestamp,
+        List<FieldError> fieldErrors
+) {
+    public record FieldError(String field, String message) {
+    }
+
+    public static ErrorResponse of(String errorCode, String errorDescription) {
+        return new ErrorResponse(errorCode, errorDescription, LocalDateTime.now(), null);
+    }
+
+    public static ErrorResponse of(String errorCode, String errorDescription, List<FieldError> fieldErrors) {
+        return new ErrorResponse(errorCode, errorDescription, LocalDateTime.now(), fieldErrors);
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/exception/GlobalExceptionHandler.java">
+package com.example.razorpay.common.exception;
+
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.List;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateResources(DuplicateResourceException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ErrorResponse.of(ex.getErrorCode(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex) {
+        String errorCode = ex.getResourceName().toUpperCase() + "_NOT_FOUND";
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ErrorResponse.of(errorCode, ex.getMessage()));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex,
+                                                          HttpServletRequest request) {
+        List<ErrorResponse.FieldError> fieldErrors = ex.getBindingResult().getFieldErrors().stream()
+                .map(fe -> new ErrorResponse.FieldError(fe.getField(), fe.getDefaultMessage()))
+                .toList();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                ErrorResponse.of("VALIDATION_FAILED", "Request validation failed", fieldErrors));
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/exception/InvalidStateTransitionException.java">
+package com.example.razorpay.common.exception;
+
+public class InvalidStateTransitionException extends RuntimeException{
+
+    public InvalidStateTransitionException(String fromState, String event) {
+        super("Invalid transition from " + fromState + " with event " + event);
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/exception/RateLimitException.java">
+package com.example.razorpay.common.exception;
+
+import lombok.Getter;
+
+@Getter
+public class RateLimitException extends RuntimeException {
+    private final int retryAfterSeconds;
+    private final int remaining;
+
+    public RateLimitException(String message, int retryAfterSeconds) {
+        super(message);
+        this.retryAfterSeconds = retryAfterSeconds;
+        this.remaining = 0;
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/exception/ResourceNotFoundException.java">
+package com.example.razorpay.common.exception;
+
+import lombok.Getter;
+
+import java.util.UUID;
+@Getter
+public class ResourceNotFoundException extends RuntimeException{
+
+    private final String resourceName;
+    private final Object identifier;
+
+    public ResourceNotFoundException(String resourceName, Object identifier) {
+        super(resourceName +" not found: "+ identifier);
+        this.resourceName = resourceName;
+        this.identifier = identifier;
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/ratelimit/FixedWindowRateLimiter.java">
+package com.example.razorpay.common.ratelimit;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Component;
+
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
+
+@Component
+@RequiredArgsConstructor
+@ConditionalOnProperty(name = "app.rate-limit.method", havingValue = "fixed")
+public class FixedWindowRateLimiter implements RateLimiter {
+
+    private final StringRedisTemplate redis;
+
+    @Override
+    public RateLimitResult check(String key, int maxRequestAllowed, long windowSeconds) {
+
+        String redisKey = "ratelimit:fixed:"+key;
+        Long count = redis.opsForValue().increment(redisKey);
+        if (count == null) return RateLimitResult.allowed(maxRequestAllowed); // redis unavailable
+        if (count == 1) {
+            redis.expire(redisKey, Duration.ofSeconds(windowSeconds));
+        }
+        if (count > maxRequestAllowed) {
+            Long ttl = redis.getExpire(redisKey, TimeUnit.SECONDS);
+            int retryAfter = (ttl != null & ttl > 0) ? ttl.intValue(): (int) windowSeconds;
+            return RateLimitResult.denied(retryAfter);
+        }
+
+        return RateLimitResult.allowed((int) (maxRequestAllowed - count));
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/ratelimit/RateLimiter.java">
+package com.example.razorpay.common.ratelimit;
+
+public interface RateLimiter {
+    RateLimitResult check(String key, int maxRequestAllowed, long windowSeconds);
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/ratelimit/RateLimitResult.java">
+package com.example.razorpay.common.ratelimit;
+
+public record RateLimitResult(
+        boolean isAllowed, int remaining, int retryAfterSeconds
+) {
+    public static RateLimitResult allowed(int remaining) {
+        return new RateLimitResult(true, remaining,0);
+    }
+
+    public static RateLimitResult denied(int retryAfterSeconds) {
+        return new RateLimitResult(false, 0,retryAfterSeconds);
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/common/util/RandomizerUtil.java">
+package com.example.razorpay.common.util;
+
+import java.security.SecureRandom;
+import java.util.Base64;
+
+public class RandomizerUtil {
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+
+    public static String randomBase64(int length){
+        byte[] buf = new byte[length];
+        SECURE_RANDOM.nextBytes(buf);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(buf);
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/cache/ApiKeyCache.java">
+package com.example.razorpay.merchant.cache;
+
+import java.util.Optional;
+
+public interface ApiKeyCache {
+    Optional<ApiKeyCacheEntry> get(String keyId);
+
+    void put(String keyId, ApiKeyCacheEntry entry);
+
+    void evict(String keyId);
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/cache/ApiKeyCacheEntry.java">
+package com.example.razorpay.merchant.cache;
+
+import com.example.razorpay.common.enums.Environment;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+public record ApiKeyCacheEntry(
+        String keyId,
+        String keySecretHash,
+        String previousKeySecretHash,
+        LocalDateTime gracePeriodExpiresAt,
+        UUID merchantId,
+        Environment environment,
+        boolean enabled
+) {
+    public boolean isInGracePeriod() {
+        return gracePeriodExpiresAt != null && LocalDateTime.now().isBefore(gracePeriodExpiresAt);
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/cache/RedisApiKeyCache.java">
+package com.example.razorpay.merchant.cache;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Component;
+import tools.jackson.databind.ObjectMapper;
+
+import java.time.Duration;
+import java.util.Optional;
+
+@Component
+@Slf4j
+@RequiredArgsConstructor
+public class RedisApiKeyCache implements ApiKeyCache {
+
+    private static final String PREFIX = "apikey:";
+    private static final Duration TTL = Duration.ofMinutes(5);
+
+    private final StringRedisTemplate stringRedisTemplate;
+    private final ObjectMapper objectMapper;
+
+    @Override
+    public Optional<ApiKeyCacheEntry> get(String keyId) {
+        try {
+            String json = stringRedisTemplate.opsForValue().get(PREFIX+keyId);
+            if (json == null) {
+                return Optional.empty();
+            }
+            return Optional.of(objectMapper.readValue(json, ApiKeyCacheEntry.class));
+        } catch (Exception e) {
+            log.warn("ApiKey cache read filed, keyId: {}", keyId);
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public void put(String keyId, ApiKeyCacheEntry entry) {
+        try {
+            stringRedisTemplate.opsForValue().set(PREFIX+keyId,
+                    objectMapper.writeValueAsString(entry),
+                    TTL);
+        } catch (Exception e) {
+            log.warn("ApiKey cache put filed, keyId: {}", keyId);
+        }
+    }
+
+    @Override
+    public void evict(String keyId) {
+        stringRedisTemplate.delete(PREFIX+keyId);
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/controller/ApiKeyController.java">
+package com.example.razorpay.merchant.controller;
+
+import com.example.razorpay.merchant.dto.request.CreateApiKeyRequest;
+import com.example.razorpay.merchant.dto.response.ApiKeyCreateResponse;
+import com.example.razorpay.merchant.security.MerchantContext;
+import com.example.razorpay.merchant.service.ApiKeyService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/v1/merchants/{merchantId}/api-keys")
+public class ApiKeyController  {
+    private final ApiKeyService apiKeyService;
+    private final MerchantContext merchantContext;
+
+    @PostMapping
+    public ResponseEntity<ApiKeyCreateResponse>create(@PathVariable UUID merchant_Id,
+                                                      @Valid @RequestBody CreateApiKeyRequest request){
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(apiKeyService.create(merchantContext.getMerchantId(), request));
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiKeyService> listByMerchant(@PathVariable UUID merchant_Id){
+        return ResponseEntity.ok(apiKeyService.listByMerchant(merchantContext.getMerchantId()));
+    }
+
+    @DeleteMapping("/{keyId}")
+    public void revoke(@PathVariable UUID merchantId, @PathVariable UUID keyId){
+        apiKeyService.revoke(merchantContext.getMerchantId(),keyId);
+        ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{keyId}/rotate")
+    public ResponseEntity<ApiKeyCreateResponse> rotateKey(@PathVariable UUID merchantId,
+                                                          @PathVariable UUID keyId){
+        return ResponseEntity.ok(apiKeyService.rotate(merchantContext.getMerchantId(), keyId));
+    }
+
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/controller/AuthController.java">
+package com.example.razorpay.merchant.controller;
+
+import com.example.razorpay.merchant.dto.request.LoginRequest;
+import com.example.razorpay.merchant.dto.request.MerchantSignupRequest;
+import com.example.razorpay.merchant.dto.response.LoginResponse;
+import com.example.razorpay.merchant.dto.response.MerchantResponse;
+import com.example.razorpay.merchant.service.AuthService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/v1/auth")
+public class AuthController {
+
+    private final AuthService authService;
+
+    @PostMapping("/signup")
+    public ResponseEntity<MerchantResponse> signUp(@RequestBody @Valid MerchantSignupRequest request){
+        return ResponseEntity.status(HttpStatus.CREATED).body(authService.signup(request));
+    }
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                authService.login(request)
+        );
+    }
+
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/dto/request/CreateApiKeyRequest.java">
+package com.example.razorpay.merchant.dto.request;
+
+import com.example.razorpay.common.enums.Environment;
+
+public record CreateApiKeyRequest(
+        Environment environment
+) {
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/dto/request/LoginRequest.java">
+package com.example.razorpay.merchant.dto.request;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+public record LoginRequest(
+
+        @NotBlank @Email
+        String email,
+
+        @NotBlank
+        String password
+) {
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/dto/request/MerchantSignupRequest.java">
+package com.example.razorpay.merchant.dto.request;
+
+import com.example.razorpay.common.enums.BusinessType;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+public record MerchantSignupRequest(
+        @NotNull(message = "Name is required")
+        @Size(max = 50, message = "Name should not be more than 50 characters long")
+        String name,
+
+        @Email
+        @NotNull(message = "Email is required")
+        String email,
+
+        @NotNull(message = "Password is required")
+        @Size(min = 8, message = "Password should be at least 8 characters long")
+        String password,
+
+        @Size(max = 50, message = "Business name should not be more than 50 characters long")
+        String businessName,
+
+        BusinessType businessType
+) {
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/dto/response/ApiKeyCreateResponse.java">
+package com.example.razorpay.merchant.dto.response;
+
+import com.example.razorpay.common.enums.Environment;
+
+import java.util.UUID;
+
+public record ApiKeyCreateResponse(
+        UUID id,
+        String keyId,
+        String keySecret,
+        Environment environment
+) {
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/dto/response/ApiKeyResponse.java">
+package com.example.razorpay.merchant.dto.response;
+
+import com.example.razorpay.common.enums.Environment;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+public record ApiKeyResponse(
+        UUID id,
+        String keyId,
+        Environment environment,
+        boolean enabled,
+        LocalDateTime lastUsedAt,
+        LocalDateTime createdAt
+) {
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/dto/response/LoginResponse.java">
+package com.example.razorpay.merchant.dto.response;
+
+public record LoginResponse(
+        String accessToken
+
+) {
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/dto/response/MerchantResponse.java">
+package com.example.razorpay.merchant.dto.response;
+
+import com.example.razorpay.common.enums.BusinessType;
+import com.example.razorpay.common.enums.MerchantStatus;
+
+import java.util.UUID;
+
+public record MerchantResponse(
+        UUID id,
+        String name,
+        String email,
+        String businessName,
+        BusinessType businessType,
+        MerchantStatus merchantStatus
+) {
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/entity/ApiKey.java">
+package com.example.razorpay.merchant.entity;
+
+import com.example.razorpay.common.entity.BaseEntity;
+import com.example.razorpay.common.enums.Environment;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Entity
+@Table(name = "api_key",
+        indexes = {
+                @Index(name = "idx_api_key_merchant_env", columnList = "merchant_id, environment, enabled")
+        })
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class ApiKey extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "merchant_id", nullable = false)
+    private Merchant merchant;
+
+    @Column(nullable = false, length = 50, unique = true)
+    private String keyId;
+
+    @Column(nullable = false, length = 200)
+    private String keySecretHash;
+
+    @Column(length = 200)
+    private String previousKeySecretHash;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 10)
+    private Environment environment;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean enabled = true;
+
+
+    private java.time.LocalDateTime lastUsedAt;
+    private java.time.LocalDateTime rotatedAt;
+    private java.time.LocalDateTime gracePeriodExpiresAt;
+
+    public boolean isInGracePeriod() {
+        return gracePeriodExpiresAt != null && LocalDateTime.now().isBefore(gracePeriodExpiresAt);
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/entity/AppUser.java">
+package com.example.razorpay.merchant.entity;
+
+import com.example.razorpay.common.entity.BaseEntity;
+import com.example.razorpay.common.enums.UserRole;
+import jakarta.persistence.*;
+import lombok.*;
+import org.jspecify.annotations.Nullable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
+
+@Entity
+@Table(name = "app_user",
+        indexes = {
+                @Index(name = "idx_app_user_merchant_id", columnList = "merchant_id")
+        }
+)
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class AppUser extends BaseEntity implements UserDetails {
+
+    @Id
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.UUID)
+    private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "merchant_id")
+    private Merchant merchant;
+
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    private String passwordHash;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRole role;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(
+                new SimpleGrantedAuthority("ROLE_"+role)
+        );
+    }
+
+    @Override
+    public @Nullable String getPassword() {
+        return passwordHash;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/entity/Customer.java">
+package com.example.razorpay.merchant.entity;
+
+
+import com.example.razorpay.common.entity.BaseEntity;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Entity
+@Table(name = "customer", indexes = {
+        @Index(name = "idx_customer_merchant_id", columnList = "merchant_id"),
+        @Index(name = "idx_customer_email", columnList = "email")
+})
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class Customer  extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "merchant_id", nullable = false)
+    private Merchant merchant;
+
+    @Column(length = 200)
+    private String name;
+
+    @Column(length = 200)
+    private String email;
+
+    @Column(length = 20)
+    private String contactNumber;
+
+    private LocalDateTime deletedAt;
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/entity/Merchant.java">
+package com.example.razorpay.merchant.entity;
+
+import com.example.razorpay.common.entity.BaseEntity;
+import com.example.razorpay.common.enums.BusinessType;
+import com.example.razorpay.common.enums.MerchantStatus;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.UUID;
+
+@Entity
+@Table(name = "merchant", indexes = {
+        @Index(name = "idx_merchant_status", columnList = "status")
+})
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class Merchant  extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(nullable = false, length = 200)
+    private String name;
+
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    @Column(length = 20)
+    private String contactNumber;
+
+    @Column(length = 50)
+    @Enumerated(EnumType.STRING)
+    private BusinessType businessType;
+
+    @Column(length = 100)
+    private String businessName;
+
+    @Column(length = 200)
+    private String websiteUrl;
+
+    @Column(length = 200, nullable = false)
+    @Enumerated(EnumType.STRING)
+    private MerchantStatus status = MerchantStatus.PENDING_KYC;
+
+    @Column(length = 20)
+    private String gstId;
+
+    @Column(length = 20)
+    private String panId;
+
+    @Column(length = 200)
+    private String settlementBankAccount;
+
+    @Column(length = 20)
+    private String settlementBankIfsc;
+
+    @Column(length = 200)
+    private String settlementBankAccountHolderName;
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/entity/MerchantWebhookConfig.java">
+package com.example.razorpay.merchant.entity;
+
+import com.example.razorpay.common.entity.BaseEntity;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.UUID;
+
+@Entity
+@Table(name = "merchant_webhook_config",
+        indexes = {
+                @Index(name = "idx_webhook_merchant_id", columnList = "merchant_id, enabled")
+        }
+)
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class MerchantWebhookConfig extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "merchant_id", nullable = false)
+    private Merchant merchant;
+
+    @Column(nullable = false, length = 500)
+    private String targetUrl;
+
+    @Column(length = 255)
+    private String webhookSecretHash;
+
+    @Column(nullable = false)
+    private Boolean enabled = true;
+
+    @Column(length = 255)
+    private String eventTypes;
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/mapper/ApiKeyMapper.java">
+package com.example.razorpay.merchant.mapper;
+
+import com.example.razorpay.merchant.dto.response.ApiKeyCreateResponse;
+import com.example.razorpay.merchant.dto.response.ApiKeyResponse;
+import com.example.razorpay.merchant.entity.ApiKey;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+
+import java.util.List;
+
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+public interface ApiKeyMapper {
+
+    @Mapping(target = "keySecret", expression = "java(rawSecret)")
+    ApiKeyCreateResponse toCreateResponse(ApiKey apiKey, String rawSecret);
+
+    List<ApiKeyResponse> toResponseList(List<ApiKey> apiKeyList);
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/mapper/MerchantMapper.java">
+package com.example.razorpay.merchant.mapper;
+
+import com.example.razorpay.merchant.dto.request.MerchantSignupRequest;
+import com.example.razorpay.merchant.dto.response.MerchantResponse;
+import com.example.razorpay.merchant.entity.Merchant;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
+
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+public interface MerchantMapper {
+
+    Merchant toEntityFromSignUpRequest(MerchantSignupRequest request);
+
+    MerchantResponse toResponse(Merchant merchant);
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/repository/ApiKeyRepository.java">
+package com.example.razorpay.merchant.repository;
+
+import com.example.razorpay.merchant.entity.ApiKey;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+public interface ApiKeyRepository extends JpaRepository<ApiKey, UUID> {
+    List<ApiKey> findByMerchant_Id(UUID merchantId);
+    Optional<ApiKey> findByKeyId(String keyId);
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/repository/AppUserRepository.java">
+package com.example.razorpay.merchant.repository;
+
+import com.example.razorpay.merchant.entity.AppUser;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+import java.util.UUID;
+
+public interface AppUserRepository extends JpaRepository<AppUser, UUID> {
+    Optional<AppUser> findByEmail(String email);
+
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/repository/MerchantRepository.java">
+package com.example.razorpay.merchant.repository;
+
+import com.example.razorpay.merchant.entity.Merchant;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.UUID;
+
+public interface MerchantRepository extends JpaRepository<Merchant, UUID> {
+    boolean existsByEmail(String email);
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/security/ApiKeyAuthenticationFilter.java">
+package com.example.razorpay.merchant.security;
+
+import com.example.razorpay.common.exception.RateLimitException;
+import com.example.razorpay.common.ratelimit.RateLimitResult;
+import com.example.razorpay.common.ratelimit.RateLimiter;
+import com.example.razorpay.merchant.cache.ApiKeyCache;
+import com.example.razorpay.merchant.cache.ApiKeyCacheEntry;
+import com.example.razorpay.merchant.entity.ApiKey;
+import com.example.razorpay.merchant.repository.ApiKeyRepository;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.List;
+
+@Component
+@RequiredArgsConstructor
+@Slf4j
+public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
+
+    private static final String BASIC_PREFIX = "Basic ";
+    private final ApiKeyRepository apiKeyRepository;
+    private final BCryptPasswordEncoder BCRYPT = new BCryptPasswordEncoder();
+    private final MerchantContext merchantContext;
+    private final HandlerExceptionResolver handlerExceptionResolver;
+
+    private final ApiKeyCache apiKeyCache;
+    private final RateLimiter rateLimiter;
+
+    @Value("${app.rate-limit.use-case.api-key.requests-per-minute:60}")
+    private Integer requestsPerMinute;
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+        log.info("Incoming request: {}", request.getRequestURI());
+
+        try {
+            String header = request.getHeader("Authorization");
+            if (header == null || !header.startsWith(BASIC_PREFIX)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+//        Authorization: Basic key_asdlfjaosduf:secret_asdflauouadf
+//        Authorization: Basic ASDFUAOSJDFLAKSJDFA89SDUFLIJalsdjflakjsdflk==
+
+            String[] credentials = decode(header);
+            if (credentials == null) {
+                throw new BadRequestException("Malformed API Key Header");
+            }
+
+            String keyId = credentials[0];
+            String rawSecret = credentials[1];
+
+            ApiKeyCacheEntry apiKeyEntry = apiKeyCache.get(keyId)
+                    .orElseGet(() -> loadAndCache(keyId));
+
+//            ApiKey apiKey = apiKeyRepository.findByKeyId(keyId)
+//                    .orElseThrow(() -> new BadRequestException("Invalid or missing API Key"));
+
+            if (apiKeyEntry == null || !apiKeyEntry.enabled() || !secretMatches(rawSecret, apiKeyEntry)) {
+                throw new BadRequestException("Invalid or missing API Key");
+            }
+
+            RateLimitResult rateLimitResult = rateLimiter.check("apikey:"+keyId, requestsPerMinute, 60);
+
+            if (!rateLimitResult.isAllowed()) {
+                log.warn("Too many requests keyId={}", keyId);
+                throw new RateLimitException("Too many requests", rateLimitResult.retryAfterSeconds());
+            }
+
+            response.setHeader("X-RateLimit-Limit", String.valueOf(requestsPerMinute));
+            response.setHeader("X-RateLimit-Remaining", String.valueOf(rateLimitResult.remaining()));
+
+            var auth = new UsernamePasswordAuthenticationToken(keyId, null,
+                    List.of(new SimpleGrantedAuthority("API_KEY_ROLE"))
+            );
+
+            SecurityContextHolder.getContext().setAuthentication(auth);
+            merchantContext.setMerchantId(apiKeyEntry.merchantId());
+            merchantContext.setKeyId(apiKeyEntry.keyId());
+
+            filterChain.doFilter(request, response);
+
+        } catch (Exception e) {
+            handlerExceptionResolver.resolveException(request, response, null, e);
+        }
+
+    }
+
+    private ApiKeyCacheEntry loadAndCache(String keyId) {
+        ApiKey apiKey = apiKeyRepository.findByKeyId(keyId).orElse(null);
+        if (apiKey == null) return null;
+        ApiKeyCacheEntry apiKeyCacheEntry = new ApiKeyCacheEntry(
+                apiKey.getKeyId(),
+                apiKey.getKeySecretHash(),
+                apiKey.getPreviousKeySecretHash(),
+                apiKey.getGracePeriodExpiresAt(),
+                apiKey.getMerchant().getId(),
+                apiKey.getEnvironment(),
+                apiKey.isEnabled()
+        );
+        apiKeyCache.put(keyId, apiKeyCacheEntry);
+        return apiKeyCacheEntry;
+    }
+
+    private boolean secretMatches(String rawSecret, ApiKeyCacheEntry apiKey) {
+        if (BCRYPT.matches(rawSecret, apiKey.keySecretHash())) {
+            return true;
+        }
+        return apiKey.isInGracePeriod()
+                && apiKey.previousKeySecretHash() != null
+                && BCRYPT.matches(rawSecret, apiKey.previousKeySecretHash());
+    }
+
+    private String[] decode(String header) {
+        String encoded = header.substring(BASIC_PREFIX.length());
+        String decoded = new String(Base64.getDecoder().decode(encoded), StandardCharsets.UTF_8);
+
+        int colon = decoded.indexOf(":");
+        if (colon < 1) return null;
+
+        return new String[]{decoded.substring(0, colon), decoded.substring(colon+1)};
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/security/JwtAuthenticationFilter.java">
+package com.example.razorpay.merchant.security;
+
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
+
+@Component
+@Slf4j
+@RequiredArgsConstructor
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private final JwtUtil jwtUtil;
+    private final HandlerExceptionResolver handlerExceptionResolver;
+    private final MerchantContext merchantContext;
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        log.info("Incoming request: {}", request.getRequestURI());
+        try {
+            final String authorizationHeader = request.getHeader("Authorization");
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            String jwtToken = authorizationHeader.substring("Bearer ".length());
+
+            Claims claims = jwtUtil.verifyAccessToken(jwtToken);
+
+            if (claims != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                var auth = new UsernamePasswordAuthenticationToken(claims.getSubject(), null,
+                        List.of(new SimpleGrantedAuthority("ROLE_" + jwtUtil.extractRole(claims)))
+                );
+
+                SecurityContextHolder.getContext().setAuthentication(auth);
+
+                merchantContext.setMerchantId(UUID.fromString(jwtUtil.extractMerchantId(claims)));
+            }
+
+            filterChain.doFilter(request, response);
+        } catch (Exception e) {
+            handlerExceptionResolver.resolveException(request, response, null, e);
+        }
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/security/JwtUtil.java">
+package com.example.razorpay.merchant.security;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.util.Date;
+import java.util.UUID;
+
+@Component
+public class JwtUtil {
+
+    @Value("${jwt.secret-key}")
+    private String secretKey;
+    private SecretKey getSecretKey() {
+        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public String generateAccessToken(String email, UUID merchantId, String role) {
+        Instant now = Instant.now();
+        return Jwts.builder()
+                .subject(email)
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(now.plusSeconds(60*100)))
+                .claim("merchant_id", merchantId)
+                .claim("role", role)
+                .signWith(getSecretKey())
+                .compact();
+    }
+
+    public Claims verifyAccessToken(String jwtToken) {
+            return Jwts.parser()
+                    .verifyWith(getSecretKey())
+                    .build()
+                    .parseSignedClaims(jwtToken)
+                    .getPayload();
+    }
+
+    public String extractRole(Claims claims) {
+        return claims.get("role", String.class);
+    }
+
+    public String extractMerchantId(Claims claims) {
+        return claims.get("merchant_id", String.class);
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/security/MerchantContext.java">
+package com.example.razorpay.merchant.security;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
+
+import java.util.UUID;
+
+@Component
+@Getter
+@Setter
+@RequestScope(proxyMode = ScopedProxyMode.TARGET_CLASS)
+public class MerchantContext {
+    private UUID merchantId;
+    private String keyId;
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/security/MerchantUserDetailsService.java">
+package com.example.razorpay.merchant.security;
+
+import com.example.razorpay.common.exception.ResourceNotFoundException;
+import com.example.razorpay.merchant.repository.AppUserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class MerchantUserDetailsService implements UserDetailsService {
+
+    private final AppUserRepository appUserRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return appUserRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User", email));
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/security/WebSecurityConfig.java">
+package com.example.razorpay.merchant.security;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+@Configuration
+@RequiredArgsConstructor
+public class WebSecurityConfig {
+    private static final String[] JWT_ROUTES = {"/v1/auth/**", "/v1/merchants/**", "/v1/admin/**", "/actuator/**"};
+    private static final String[] API_KEY_ROUTES = {"/v1/orders/**", "/v1/payments/**", "/v1/vault/**"};
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final ApiKeyAuthenticationFilter apiKeyAuthenticationFilter;
+
+    @Bean
+    @Order(1)
+    public SecurityFilterChain jwtChain(HttpSecurity http) {
+        return http
+                .securityMatcher(JWT_ROUTES)
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/v1/auth/signup", "/v1/auth/login").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
+
+    @Bean
+    @Order(2)
+    public SecurityFilterChain apiKeyChain(HttpSecurity http) {
+        return http
+                .securityMatcher(API_KEY_ROUTES)
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(apiKeyAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/service/impl/ApiKeyServiceImpl.java">
+package com.example.razorpay.merchant.service.impl;
+
+import com.example.razorpay.common.config.AppConfig;
+import com.example.razorpay.common.exception.ResourceNotFoundException;
+import com.example.razorpay.common.util.RandomizerUtil;
+import com.example.razorpay.merchant.cache.ApiKeyCache;
+import com.example.razorpay.merchant.dto.request.CreateApiKeyRequest;
+import com.example.razorpay.merchant.dto.response.ApiKeyCreateResponse;
+import com.example.razorpay.merchant.entity.ApiKey;
+import com.example.razorpay.merchant.entity.Merchant;
+import com.example.razorpay.merchant.mapper.ApiKeyMapper;
+import com.example.razorpay.merchant.repository.ApiKeyRepository;
+import com.example.razorpay.merchant.repository.MerchantRepository;
+import com.example.razorpay.merchant.service.ApiKeyService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+@Service
+@RequiredArgsConstructor
+@Slf4j
+@Transactional(readOnly = true)
+public class ApiKeyServiceImpl implements ApiKeyService {
+
+    private final MerchantRepository merchantRepository;
+    private final ApiKeyMapper apiKeyMapper;
+    private final ApiKeyRepository apiKeyRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final ApiKeyCache apiKeyCache;
+
+
+    @Transactional
+    @Override
+    public ApiKeyCreateResponse create(UUID merchantId, CreateApiKeyRequest request) {
+        Merchant merchant = merchantRepository.findById(merchantId).orElseThrow
+                (() -> new ResourceNotFoundException("merchant", merchantId));
+        String keyId = "rzp_"+request.environment().name().toLowerCase()+"_"+ RandomizerUtil.randomBase64(24);
+        String rawSecret = RandomizerUtil.randomBase64(40);
+
+        ApiKey apiKey = ApiKey.builder()
+                .merchant(merchant)
+                .keyId(keyId)
+                .keySecretHash(passwordEncoder.encode(rawSecret))
+                .environment(request.environment())
+                .build();
+        apiKey = apiKeyRepository.save(apiKey);
+        return new ApiKeyCreateResponse(apiKey.getId(), keyId, rawSecret, request.environment());
+    }
+
+    @Override
+    public ApiKeyService listByMerchant(UUID merchantId) {
+        return (ApiKeyService) apiKeyMapper.toResponseList(apiKeyRepository.findByMerchant_Id(merchantId));
+    }
+
+    @Transactional
+    @Override
+    public void revoke(UUID merchantId, UUID keyId) {
+        ApiKey key = apiKeyRepository.findById(keyId)
+                .filter(k -> k.getMerchant().getId().equals(merchantId))
+                .orElseThrow(() -> new ResourceNotFoundException("ApiKey", keyId));
+        key.setEnabled(false);
+        apiKeyCache.evict(key.getKeyId());
+    }
+//key_id is unique becoz merchant id can have multiple key_id, that
+    //we are searching via key id
+    @Transactional
+    @Override
+    public ApiKeyCreateResponse rotate(UUID merchantId, UUID keyId) {
+        ApiKey apiKey = apiKeyRepository.findById(keyId)
+                .filter(k -> k.getMerchant().getId().equals(merchantId))
+                .orElseThrow(() -> new ResourceNotFoundException("ApiKey", keyId));
+
+        if(!apiKey.isEnabled()) throw new RuntimeException("Cannot do this");
+
+        String newRawSecret = RandomizerUtil.randomBase64(40);
+        apiKey.setPreviousKeySecretHash(apiKey.getKeySecretHash());
+        apiKey.setKeySecretHash(passwordEncoder.encode(newRawSecret));
+        apiKey.setRotatedAt(LocalDateTime.now());
+        apiKey.setGracePeriodExpiresAt(LocalDateTime.now().plusHours(24));
+
+        apiKey = apiKeyRepository.save(apiKey);
+        apiKeyCache.evict(apiKey.getKeyId());
+
+        return apiKeyMapper.toCreateResponse(apiKey, newRawSecret);
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/service/impl/AuthServiceImpl.java">
+package com.example.razorpay.merchant.service.impl;
+
+import com.example.razorpay.common.enums.MerchantStatus;
+import com.example.razorpay.common.enums.UserRole;
+import com.example.razorpay.common.exception.DuplicateResourceException;
+import com.example.razorpay.common.exception.ResourceNotFoundException;
+import com.example.razorpay.merchant.dto.request.LoginRequest;
+import com.example.razorpay.merchant.dto.request.MerchantSignupRequest;
+import com.example.razorpay.merchant.dto.response.LoginResponse;
+import com.example.razorpay.merchant.dto.response.MerchantResponse;
+import com.example.razorpay.merchant.entity.AppUser;
+import com.example.razorpay.merchant.entity.Merchant;
+import com.example.razorpay.merchant.mapper.MerchantMapper;
+import com.example.razorpay.merchant.repository.AppUserRepository;
+import com.example.razorpay.merchant.repository.MerchantRepository;
+import com.example.razorpay.merchant.security.JwtUtil;
+import com.example.razorpay.merchant.service.AuthService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@Slf4j
+@RequiredArgsConstructor
+@Transactional
+public class AuthServiceImpl implements AuthService {
+
+    private final AppUserRepository appUserRepository;
+    private final MerchantRepository merchantRepository;
+    private final MerchantMapper merchantMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
+
+    @Override
+    @Transactional
+    public MerchantResponse signup(MerchantSignupRequest request) {
+        if(merchantRepository.existsByEmail(request.email())){
+            throw new DuplicateResourceException("DUPLICATE_MERCHANT_EMAIL",
+                    "Merchant with email already exists: " + request.email());
+        }
+        Merchant merchant = merchantMapper.toEntityFromSignUpRequest(request);
+        merchant.setStatus(MerchantStatus.PENDING_KYC);
+
+        merchant = merchantRepository.save(merchant);
+
+        AppUser appUser = AppUser.builder()
+                .merchant(merchant)
+                .email(request.email())
+                .passwordHash(passwordEncoder.encode(request.password()))
+                .role(UserRole.OWNER)
+                .build();
+        appUserRepository.save(appUser);
+
+        return merchantMapper.toResponse(merchant);
+    }
+
+    @Override
+    public LoginResponse login(LoginRequest request) {
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.email(), request.password())
+        );
+
+        AppUser appUser = appUserRepository.findByEmail(request.email())
+                .orElseThrow(() -> new ResourceNotFoundException("User", request.email()));
+
+        String token = jwtUtil.generateAccessToken(request.email(), appUser.getMerchant().getId(), appUser.getRole().toString());
+
+        return new LoginResponse(token);
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/service/ApiKeyService.java">
+package com.example.razorpay.merchant.service;
+
+import com.example.razorpay.merchant.dto.request.CreateApiKeyRequest;
+import com.example.razorpay.merchant.dto.response.ApiKeyCreateResponse;
+import jakarta.validation.Valid;
+
+import java.util.UUID;
+
+public interface ApiKeyService {
+    ApiKeyCreateResponse create(UUID merchantId, @Valid CreateApiKeyRequest request);
+
+    ApiKeyService listByMerchant(UUID merchantId);
+
+    void revoke(UUID merchantId, UUID keyId);
+
+    ApiKeyCreateResponse rotate(UUID merchantId, UUID keyId);
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/merchant/service/AuthService.java">
+package com.example.razorpay.merchant.service;
+
+import com.example.razorpay.merchant.dto.request.LoginRequest;
+import com.example.razorpay.merchant.dto.request.MerchantSignupRequest;
+import com.example.razorpay.merchant.dto.response.LoginResponse;
+import com.example.razorpay.merchant.dto.response.MerchantResponse;
+import jakarta.validation.Valid;
+
+public interface AuthService {
+    MerchantResponse signup(@Valid MerchantSignupRequest request);
+
+    LoginResponse login(@Valid LoginRequest request);
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/operations/entity/DlqEvent.java">
+package com.example.razorpay.operations.entity;
+
+import com.example.razorpay.common.entity.BaseEntity;
+import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.UUID;
+
+@Entity
+@Table(name = "dlq_event")
+public class DlqEvent extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(nullable = false)
+    private UUID merchantId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private WebhookEvent webhookEvent;
+
+    @Column(length = 1000)
+    private String finalError;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(nullable = false, columnDefinition = "jsonb")
+    private Map<String, Object> payload;
+
+    private LocalDateTime movedAt;
+
+    private LocalDateTime replayedAt;
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/operations/entity/Settlement.java">
+package com.example.razorpay.operations.entity;
+
+import com.example.razorpay.common.entity.BaseEntity;
+import com.example.razorpay.common.entity.Money;
+import com.example.razorpay.common.enums.SettlementStatus;
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Entity
+@Table(name = "settlement")
+public class Settlement extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(nullable = false)
+    private UUID merchantId;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "amountUnits", column = @Column(name = "gross_amount_units", nullable = false)),
+            @AttributeOverride(name = "currency", column = @Column(name = "gross_amount_currency", nullable = false))
+    })
+    private Money grossAmount;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "amountUnits", column = @Column(name = "refund_amount_units", nullable = false)),
+            @AttributeOverride(name = "currency", column = @Column(name = "refund_amount_currency", nullable = false))
+    })
+    private Money refundAmount;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "amountUnits", column = @Column(name = "fee_amount_units", nullable = false)),
+            @AttributeOverride(name = "currency", column = @Column(name = "fee_amount_currency", nullable = false))
+    })
+    private Money feeAmount;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "amountUnits", column = @Column(name = "gst_amount_units", nullable = false)),
+            @AttributeOverride(name = "currency", column = @Column(name = "gst_amount_currency", nullable = false))
+    })
+    private Money gstAmount;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "amountUnits", column = @Column(name = "net_amount_units", nullable = false)),
+            @AttributeOverride(name = "currency", column = @Column(name = "net_amount_currency", nullable = false))
+    })
+    private Money netAmount;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private SettlementStatus status;
+
+    @Column(nullable = false, length = 50)
+    private String bankReference;
+
+    private LocalDateTime processedAt;
+
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/operations/entity/SettlementPayment.java">
+package com.example.razorpay.operations.entity;
+
+import com.example.razorpay.common.entity.BaseEntity;
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "settlement_payment")
+public class SettlementPayment extends BaseEntity {
+
+    @EmbeddedId
+    private SettlementPaymentId id;
+
+    @MapsId("settlementId")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "settlement_id", nullable = false)
+    private Settlement settlement;
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/operations/entity/SettlementPaymentId.java">
+package com.example.razorpay.operations.entity;
+
+import jakarta.persistence.Embeddable;
+
+import java.util.UUID;
+
+@Embeddable
+public class SettlementPaymentId {
+
+    private UUID settlementId;
+
+    private UUID paymentId;
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/operations/entity/WebhookEvent.java">
+package com.example.razorpay.operations.entity;
+
+import com.example.razorpay.common.entity.BaseEntity;
+import com.example.razorpay.common.enums.WebhookEventStatus;
+import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.UUID;
+
+@Entity
+@Table(name = "webhook_event")
+public class WebhookEvent extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(nullable = false)
+    private UUID merchantId;
+
+    @Column(nullable = false, length = 100)
+    private String eventType;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private Map<String, Object> payload;
+
+    @Column(nullable = false)
+    private String targetUrl;
+
+    @Column(nullable = false)
+    private String signature;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private WebhookEventStatus status;
+
+    @Column(nullable = false)
+    private Integer attempts = 0;
+
+    private LocalDateTime nextRetryAt;
+
+    private LocalDateTime lastAttemptAt;
+
+    private Integer lastResponseCode;
+
+    @Column(length = 1000)
+    private String lastResponseBody;
+
+    private LocalDateTime deliveredAt;
+
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/config/PaymentAdapterConfig.java">
+package com.example.razorpay.payment.config;
+
+import com.example.razorpay.common.enums.PaymentMethod;
+import com.example.razorpay.payment.gateway.PaymentAdapter;
+import com.example.razorpay.payment.gateway.adapter.CardPaymentAdapter;
+import com.example.razorpay.payment.gateway.adapter.NetBankingAdapter;
+import com.example.razorpay.payment.gateway.adapter.UpiPaymentAdapter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.Map;
+
+@Configuration
+@RequiredArgsConstructor
+public class PaymentAdapterConfig {
+    private final NetBankingAdapter netBankingAdapter;
+    private final CardPaymentAdapter cardPaymentAdapter;
+    private final UpiPaymentAdapter upiPaymentAdapter;
+
+    @Bean
+    public Map<PaymentMethod, PaymentAdapter> paymentAdapterMap() {
+        return Map.of(
+                PaymentMethod.CARD, cardPaymentAdapter,
+                PaymentMethod.NETBANKING, netBankingAdapter,
+                PaymentMethod.UPI, upiPaymentAdapter
+        );
+    }
+
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/config/PaymentProcessorConfig.java">
+package com.example.razorpay.payment.config;
+
+import com.example.razorpay.common.enums.PaymentMethod;
+import com.example.razorpay.payment.processor.PaymentProcessor;
+import com.example.razorpay.payment.processor.strategy.CardPaymentProcessor;
+import com.example.razorpay.payment.processor.strategy.NetBankingPaymentProcessor;
+import com.example.razorpay.payment.processor.strategy.UpiPaymentProcessor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.Map;
+@RequiredArgsConstructor
+@Configuration
+public class PaymentProcessorConfig {
+    private final CardPaymentProcessor cardPaymentProcessor;
+    private final NetBankingPaymentProcessor netBankingPaymentProcessor;
+    private final UpiPaymentProcessor upiPaymentProcessor;
+
+    @Bean
+    public Map<PaymentMethod, PaymentProcessor> paymentProcessorMap() {
+        return Map.of(
+                PaymentMethod.CARD, cardPaymentProcessor,
+                PaymentMethod.NETBANKING, netBankingPaymentProcessor,
+                PaymentMethod.UPI, upiPaymentProcessor
+        );
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/controller/OrderController.java">
+package com.example.razorpay.payment.controller;
+
+import com.example.razorpay.payment.dto.request.CreateOrderRequest;
+import com.example.razorpay.payment.dto.response.OrderResponse;
+import com.example.razorpay.payment.service.OrderService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/v1/orders")
+@RequiredArgsConstructor
+public class OrderController {
+    private final OrderService orderService;
+
+    UUID merchantId = UUID.fromString("1f6caca9-cab9-40cd-a491-a714146e5a55"); //TODO: replace it with MerchantContext
+    @PostMapping
+    public ResponseEntity<OrderResponse> create(@RequestBody @Valid CreateOrderRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(orderService.create(merchantId, request));
+    }
+
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/controller/PaymentController.java">
+package com.example.razorpay.payment.controller;
+
+import com.example.razorpay.payment.dto.request.PaymentInitRequest;
+import com.example.razorpay.payment.dto.response.PaymentResponse;
+import com.example.razorpay.payment.service.PaymentService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+
+@RequestMapping("/v1/payments")
+@RestController
+@RequiredArgsConstructor
+public class PaymentController {
+
+    private final PaymentService paymentService;
+    UUID merchantId = UUID.fromString("1f6caca9-cab9-40cd-a491-a714146e5a55"); //TODO: replace it with MerchantContext
+
+    @PostMapping
+    public ResponseEntity<PaymentResponse> initiate(@Valid @RequestBody PaymentInitRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(paymentService.initiate(merchantId, request));
+    }
+
+    @PostMapping("/{paymentId}/capture")
+    public ResponseEntity<PaymentResponse> capture(@PathVariable UUID paymentId) {
+        return ResponseEntity.ok(paymentService.capture(merchantId, paymentId));
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/dto/request/CreateOrderRequest.java">
+package com.example.razorpay.payment.dto.request;
+
+import com.example.razorpay.common.entity.Money;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+import java.time.LocalDateTime;
+import java.util.Map;
+
+public record CreateOrderRequest(
+        @NotNull(message = "Amount is required")
+        Money amount,
+
+        @Size(max = 100)
+        String receipt, // order-id (known to merchant)
+
+        Map<String, Object> notes,
+
+        LocalDateTime expiresAt
+) {
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/dto/request/PaymentInitRequest.java">
+package com.example.razorpay.payment.dto.request;
+
+import com.example.razorpay.common.enums.PaymentMethod;
+import jakarta.validation.constraints.NotNull;
+
+import java.util.Map;
+import java.util.UUID;
+
+public record PaymentInitRequest(
+        @NotNull(message = "Order Id is required")
+        UUID orderId,
+
+        @NotNull(message = "Payment method is required")
+        PaymentMethod method,
+
+        Map<String, Object> methodDetails
+) {
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/dto/response/OrderResponse.java">
+package com.example.razorpay.payment.dto.response;
+
+import com.example.razorpay.common.entity.Money;
+import com.example.razorpay.common.enums.OrderStatus;
+
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.UUID;
+
+public record OrderResponse(
+        UUID id,
+        UUID merchantId,
+        String receipt,
+        Money amount,
+        OrderStatus status,
+        Integer attempts,
+        Map<String, Object> notes,
+        LocalDateTime expiresAt,
+        LocalDateTime createdAt
+) {
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/dto/response/PaymentResponse.java">
+package com.example.razorpay.payment.dto.response;
+
+import com.example.razorpay.common.entity.Money;
+import com.example.razorpay.common.enums.PaymentMethod;
+import com.example.razorpay.common.enums.PaymentStatus;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.UUID;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public record PaymentResponse(
+        UUID id,
+        UUID orderId,
+        UUID merchantId,
+        Money amount,
+        PaymentStatus status,
+        PaymentMethod method,
+        Map<String, Object> methodDetails,
+        String errorCode,
+        String errorDescription,
+        LocalDateTime capturedAt,
+        LocalDateTime createdAt
+) {
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/entity/OrderRecord.java">
+package com.example.razorpay.payment.entity;
+
+import com.example.razorpay.common.entity.BaseEntity;
+import com.example.razorpay.common.entity.Money;
+import com.example.razorpay.common.enums.OrderStatus;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.UUID;
+
+@Entity
+@Table(name = "order_record", indexes = {
+        @Index(name = "idx_order_id_merchant_id", columnList = "id, merchant_id"),
+        @Index(name = "idx_order_merchant_id", columnList = "merchant_id")
+})
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class OrderRecord  extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    // no FK — cross-service boundary
+    @Column(name = "merchant_id", nullable = false)
+    private UUID merchantId;
+
+    @Embedded
+    private Money amount;
+
+    @Column(length = 100)
+    private String receipt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private OrderStatus orderStatus = OrderStatus.CREATED;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer attempts = 0;
+
+    @JdbcTypeCode((SqlTypes.JSON))
+    @Column(columnDefinition = "jsonb")
+    private Map<String, Object> notes;
+
+    @Column(nullable = false)
+    private LocalDateTime expiresAt;
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/entity/Payment.java">
+package com.example.razorpay.payment.entity;
+
+import com.example.razorpay.common.entity.BaseEntity;
+import com.example.razorpay.common.entity.Money;
+import com.example.razorpay.common.enums.PaymentMethod;
+import com.example.razorpay.common.enums.PaymentStatus;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.UUID;
+
+@Entity
+@Table(name = "payment", indexes = {
+        @Index(name = "idx_payment_order_id", columnList = "order_id"),
+        @Index(name = "idx_payment_merchant_id", columnList = "merchant_id")
+})
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class Payment extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.UUID)
+    private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "order_id", nullable = false)
+    private OrderRecord order;
+
+    @Column(nullable = false)
+    private  UUID merchantId;
+
+    @Embedded
+    private Money amount;
+
+    @Column(nullable = false, length = 100)
+    private String idempotencyKey;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private PaymentStatus status;
+
+    @Column(nullable = false)
+    private PaymentMethod method;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "method_details", columnDefinition = "jsonb")
+    private Map<String, Object> methodDetails;
+
+    @Column(length = 100)
+    private String bankReference;
+
+    @Column(length = 100)
+    private String processorReference;
+
+    @Column(length = 100)
+    private String errorCode;
+
+    @Column(length = 255)
+    private String errorDescription;
+
+    private LocalDateTime authorizedAt;
+
+    private LocalDateTime capturedAt;
+
+    private LocalDateTime failedAt;
+
+    private LocalDateTime refundedAt;
+
+    private LocalDateTime settledAt;
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/entity/PaymentTransitionLog.java">
+package com.example.razorpay.payment.entity;
+
+import com.example.razorpay.common.entity.BaseEntity;
+import com.example.razorpay.common.enums.PaymentActor;
+import com.example.razorpay.common.enums.PaymentEvent;
+import com.example.razorpay.common.enums.PaymentStatus;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Entity
+@Table(name = "payment_transition_log", indexes = {
+        @Index(name = "idx_payment_transition_log_payment_id", columnList = "payment_id")
+})
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class PaymentTransitionLog extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "payment_id", nullable = false)
+    private Payment payment;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "from_status", length = 30)
+    private PaymentStatus fromStatus;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "event", nullable = false, length = 30)
+    private PaymentEvent event;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "to_status", nullable = false, length = 30)
+    private PaymentStatus toStatus;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "actor", length = 100)
+    private PaymentActor actor;
+
+    @Column(name = "occurred_at", nullable = false)
+    private LocalDateTime occurredAt;
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/entity/Refund.java">
+package com.example.razorpay.payment.entity;
+
+import com.example.razorpay.common.entity.BaseEntity;
+import com.example.razorpay.common.entity.Money;
+import com.example.razorpay.common.enums.RefundStatus;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.UUID;
+
+@Entity
+@Table(name = "refund")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class Refund extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "payment_id", nullable = false)
+    private Payment payment;
+
+    @Column(nullable = false)
+    private UUID merchantId;
+
+    @Embedded
+    private Money amount;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RefundStatus status = RefundStatus.PENDING;
+
+    @Column(length = 100)
+    private String bankReference;
+
+    @Column(length = 100)
+    private String errorCode;
+
+    @Column(length = 500)
+    private String errorDescription;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private Map<String, Object> notes;
+
+    private LocalDateTime processedAt;
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/gateway/adapter/CardPaymentAdapter.java">
+package com.example.razorpay.payment.gateway.adapter;
+
+import com.example.razorpay.payment.gateway.PaymentAdapter;
+import com.example.razorpay.payment.gateway.dto.PaymentRequest;
+import com.example.razorpay.payment.gateway.dto.PaymentResult;
+import com.example.razorpay.payment.processor.dto.PaymentProcessorResponse;
+import com.example.razorpay.vault.service.VaultService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+import java.util.UUID;
+
+@RequiredArgsConstructor
+@Component
+public class CardPaymentAdapter implements PaymentAdapter {
+
+    private final VaultService vaultService;
+
+    @Override
+    public PaymentResult initiate(PaymentRequest request) {
+        String token = (String) request.methodDetails().get("token");
+
+        PaymentProcessorResponse response = vaultService.charge(
+                request.paymentId(), token, request.amount(), request.methodDetails()
+        );
+
+        return switch (response) {
+            case PaymentProcessorResponse.Success success -> new PaymentResult.Success(success.bankReference());
+            case PaymentProcessorResponse.Failure failure -> new PaymentResult.Failure(failure.errorCode(), failure.errorDescription());
+            case PaymentProcessorResponse.Pending pending -> new PaymentResult.Pending(pending.processorReference());
+        };
+    }
+
+    @Override
+    public PaymentResult capture(UUID paymentId) {
+        return new PaymentResult.Success("CARD_REF");
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/gateway/adapter/NetBankingAdapter.java">
+package com.example.razorpay.payment.gateway.adapter;
+
+import com.example.razorpay.common.enums.PaymentMethod;
+import com.example.razorpay.payment.gateway.PaymentAdapter;
+import com.example.razorpay.payment.gateway.PaymentGatewayRouter;
+import com.example.razorpay.payment.gateway.dto.PaymentRequest;
+import com.example.razorpay.payment.gateway.dto.PaymentResult;
+import com.example.razorpay.payment.processor.PaymentProcessorRouter;
+import com.example.razorpay.payment.processor.dto.PaymentProcessorRequest;
+import com.example.razorpay.payment.processor.dto.PaymentProcessorResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import java.util.UUID;
+@RequiredArgsConstructor
+@Component
+@Slf4j
+public class NetBankingAdapter implements PaymentAdapter {
+
+    private final PaymentProcessorRouter paymentProcessorRouter;
+
+    @Override
+    public PaymentResult initiate(PaymentRequest request) {
+        log.info("Initiate Payment with NetBankingAdapter, paymentId: {}", request.paymentId());
+        try {
+            PaymentProcessorRequest paymentProcessorRequest = PaymentProcessorRequest.nonCard(
+                    request.paymentId(),
+                    PaymentMethod.UPI,
+                    request.amount(),
+                    request.methodDetails()
+            );
+
+            PaymentProcessorResponse paymentProcessorResponse =
+                    paymentProcessorRouter.charge(paymentProcessorRequest);
+
+            return switch (paymentProcessorResponse) {
+                case PaymentProcessorResponse.Failure failure ->
+                        new PaymentResult.Failure(failure.errorCode(), failure.errorDescription());
+
+                case PaymentProcessorResponse.Pending pending ->
+                        new PaymentResult.Pending(pending.processorReference());
+
+                case PaymentProcessorResponse.Success success -> new PaymentResult.Success(success.bankReference());
+
+            };
+        } catch(Exception e) {
+            log.warn("UPI failed, paymentId: {}", request.paymentId());
+            return new PaymentResult.Failure("UPI_FAILED", e.getMessage());
+        }
+    }
+
+    @Override
+    public PaymentResult capture(UUID paymentId) {
+        return new PaymentResult.Success("UPI_REF");
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/gateway/adapter/UpiPaymentAdapter.java">
+package com.example.razorpay.payment.gateway.adapter;
+
+import com.example.razorpay.common.enums.PaymentMethod;
+import com.example.razorpay.payment.gateway.PaymentAdapter;
+import com.example.razorpay.payment.gateway.dto.PaymentRequest;
+import com.example.razorpay.payment.gateway.dto.PaymentResult;
+import com.example.razorpay.payment.processor.PaymentProcessorRouter;
+import com.example.razorpay.payment.processor.dto.PaymentProcessorRequest;
+import com.example.razorpay.payment.processor.dto.PaymentProcessorResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import java.util.UUID;
+@Component
+@Slf4j
+@RequiredArgsConstructor
+public class UpiPaymentAdapter implements PaymentAdapter {
+
+    private final PaymentProcessorRouter paymentProcessorRouter;
+
+    @Override
+    public PaymentResult initiate(PaymentRequest request) {
+        log.info("Initiate Payment with UPI, paymentId: {}", request.paymentId());
+
+        try {
+            PaymentProcessorRequest paymentProcessorRequest = PaymentProcessorRequest.nonCard(
+                    request.paymentId(),
+                    PaymentMethod.UPI,
+                    request.amount(),
+                    request.methodDetails()
+            );
+
+            PaymentProcessorResponse paymentProcessorResponse =
+                    paymentProcessorRouter.charge(paymentProcessorRequest);
+
+            return switch (paymentProcessorResponse) {
+                case PaymentProcessorResponse.Failure failure ->
+                        new PaymentResult.Failure(failure.errorCode(), failure.errorDescription());
+
+                case PaymentProcessorResponse.Pending pending ->
+                        new PaymentResult.Pending(pending.processorReference());
+
+                case PaymentProcessorResponse.Success success -> new PaymentResult.Success(success.bankReference());
+
+            };
+        } catch(Exception e) {
+            log.warn("UPI failed, paymentId: {}", request.paymentId());
+            return new PaymentResult.Failure("UPI_FAILED", e.getMessage());
+        }
+    }
+
+    @Override
+    public PaymentResult capture(UUID paymentId) {
+        return new PaymentResult.Success("UPI_REF");
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/gateway/dto/PaymentRequest.java">
+package com.example.razorpay.payment.gateway.dto;
+
+import com.example.razorpay.common.entity.Money;
+import com.example.razorpay.common.enums.PaymentMethod;
+
+import java.util.Map;
+import java.util.UUID;
+
+public record PaymentRequest(
+        UUID paymentId,
+        UUID orderId,
+        UUID merchantId,
+        Money amount,
+        PaymentMethod method,
+        Map<String, Object> methodDetails
+) {
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/gateway/dto/PaymentResult.java">
+package com.example.razorpay.payment.gateway.dto;
+
+public sealed interface PaymentResult permits PaymentResult.Pending, PaymentResult.Failure, PaymentResult.Success{
+
+    record Pending(String registrationRef) implements PaymentResult{}
+    record Failure(String errorCode, String errorDescription) implements PaymentResult{}
+    record Success(String bankReference) implements PaymentResult{}
+
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/gateway/PaymentAdapter.java">
+package com.example.razorpay.payment.gateway;
+
+import com.example.razorpay.payment.gateway.dto.PaymentRequest;
+import com.example.razorpay.payment.gateway.dto.PaymentResult;
+
+import java.util.UUID;
+
+public interface PaymentAdapter {
+
+    PaymentResult initiate(PaymentRequest request);
+
+    PaymentResult capture(UUID paymentId);
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/gateway/PaymentGatewayRouter.java">
+package com.example.razorpay.payment.gateway;
+
+import com.example.razorpay.common.enums.PaymentMethod;
+import com.example.razorpay.payment.gateway.dto.PaymentRequest;
+import com.example.razorpay.payment.gateway.dto.PaymentResult;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+import java.util.Map;
+import java.util.UUID;
+
+@Component
+@RequiredArgsConstructor
+public class PaymentGatewayRouter {
+    private final Map<PaymentMethod, PaymentAdapter> paymentAdapters;
+
+    public PaymentResult initiate(PaymentRequest request){
+        PaymentAdapter adapter = paymentAdapters.get(request.method());
+        if(adapter == null){
+            throw new IllegalArgumentException("No payment adapter registered for method: "+request.method());
+        }
+        return adapter.initiate(request);
+    }
+
+    public PaymentResult capture(PaymentMethod method, UUID paymentId){
+        PaymentAdapter adapter = paymentAdapters.get(method);
+        if(adapter == null){
+            throw new IllegalArgumentException("No payment adapter registered for method: "+method);
+        }
+        return adapter.capture(paymentId);
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/mapper/OrderMapper.java">
+package com.example.razorpay.payment.mapper;
+
+import com.example.razorpay.payment.dto.response.OrderResponse;
+import com.example.razorpay.payment.entity.OrderRecord;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
+
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+public interface OrderMapper {
+
+    OrderResponse toResponse(OrderRecord orderRecord);
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/mapper/PaymentMapper.java">
+package com.example.razorpay.payment.mapper;
+
+import com.example.razorpay.payment.dto.response.PaymentResponse;
+import com.example.razorpay.payment.entity.Payment;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+
+import java.util.List;
+
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+public interface PaymentMapper {
+
+    @Mapping(target = "orderId", source = "order.id")
+    PaymentResponse toResponse(Payment payment);
+
+    List<PaymentResponse> toResponseList(List<Payment> paymentList);
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/processor/dto/PaymentProcessorRequest.java">
+package com.example.razorpay.payment.processor.dto;
+
+import com.example.razorpay.common.entity.Money;
+import com.example.razorpay.common.enums.PaymentMethod;
+
+import java.util.Map;
+import java.util.UUID;
+
+public record PaymentProcessorRequest(
+        UUID processingId,
+        UUID paymentId,
+        PaymentMethod method,
+        Money amount,
+        String pan,
+        String expiry,
+        Map<String, Object> methodDetails
+) {
+
+    public static PaymentProcessorRequest card(UUID paymentId, String pan, String expiry, Money amount, Map<String, Object> details) {
+        return new PaymentProcessorRequest(UUID.randomUUID(), paymentId, PaymentMethod.CARD, amount,
+                pan, expiry, details);
+    }
+
+    public static PaymentProcessorRequest nonCard(UUID paymentId, PaymentMethod method, Money amount, Map<String, Object> details) {
+        return new PaymentProcessorRequest(UUID.randomUUID(), paymentId, method, amount,
+                null, null, details);
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/processor/dto/PaymentProcessorResponse.java">
+package com.example.razorpay.payment.processor.dto;
+
+public sealed interface PaymentProcessorResponse permits
+        PaymentProcessorResponse.Pending,
+        PaymentProcessorResponse.Success,
+        PaymentProcessorResponse.Failure {
+
+    record Pending(String processorReference) implements PaymentProcessorResponse {}
+
+    record Success(String processorReference, String bankReference) implements PaymentProcessorResponse{}
+
+    record Failure(String errorCode, String errorDescription) implements PaymentProcessorResponse{}
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/processor/strategy/CardPaymentProcessor.java">
+package com.example.razorpay.payment.processor.strategy;
+
+import com.example.razorpay.common.util.RandomizerUtil;
+import com.example.razorpay.payment.processor.PaymentProcessor;
+import com.example.razorpay.payment.processor.dto.PaymentProcessorRequest;
+import com.example.razorpay.payment.processor.dto.PaymentProcessorResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+@Component
+@Slf4j
+public class CardPaymentProcessor implements PaymentProcessor {
+    public static final String PAN_CARD_DECLINED = "4000000000000002";
+    public static final String PAN_CARD_EXPIRED = "4000000000000069";
+    @Override
+    public PaymentProcessorResponse charge(PaymentProcessorRequest request) {
+        String pan = request.pan();
+
+        if (PAN_CARD_DECLINED.equals(pan)) {
+            log.warn("Card declined");
+            return new PaymentProcessorResponse.Failure("CARD_DECLINED", "Card declined by bank");
+        }
+
+        if (PAN_CARD_EXPIRED.equals(pan)) {
+            log.warn("Pan card has expired");
+            return new PaymentProcessorResponse.Failure("CARD_EXPIRED", "Card has expired");
+        }
+
+        String processorRef = "CARD_PROCESSOR_"+ RandomizerUtil.randomBase64(16);
+
+        return new PaymentProcessorResponse.Pending(processorRef);
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/processor/strategy/NetBankingPaymentProcessor.java">
+package com.example.razorpay.payment.processor.strategy;
+
+import com.example.razorpay.common.util.RandomizerUtil;
+import com.example.razorpay.payment.processor.PaymentProcessor;
+import com.example.razorpay.payment.processor.dto.PaymentProcessorRequest;
+import com.example.razorpay.payment.processor.dto.PaymentProcessorResponse;
+import org.springframework.stereotype.Component;
+
+@Component
+public class NetBankingPaymentProcessor implements PaymentProcessor {
+    @Override
+    public PaymentProcessorResponse charge(PaymentProcessorRequest request) {
+        final String BANK_CODE_FAIL = "BANK_CODE_FAIL";
+
+        String bankCode = (request.methodDetails() != null) ?
+                request.methodDetails().get("bank").toString() : null;
+
+        // simulation
+        if (BANK_CODE_FAIL.equals(bankCode)) {
+            return new PaymentProcessorResponse.Failure("BANK_REJECTED",
+                    "Banked rejected the transaction registration"
+            );
+        }
+
+        String processorRef = "NBK_PROCESSOR_"+ RandomizerUtil.randomBase64(16);
+
+//        String redirectRef = "https://REDIRECT_BANK.com/" +processorRef;
+
+        return new PaymentProcessorResponse.Pending(processorRef);
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/processor/strategy/UpiPaymentProcessor.java">
+package com.example.razorpay.payment.processor.strategy;
+
+import com.example.razorpay.common.util.RandomizerUtil;
+import com.example.razorpay.payment.processor.PaymentProcessor;
+import com.example.razorpay.payment.processor.dto.PaymentProcessorRequest;
+import com.example.razorpay.payment.processor.dto.PaymentProcessorResponse;
+import org.springframework.stereotype.Component;
+
+@Component
+public class UpiPaymentProcessor implements PaymentProcessor {
+    @Override
+    public PaymentProcessorResponse charge(PaymentProcessorRequest request) {
+        final String VPA_CODE_FAIL = "fail@okaxis";
+        String bankCode = request.methodDetails() != null ?
+                request.methodDetails().get("vpa").toString() : null;
+
+        if (VPA_CODE_FAIL.equals(bankCode)) {
+            return new PaymentProcessorResponse.Failure("UPI_REJECTED",
+                    "Banked rejected the transaction registration"
+            );
+        }
+        String processorRef = "UPI_PROCESSOR_"+ RandomizerUtil.randomBase64(16);
+
+        return new PaymentProcessorResponse.Pending(processorRef);
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/processor/PaymentProcessor.java">
+package com.example.razorpay.payment.processor;
+
+import com.example.razorpay.payment.processor.dto.PaymentProcessorRequest;
+import com.example.razorpay.payment.processor.dto.PaymentProcessorResponse;
+
+public interface PaymentProcessor {
+
+    PaymentProcessorResponse charge(PaymentProcessorRequest request);
+
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/processor/PaymentProcessorRouter.java">
+package com.example.razorpay.payment.processor;
+
+import com.example.razorpay.common.enums.PaymentMethod;
+import com.example.razorpay.payment.processor.dto.PaymentProcessorRequest;
+import com.example.razorpay.payment.processor.dto.PaymentProcessorResponse;
+import org.springframework.stereotype.Component;
+
+import java.util.Map;
+
+@Component
+public class PaymentProcessorRouter {
+
+    private final Map<PaymentMethod, PaymentProcessor> paymentProcessors;
+
+    public PaymentProcessorRouter(Map<PaymentMethod, PaymentProcessor> paymentProcessors) {
+        this.paymentProcessors = paymentProcessors;
+    }
+
+    public PaymentProcessorResponse charge(PaymentProcessorRequest request) {
+        PaymentProcessor processor = paymentProcessors.get(request.method());
+        if (processor == null) {
+            throw new IllegalArgumentException("No payment processor registered for method: "+request.method());
+        }
+        return processor.charge(request);
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/repository/OrderRepository.java">
+package com.example.razorpay.payment.repository;
+
+import com.example.razorpay.payment.entity.OrderRecord;
+import jakarta.validation.constraints.Size;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+import java.util.UUID;
+
+public interface OrderRepository extends JpaRepository<OrderRecord, UUID> {
+    boolean existsByMerchantIdAndReceipt(UUID merchantId, @Size(max = 100) String receipt);
+
+    Optional<OrderRecord> findByIdAndMerchantId(UUID orderId, UUID merchantId);
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/repository/PaymentRepository.java">
+package com.example.razorpay.payment.repository;
+
+import com.example.razorpay.common.enums.PaymentStatus;
+import com.example.razorpay.payment.entity.OrderRecord;
+import com.example.razorpay.payment.entity.Payment;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+public interface PaymentRepository extends JpaRepository<Payment, UUID> {
+    List<Payment> findByOrder_Id(OrderRecord order);
+
+    Optional<Payment> findByIdAndMerchantId(UUID paymentId, UUID merchantId);
+
+    List<Payment> findByStatusAndCreatedAtBefore(PaymentStatus paymentStatus, LocalDateTime globalWindow);
+
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/repository/PaymentTransitionLogRepository.java">
+package com.example.razorpay.payment.repository;
+
+import com.example.razorpay.payment.entity.PaymentTransitionLog;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.UUID;
+
+public interface PaymentTransitionLogRepository extends JpaRepository<PaymentTransitionLog, UUID> { }
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/service/impl/OrderServiceImpl.java">
+package com.example.razorpay.payment.service.impl;
+
+import com.example.razorpay.common.enums.OrderStatus;
+import com.example.razorpay.common.exception.BusinessRuleViolationException;
+import com.example.razorpay.common.exception.DuplicateResourceException;
+import com.example.razorpay.common.exception.ResourceNotFoundException;
+import com.example.razorpay.payment.dto.request.CreateOrderRequest;
+import com.example.razorpay.payment.dto.response.OrderResponse;
+import com.example.razorpay.payment.dto.response.PaymentResponse;
+import com.example.razorpay.payment.entity.OrderRecord;
+import com.example.razorpay.payment.entity.Payment;
+import com.example.razorpay.payment.mapper.OrderMapper;
+import com.example.razorpay.payment.mapper.PaymentMapper;
+import com.example.razorpay.payment.repository.OrderRepository;
+import com.example.razorpay.payment.repository.PaymentRepository;
+import com.example.razorpay.payment.service.OrderService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+@Transactional(readOnly = true)
+public class OrderServiceImpl implements OrderService {
+
+    private final OrderRepository orderRepository;
+    private final PaymentRepository paymentRepository;
+    private final PaymentMapper paymentMapper;
+    private final OrderMapper orderMapper;
+
+    @Value("${payment.order.default-order-expiry-minutes:30}")
+    private int defaultOrderExpiryMinutes;
+
+
+    @Override
+    @Transactional
+    public OrderResponse create(UUID merchantId, CreateOrderRequest request) {
+        if(request.receipt() != null && orderRepository.existsByMerchantIdAndReceipt(merchantId, request.receipt())){
+            throw new DuplicateResourceException("ORDER_RECEIPT_DUPLICATE", "Order with receipt already exists: " + request.receipt());
+        }
+        OrderRecord order = OrderRecord.builder()
+                .merchantId(merchantId)
+                .amount(request.amount())
+                .receipt(request.receipt())
+                .orderStatus(OrderStatus.CREATED)
+                .notes(request.notes())
+                .expiresAt(LocalDateTime.now().plusMinutes(defaultOrderExpiryMinutes))
+                .build();
+        order = orderRepository.save(order);
+
+        return orderMapper.toResponse(order);
+    }
+
+    @Override
+    public OrderResponse getById(UUID merchantId, UUID orderId) {
+        OrderRecord record = orderRepository.findByIdAndMerchantId(merchantId, orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order", orderId));
+        return orderMapper.toResponse(record);
+    }
+
+
+    @Transactional
+    @Override
+    public OrderResponse cancel(UUID merchantId, UUID orderId) {
+        OrderRecord order = orderRepository.findByIdAndMerchantId(orderId, merchantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order", orderId));
+
+        if(order.getOrderStatus() == OrderStatus.CANCELLED || order.getOrderStatus() == OrderStatus.PAID) {
+            throw new BusinessRuleViolationException("ORDER_CANNOT_CANCEL",
+                    "Cannot cancel order with status: "+order.getOrderStatus().name());
+        }
+        order.setOrderStatus(OrderStatus.CANCELLED);
+        order = orderRepository.save(order);
+
+        return orderMapper.toResponse(order);
+    }
+
+    @Override
+    public List<PaymentResponse> listPayments(UUID merchantId, UUID orderId) {
+        OrderRecord record = orderRepository.findByIdAndMerchantId(orderId, merchantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order", orderId));
+        List<Payment>paymentList = paymentRepository.findByOrder_Id(record);
+
+        return paymentMapper.toResponseList(paymentList);
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/service/impl/PaymentServiceImpl.java">
+package com.example.razorpay.payment.service.impl;
+
+import com.example.razorpay.common.enums.OrderStatus;
+import com.example.razorpay.common.enums.PaymentEvent;
+import com.example.razorpay.common.enums.PaymentStatus;
+import com.example.razorpay.common.exception.BusinessRuleViolationException;
+import com.example.razorpay.common.exception.ResourceNotFoundException;
+import com.example.razorpay.payment.dto.request.PaymentInitRequest;
+import com.example.razorpay.payment.dto.response.PaymentResponse;
+import com.example.razorpay.payment.entity.OrderRecord;
+import com.example.razorpay.payment.entity.Payment;
+import com.example.razorpay.payment.gateway.PaymentGatewayRouter;
+import com.example.razorpay.payment.gateway.dto.PaymentRequest;
+import com.example.razorpay.payment.gateway.dto.PaymentResult;
+import com.example.razorpay.payment.mapper.PaymentMapper;
+import com.example.razorpay.payment.repository.OrderRepository;
+import com.example.razorpay.payment.repository.PaymentRepository;
+import com.example.razorpay.payment.service.PaymentService;
+import com.example.razorpay.payment.statemachine.PaymentTransitionService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class PaymentServiceImpl implements PaymentService {
+
+    private final OrderRepository orderRepository;
+    private final PaymentRepository paymentRepository;
+    private final PaymentGatewayRouter paymentGatewayRouter;
+    private final PaymentMapper paymentMapper;
+    private final PaymentTransitionService paymentTransitionService;
+
+    @Override
+    @Transactional()
+    public PaymentResponse initiate(UUID merchantId, PaymentInitRequest request) {
+        OrderRecord order = orderRepository.findByIdAndMerchantId(request.orderId(), merchantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order", request.orderId()));
+
+        if(order.getOrderStatus() != OrderStatus.CREATED && order.getOrderStatus() != OrderStatus.ATTEMPTED) {
+            throw new BusinessRuleViolationException("ORDER_NOT_PAYABLE",
+                    "Order cannot accept payment in status: "+order.getOrderStatus());
+        }
+
+        order.setOrderStatus(OrderStatus.ATTEMPTED);
+        order.setAttempts(order.getAttempts()+1);
+
+        Payment payment = Payment.builder()
+                .order(order)
+                .merchantId(merchantId)
+                .amount(order.getAmount())
+                .status(PaymentStatus.CREATED)
+                .method(request.method())
+                .idempotencyKey(UUID.randomUUID().toString())
+                .methodDetails(request.methodDetails())
+                .build();
+        payment = paymentRepository.save(payment);
+
+        PaymentRequest paymentRequest = new PaymentRequest(payment.getId(),
+                request.orderId(), merchantId,
+                order.getAmount(), request.method(),
+                request.methodDetails());
+
+        paymentTransitionService.apply(payment, PaymentEvent.AUTHORIZE_ATTEMPT);
+        PaymentResult result = paymentGatewayRouter.initiate(paymentRequest);
+
+        switch (result) {
+            case PaymentResult.Pending pending -> payment.setProcessorReference(pending.registrationRef());
+            case PaymentResult.Failure failure -> {
+//                payment.setStatus(PaymentStatus.FAILED);
+                paymentTransitionService.apply(payment, PaymentEvent.AUTHORIZE_FAIL);
+                payment.setErrorCode(failure.errorCode());
+                payment.setErrorDescription(failure.errorDescription());
+            }
+            case PaymentResult.Success success -> {
+                log.warn("Invalid state");
+                return null;
+            }
+        }
+
+        payment = paymentRepository.save(payment);
+        orderRepository.save(order);
+
+        // TODO: send an outbox (kafka event)
+
+        return paymentMapper.toResponse(payment);
+    }
+
+    @Override
+    public PaymentResponse capture(UUID merchantId, UUID paymentId) {
+
+        Payment payment = paymentRepository.findByIdAndMerchantId(paymentId, merchantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Payment", paymentId));
+
+        paymentTransitionService.apply(payment, PaymentEvent.CAPTURE_REQUEST);
+
+        PaymentResult paymentResult = paymentGatewayRouter.capture(payment.getMethod(), paymentId);
+
+        if(paymentResult instanceof  PaymentResult.Success success) {
+            paymentTransitionService.apply(payment, PaymentEvent.CAPTURE_SUCCESS);
+            payment.setCapturedAt(LocalDateTime.now());
+            log.info("Payment captured, paymentID: {}", paymentId);
+        } else if(paymentResult instanceof PaymentResult.Failure(String errorCode, String errorDescription)) {
+            paymentTransitionService.apply(payment, PaymentEvent.CAPTURE_FAIL);
+            payment.setErrorCode(errorCode);
+            payment.setErrorDescription(errorDescription);
+            log.warn("Payment capture failed, paymentID: {}", paymentId);
+        }
+
+        payment = paymentRepository.save(payment);
+
+//        TODO: send an outbox (kafka event)
+
+        return paymentMapper.toResponse(payment);
+    }
+
+    @Override
+    public void resolveAuthorization(UUID paymentId, boolean approve, String bankRef, String errorCode, String errorDescription) {
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Payment", paymentId));
+
+        if (payment.getStatus() != PaymentStatus.AUTHORIZING) {
+            log.warn("Payment is not in Authorizing state, paymentID: {}, status: {}", paymentId, payment.getStatus());
+            return;
+        }
+
+        OrderRecord orderRecord = payment.getOrder();
+
+        if (approve) {
+            paymentTransitionService.apply(payment, PaymentEvent.AUTHORIZE_SUCCESS);
+            payment.setBankReference(bankRef);
+            payment.setAuthorizedAt(LocalDateTime.now());
+
+            // Auto-capture
+            paymentTransitionService.apply(payment, PaymentEvent.CAPTURE_REQUEST);
+            PaymentResult captureResult = paymentGatewayRouter.capture(payment.getMethod(), paymentId);
+
+            if(captureResult instanceof PaymentResult.Success success) {
+                paymentTransitionService.apply(payment, PaymentEvent.CAPTURE_SUCCESS);
+                payment.setCapturedAt(LocalDateTime.now());
+                orderRecord.setOrderStatus(OrderStatus.PAID);
+            } else if (captureResult instanceof PaymentResult.Failure(String code, String description)){
+                paymentTransitionService.apply(payment, PaymentEvent.CAPTURE_FAIL);
+                payment.setErrorCode(code);
+                payment.setErrorDescription(description);
+            }
+        } else {
+            paymentTransitionService.apply(payment, PaymentEvent.AUTHORIZE_FAIL);
+            payment.setErrorCode(errorCode);
+            payment.setErrorDescription(errorDescription);
+        }
+
+        paymentRepository.save(payment);
+        orderRepository.save(orderRecord);
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/service/OrderService.java">
+package com.example.razorpay.payment.service;
+
+import com.example.razorpay.payment.dto.request.CreateOrderRequest;
+import com.example.razorpay.payment.dto.response.OrderResponse;
+import com.example.razorpay.payment.dto.response.PaymentResponse;
+import jakarta.validation.Valid;
+
+import java.util.List;
+import java.util.UUID;
+
+public interface OrderService {
+    OrderResponse create(UUID merchantId, @Valid CreateOrderRequest request);
+
+    OrderResponse getById(UUID merchantId, UUID orderId);
+
+    OrderResponse cancel(UUID merchantId, UUID orderId);
+
+    List<PaymentResponse> listPayments(UUID merchantId, UUID orderId);
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/service/PaymentService.java">
+package com.example.razorpay.payment.service;
+
+import com.example.razorpay.payment.dto.request.PaymentInitRequest;
+import com.example.razorpay.payment.dto.response.PaymentResponse;
+import jakarta.validation.Valid;
+
+import java.util.UUID;
+
+public interface PaymentService {
+    PaymentResponse initiate(UUID merchantId, @Valid PaymentInitRequest request);
+
+    PaymentResponse capture(UUID merchantId, UUID paymentId);
+
+    void resolveAuthorization(UUID paymentId, boolean approve, String bankRef, String errorCode, String errorDescription);
+
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/simulator/BankCallbackSimulator.java">
+package com.example.razorpay.payment.simulator;
+
+import com.example.razorpay.common.enums.ChaosMode;
+import com.example.razorpay.common.enums.PaymentStatus;
+import com.example.razorpay.common.util.RandomizerUtil;
+import com.example.razorpay.payment.entity.Payment;
+import com.example.razorpay.payment.repository.PaymentRepository;
+import com.example.razorpay.payment.service.PaymentService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Component
+@Slf4j
+@RequiredArgsConstructor
+public class BankCallbackSimulator {
+    private final PaymentRepository paymentRepository;
+    private final PaymentService paymentService;
+    private final SimulatorConfig simulatorConfig;
+
+    //    @Scheduled(fixedDelayString = "${payment.simulator.poll-interval-ms:5000}")
+    public void processCallbacks() {
+
+        LocalDateTime globalWindow = LocalDateTime.now().minusSeconds(1);
+
+        List<Payment> candidates = paymentRepository
+                .findByStatusAndCreatedAtBefore(PaymentStatus.AUTHORIZING, globalWindow);
+
+        log.info("Simulating payments for {} payments", candidates.size());
+
+        if (candidates.isEmpty()) return;
+
+        for (Payment payment: candidates) {
+            simulateCallback(payment);
+        }
+    }
+
+    private void simulateCallback(Payment payment) {
+        SimulatorConfig.MethodSimulatorConfig methodConfig = simulatorConfig.configFor(payment.getMethod());
+
+        LocalDateTime dueAt = dueAt(payment, methodConfig);
+
+        if(LocalDateTime.now().isBefore(dueAt)) {
+            return;
+        }
+
+        ChaosMode chaosMode = simulatorConfig.getChaosMode();
+
+        switch (chaosMode) {
+            case SUCCESS -> resolve(payment, true);
+            case FAILURE -> resolve(payment, false);
+            case TIMEOUT -> {
+                log.debug("BankCallback simulator: Payment Timed out");
+            }
+            case NORMAL, SLOW -> resolve(payment, shouldApprove(payment, methodConfig));
+        }
+    }
+    private void resolve(Payment payment, boolean approve) {
+        if (approve) {
+            String bankRef = "SIM_BANK_REF"+ RandomizerUtil.randomBase64(8);
+            paymentService.resolveAuthorization(payment.getId(), true, bankRef, null, null);
+        } else {
+            paymentService.resolveAuthorization(payment.getId(), false, null, "SIM_BANK_ERROR_CODE", "Simulated Bank Decline");
+        }
+    }
+
+    private boolean shouldApprove(Payment payment, SimulatorConfig.MethodSimulatorConfig methodConfig) {
+        int bucket = Math.abs(payment.getId().hashCode()) % 100;
+        return bucket < methodConfig.getSuccessRate();
+    }
+
+    private LocalDateTime dueAt(Payment payment, SimulatorConfig.MethodSimulatorConfig methodConfig) {
+
+        int range = methodConfig.getMaxDelaySeconds() - methodConfig.getMinDelaySeconds();
+        int delaySeconds = methodConfig.getMinDelaySeconds() + Math.abs(payment.getId().hashCode()) % (range+1);
+
+        if (simulatorConfig.getChaosMode() == ChaosMode.SLOW) {
+            delaySeconds *= 2;
+        }
+
+        return payment.getCreatedAt().plusSeconds(delaySeconds);
+    }
+
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/simulator/SimulatorConfig.java">
+package com.example.razorpay.payment.simulator;
+
+import com.example.razorpay.common.enums.ChaosMode;
+import com.example.razorpay.common.enums.PaymentMethod;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Configuration
+@ConfigurationProperties(prefix = "payment.simulator")
+@Getter
+@Setter
+public class SimulatorConfig {
+
+    private Integer pollIntervalMs = 2000;
+    private ChaosMode chaosMode = ChaosMode.NORMAL;
+    private Map<String, MethodSimulatorConfig> methods = new HashMap<>();
+
+    public SimulatorConfig.MethodSimulatorConfig configFor(PaymentMethod method) {
+        return methods.getOrDefault(method.name(), new MethodSimulatorConfig());
+    }
+
+    @Getter
+    @Setter
+    public static  class MethodSimulatorConfig{
+        private Integer minDelaySeconds = 1;
+        private Integer maxDelaySeconds = 5;
+        private Integer successRate = 80;
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/statemachine/PaymentStateMachine.java">
+package com.example.razorpay.payment.statemachine;
+
+import com.example.razorpay.common.enums.PaymentEvent;
+import com.example.razorpay.common.enums.PaymentStatus;
+import com.example.razorpay.common.exception.InvalidStateTransitionException;
+import org.springframework.stereotype.Component;
+
+import java.util.Map;
+@Component
+public class PaymentStateMachine {
+    private record Transition(PaymentStatus from, PaymentEvent event){}
+
+    private static final Map<Transition, PaymentStatus> TRANSITION = Map.ofEntries(
+            Map.entry(new Transition(PaymentStatus.CREATED, PaymentEvent.AUTHORIZE_ATTEMPT), PaymentStatus.AUTHORIZING),
+            Map.entry(new Transition(PaymentStatus.AUTHORIZING, PaymentEvent.AUTHORIZE_SUCCESS), PaymentStatus.AUTHORIZED),
+            Map.entry(new Transition(PaymentStatus.AUTHORIZING, PaymentEvent.AUTHORIZE_FAIL), PaymentStatus.FAILED),
+            Map.entry(new Transition(PaymentStatus.AUTHORIZED, PaymentEvent.CAPTURE_REQUEST), PaymentStatus.CAPTURING),
+            Map.entry(new Transition(PaymentStatus.CAPTURING, PaymentEvent.CAPTURE_SUCCESS), PaymentStatus.CAPTURED),
+            Map.entry(new Transition(PaymentStatus.CAPTURING, PaymentEvent.CAPTURE_FAIL), PaymentStatus.AUTHORIZED),
+            Map.entry(new Transition(PaymentStatus.CAPTURED, PaymentEvent.REFUND_INIT), PaymentStatus.PARTIALLY_REFUNDED),
+            Map.entry(new Transition(PaymentStatus.PARTIALLY_REFUNDED, PaymentEvent.REFUND_COMPLETE), PaymentStatus.REFUNDED),
+            Map.entry(new Transition(PaymentStatus.CAPTURED, PaymentEvent.REFUND_COMPLETE), PaymentStatus.REFUNDED),
+            Map.entry(new Transition(PaymentStatus.CAPTURED, PaymentEvent.SETTLE), PaymentStatus.SETTLED),
+            Map.entry(new Transition(PaymentStatus.SETTLED, PaymentEvent.REFUND_INIT), PaymentStatus.PARTIALLY_REFUNDED),
+            Map.entry(new Transition(PaymentStatus.CREATED, PaymentEvent.CANCEL), PaymentStatus.CANCELLED),
+            Map.entry(new Transition(PaymentStatus.AUTHORIZING, PaymentEvent.CANCEL), PaymentStatus.CANCELLED),
+            Map.entry(new Transition(PaymentStatus.AUTHORIZED, PaymentEvent.CAPTURE_TIMEOUT), PaymentStatus.AUTH_EXPIRED)
+    );
+
+    public PaymentStatus transition(PaymentStatus current, PaymentEvent event) {
+        PaymentStatus next = TRANSITION.get(new Transition(current, event));
+        if (next == null) {
+            throw new InvalidStateTransitionException(current.name(), event.name());
+        }
+        return next;
+    }
+
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/payment/statemachine/PaymentTransitionService.java">
+package com.example.razorpay.payment.statemachine;
+
+import com.example.razorpay.common.enums.PaymentActor;
+import com.example.razorpay.common.enums.PaymentEvent;
+import com.example.razorpay.common.enums.PaymentStatus;
+import com.example.razorpay.payment.entity.Payment;
+import com.example.razorpay.payment.entity.PaymentTransitionLog;
+import com.example.razorpay.payment.repository.PaymentTransitionLogRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+
+@Service
+@RequiredArgsConstructor
+public class PaymentTransitionService {
+    private final PaymentTransitionLogRepository paymentTransitionLogRepository;
+    private final PaymentStateMachine paymentStateMachine;
+
+    public PaymentStatus apply(Payment payment, PaymentEvent event) {
+        PaymentStatus next = paymentStateMachine.transition(payment.getStatus(), event);
+        PaymentTransitionLog log = PaymentTransitionLog.builder()
+                .payment(payment)
+                .fromStatus(payment.getStatus())
+                .event(event)
+                .toStatus(next)
+                .actor(PaymentActor.SYSTEM) //TODO: fetch merchant context to identify actor
+                .occurredAt(LocalDateTime.now())
+                .build();
+
+        payment.setStatus(next);
+        paymentTransitionLogRepository.save(log);
+        return next;
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/vault/config/VaultEncryptionConfig.java">
+package com.example.razorpay.vault.config;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.encrypt.AesBytesEncryptor;
+import org.springframework.security.crypto.encrypt.BytesEncryptor;
+import org.springframework.security.crypto.keygen.KeyGenerators;
+
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Base64;
+
+@Configuration
+public class VaultEncryptionConfig {
+    @Value("${vault.master-key}")
+    private String masterKey;
+
+    public static BytesEncryptor panEncrypter(byte[] dek){
+        SecretKeySpec decKey = new SecretKeySpec(dek, "AES");
+        return new AesBytesEncryptor(decKey, KeyGenerators.secureRandom(64),
+                AesBytesEncryptor.CipherAlgorithm.GCM);
+    }
+    @Bean
+    public BytesEncryptor dekEncrypter() {
+        byte[] masterKeyBytes = Base64.getDecoder().decode(masterKey);
+        SecretKeySpec masterDecKey = new SecretKeySpec(masterKeyBytes, "AES");
+        return new AesBytesEncryptor(masterDecKey, KeyGenerators.secureRandom(12),
+                AesBytesEncryptor.CipherAlgorithm.GCM);
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/vault/controller/VaultController.java">
+package com.example.razorpay.vault.controller;
+
+import com.example.razorpay.vault.dto.request.TokenizeRequest;
+import com.example.razorpay.vault.dto.response.TokenizeResponse;
+import com.example.razorpay.vault.service.VaultService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/v1/vault")
+public class VaultController {
+
+    private final VaultService vaultService;
+    UUID merchantId = UUID.fromString("1f6caca9-cab9-40cd-a491-a714146e5a55"); //TODO: replace it with MerchantContext
+
+    @PostMapping("/tokenize")
+    public ResponseEntity<TokenizeResponse> tokenize(@Valid @RequestBody TokenizeRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(vaultService.tokenize(request, merchantId));
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/vault/dto/request/TokenizeRequest.java">
+package com.example.razorpay.vault.dto.request;
+
+import com.example.razorpay.vault.validation.ExpiryYear;
+import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.LuhnCheck;
+
+import java.util.UUID;
+
+public record TokenizeRequest(
+        @NotBlank(message = "PAN is required")
+        @LuhnCheck(message = "Invalid card number")
+        @Pattern(regexp = "^[0-9]{13,19}$", message = "PAN length is invalid")
+        String pan,
+
+        @NotBlank(message = "CVV is required")
+        @Pattern(regexp = "^[0-9]{3,4}$", message = "CVV length is invalid")
+        String cvv,
+
+        @NotNull(message = "Expiry month is required")
+        @Min(value = 1, message = "Expiry must be between 1 to 12")
+        @Max(value = 12, message = "Expiry must be between 1 to 12")
+        Integer expiryMonth,
+
+        @NotNull(message = "Expiry year is required")
+        @ExpiryYear
+        Integer expiryYear,
+
+        UUID customerId,
+
+        @Size(min = 3, message = "Card Holder Name should have at least 3 characters")
+        String cardHolderName
+) {
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/vault/dto/response/TokenizeResponse.java">
+package com.example.razorpay.vault.dto.response;
+
+import com.example.razorpay.common.enums.CardBrand;
+
+public record TokenizeResponse(
+        String token,
+        String lastFour,
+        CardBrand brand,
+        Integer expiryMonth,
+        Integer expiryYear
+) {
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/vault/entity/CardToken.java">
+package com.example.razorpay.vault.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Entity
+@Table(name = "card_token")
+@Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class CardToken {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(nullable = false, length = 50, unique = true)
+    private String token;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "vault_card_id", nullable = false)
+    private VaultCard vaultCard;
+
+    @Column(nullable = false)
+    private UUID customer;
+
+    @Column(nullable = false)
+    private UUID merchant;
+
+    private LocalDateTime revokedAt;
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/vault/entity/VaultCard.java">
+package com.example.razorpay.vault.entity;
+
+import com.example.razorpay.common.entity.BaseEntity;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Entity
+@Table(name = "vault_card")
+@Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class VaultCard extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(nullable = false, length = 4)
+    private String lastFour;
+
+    @Column(nullable = false, length = 6)
+    private String bin; // first 6 digits
+
+    @Column(nullable = false)
+    private byte[] encryptedPan;
+
+    @Column(nullable = false)
+    private byte[] encryptedDek;
+
+    @Column(nullable = false)
+    private String brand; // VISA, RUPAY
+
+    @Column(nullable = false)
+    private String expiryMonth;
+
+    @Column(nullable = false)
+    private String expiryYear;
+
+    @Column(nullable = false)
+    private String cardHolderName;
+
+    private LocalDateTime deletedAt;
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/vault/repository/CardTokenRepository.java">
+package com.example.razorpay.vault.repository;
+
+import com.example.razorpay.vault.entity.CardToken;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+import java.util.UUID;
+
+public interface CardTokenRepository extends JpaRepository<CardToken, UUID> {
+    Optional<CardToken> findByTokenAndRevokedAtIsNull(String token);
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/vault/repository/VaultCardRepository.java">
+package com.example.razorpay.vault.repository;
+
+import com.example.razorpay.vault.entity.VaultCard;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.UUID;
+
+public interface VaultCardRepository extends JpaRepository<VaultCard, UUID> {
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/vault/service/impl/VaultServiceImpl.java">
+package com.example.razorpay.vault.service.impl;
+
+import com.example.razorpay.common.entity.Money;
+import com.example.razorpay.common.enums.CardBrand;
+import com.example.razorpay.common.exception.ResourceNotFoundException;
+import com.example.razorpay.common.util.RandomizerUtil;
+import com.example.razorpay.payment.processor.PaymentProcessorRouter;
+import com.example.razorpay.payment.processor.dto.PaymentProcessorRequest;
+import com.example.razorpay.payment.processor.dto.PaymentProcessorResponse;
+import com.example.razorpay.vault.config.VaultEncryptionConfig;
+import com.example.razorpay.vault.dto.request.TokenizeRequest;
+import com.example.razorpay.vault.dto.response.TokenizeResponse;
+import com.example.razorpay.vault.entity.CardToken;
+import com.example.razorpay.vault.entity.VaultCard;
+import com.example.razorpay.vault.repository.CardTokenRepository;
+import com.example.razorpay.vault.repository.VaultCardRepository;
+import com.example.razorpay.vault.service.VaultService;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.LuhnCheck;
+import org.springframework.security.crypto.encrypt.BytesEncryptor;
+import org.springframework.security.crypto.keygen.KeyGenerators;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.UUID;
+
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class VaultServiceImpl implements VaultService {
+
+    private final CardTokenRepository cardTokenRepository;
+    private final VaultCardRepository vaultCardRepository;
+    private final BytesEncryptor dekEncrypter;
+    private final PaymentProcessorRouter paymentProcessorRouter;
+
+    @Override
+    public PaymentProcessorResponse charge(UUID paymentId, String token, Money amount, Map<String, Object> methodDetails) {
+        CardToken cardToken = cardTokenRepository.findByTokenAndRevokedAtIsNull(token)
+                .orElseThrow(() -> new ResourceNotFoundException("CardToken", token));
+
+        VaultCard vaultCard = cardToken.getVaultCard();
+        byte[] panBytes = null;
+
+        try {
+            byte[] dek = dekEncrypter.decrypt(vaultCard.getEncryptedDek());
+            panBytes = VaultEncryptionConfig.panEncrypter(dek).decrypt(vaultCard.getEncryptedPan());
+
+            String pan = new String(panBytes, StandardCharsets.UTF_8);
+            String expiry = vaultCard.getExpiryMonth() + "/" + vaultCard.getExpiryYear();
+
+            PaymentProcessorRequest paymentProcessorRequest = PaymentProcessorRequest
+                    .card(paymentId, pan, expiry, amount, methodDetails);
+
+            PaymentProcessorResponse response = paymentProcessorRouter.charge(paymentProcessorRequest);
+
+            log.info("Vault charge registered, token={}****", token.substring(0, 4));
+
+            return response;
+        } catch (Exception e) {
+            log.warn("Vault charge failed, token={}****", token.substring(0, 4));
+            return new PaymentProcessorResponse.Failure("VAULT_CHARGE_FAILED", e.getMessage());
+        } finally {
+            if (panBytes != null) Arrays.fill(panBytes, (byte) 0);
+        }
+    }
+
+    @Override
+    @Transactional
+    public TokenizeResponse tokenize(TokenizeRequest request, UUID merchantId) {
+        String lastFour = request.pan().substring(request.pan().length() - 4);
+        String bin = request.pan().substring(0, 6);
+        CardBrand cardBrand = detectBrand(request.pan());
+
+        byte[] dek = KeyGenerators.secureRandom(32).generateKey();
+        byte[] encryptedPan = VaultEncryptionConfig.panEncrypter(dek)
+                .encrypt(request.pan().getBytes(StandardCharsets.UTF_8));
+        byte[] encryptedDek = dekEncrypter.encrypt(dek);
+
+        VaultCard vaultCard = vaultCardRepository.save(VaultCard.builder()
+                .brand(String.valueOf(cardBrand))
+                .expiryYear(request.expiryYear().toString())
+                .expiryMonth(request.expiryMonth().toString())
+                .bin(bin)
+                .lastFour(lastFour)
+                .encryptedDek(encryptedDek)
+                .encryptedPan(encryptedPan)
+                .cardHolderName(request.cardHolderName())
+                .build());
+
+        String token = "tok_" + RandomizerUtil.randomBase64(32);
+
+        cardTokenRepository.save(CardToken.builder()
+                .vaultCard(vaultCard)
+                .token(token)
+                .customer(request.customerId())
+                .merchant(merchantId)
+                .build());
+
+        return new TokenizeResponse(token, lastFour, cardBrand, request.expiryMonth(), request.expiryYear());
+    }
+
+    private CardBrand detectBrand(String pan) {
+        if (pan.startsWith("4")) return CardBrand.VISA;
+        if (pan.startsWith("5") || pan.startsWith("2")) return CardBrand.MASTERCARD;
+        if (pan.startsWith("37") || pan.startsWith("34")) return CardBrand.AMEX;
+        return CardBrand.RUPAY;
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/vault/service/VaultService.java">
+package com.example.razorpay.vault.service;
+
+import com.example.razorpay.common.entity.Money;
+import com.example.razorpay.payment.processor.dto.PaymentProcessorResponse;
+import com.example.razorpay.vault.dto.request.TokenizeRequest;
+import com.example.razorpay.vault.dto.response.TokenizeResponse;
+import jakarta.validation.Valid;
+
+import java.util.Map;
+import java.util.UUID;
+
+public interface VaultService {
+    PaymentProcessorResponse charge(UUID uuid, String token, Money amount, Map<String, Object> stringObjectMap);
+
+    TokenizeResponse tokenize(@Valid TokenizeRequest request, java.util.UUID merchantId);
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/vault/validation/ExpiryYear.java">
+package com.example.razorpay.vault.validation;
+
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
+
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+@Target({ FIELD, PARAMETER })
+@Retention(RUNTIME)
+@Documented
+@Constraint(validatedBy = { ExpiryYearValidator.class})
+public @interface ExpiryYear {
+
+    String message() default "Expiry Year cannot be in Past";
+
+    Class<?>[] groups() default { };
+
+    Class<? extends Payload>[] payload() default { };
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/vault/validation/ExpiryYearValidator.java">
+package com.example.razorpay.vault.validation;
+
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+
+import java.time.Year;
+
+public class ExpiryYearValidator implements ConstraintValidator<ExpiryYear, Integer> {
+
+    @Override
+    public boolean isValid(Integer inputYear, ConstraintValidatorContext context) {
+
+        if (inputYear ==null) {
+            return false;
+        }
+
+        int currentYear = Year.now().getValue();
+
+        return inputYear >= currentYear;
+    }
+}
+</file>
+
+<file path="src/main/java/com/example/razorpay/RazorpayApplication.java">
+package com.example.razorpay;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+@SpringBootApplication
+@EnableJpaAuditing
+@EnableScheduling
+public class RazorpayApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(RazorpayApplication.class, args);
+	}
+
+}
+</file>
+
+<file path="src/main/resources/application.yaml">
+spring:
+  application:
+    name: razorpay
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:9090/razorpayDB}
+    username: ${DB_USER:rkb}
+    password: ${DB_PASS:rkb21}
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+
+vault:
+  master-key: asdf97asd9fuajsiodfua98s7dfyuajsildfhao8s7dfuoaisjfdioas98df7yua8s
+
+payment:
+  simulator:
+    poll-interval-ms: 5000
+    chaos-mode: NORMAL
+    methods:
+      CARD:
+        min-delay-seconds: 2
+        max-delay-seconds: 6
+        success-rate: 90
+      UPI:
+        min-delay-seconds: 1
+        max-delay-seconds: 3
+        success-rate: 95
+      NET_BANKING:
+        min-delay-seconds: 4
+        max-delay-seconds: 10
+        success-rate: 80
+
+jwt:
+  secret-key: dont-use-in-prod-a9asd7fulasjdfaklsdfu98q3uhjdiosh897as9d8f7ua9osufdjilasdjf
+
+app:
+  rate-limit:
+    method: fixed
+    use-case:
+      api-key:
+        requests-per-minute: 2
+</file>
+
+<file path="src/test/java/com/example/razorpay/RazorpayApplicationTests.java">
+package com.example.razorpay;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class RazorpayApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
+</file>
+
+<file path=".gitattributes">
+/mvnw text eol=lf
+*.cmd text eol=crlf
+</file>
+
+<file path=".gitignore">
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+</file>
+
+<file path="mvnw">
+#!/bin/sh
+# ----------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+# ----------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------
+# Apache Maven Wrapper startup batch script, version 3.3.4
+#
+# Optional ENV vars
+# -----------------
+#   JAVA_HOME - location of a JDK home dir, required when download maven via java source
+#   MVNW_REPOURL - repo url base for downloading maven distribution
+#   MVNW_USERNAME/MVNW_PASSWORD - user and password for downloading maven
+#   MVNW_VERBOSE - true: enable verbose log; debug: trace the mvnw script; others: silence the output
+# ----------------------------------------------------------------------------
+
+set -euf
+[ "${MVNW_VERBOSE-}" != debug ] || set -x
+
+# OS specific support.
+native_path() { printf %s\\n "$1"; }
+case "$(uname)" in
+CYGWIN* | MINGW*)
+  [ -z "${JAVA_HOME-}" ] || JAVA_HOME="$(cygpath --unix "$JAVA_HOME")"
+  native_path() { cygpath --path --windows "$1"; }
+  ;;
+esac
+
+# set JAVACMD and JAVACCMD
+set_java_home() {
+  # For Cygwin and MinGW, ensure paths are in Unix format before anything is touched
+  if [ -n "${JAVA_HOME-}" ]; then
+    if [ -x "$JAVA_HOME/jre/sh/java" ]; then
+      # IBM's JDK on AIX uses strange locations for the executables
+      JAVACMD="$JAVA_HOME/jre/sh/java"
+      JAVACCMD="$JAVA_HOME/jre/sh/javac"
+    else
+      JAVACMD="$JAVA_HOME/bin/java"
+      JAVACCMD="$JAVA_HOME/bin/javac"
+
+      if [ ! -x "$JAVACMD" ] || [ ! -x "$JAVACCMD" ]; then
+        echo "The JAVA_HOME environment variable is not defined correctly, so mvnw cannot run." >&2
+        echo "JAVA_HOME is set to \"$JAVA_HOME\", but \"\$JAVA_HOME/bin/java\" or \"\$JAVA_HOME/bin/javac\" does not exist." >&2
+        return 1
+      fi
+    fi
+  else
+    JAVACMD="$(
+      'set' +e
+      'unset' -f command 2>/dev/null
+      'command' -v java
+    )" || :
+    JAVACCMD="$(
+      'set' +e
+      'unset' -f command 2>/dev/null
+      'command' -v javac
+    )" || :
+
+    if [ ! -x "${JAVACMD-}" ] || [ ! -x "${JAVACCMD-}" ]; then
+      echo "The java/javac command does not exist in PATH nor is JAVA_HOME set, so mvnw cannot run." >&2
+      return 1
+    fi
+  fi
+}
+
+# hash string like Java String::hashCode
+hash_string() {
+  str="${1:-}" h=0
+  while [ -n "$str" ]; do
+    char="${str%"${str#?}"}"
+    h=$(((h * 31 + $(LC_CTYPE=C printf %d "'$char")) % 4294967296))
+    str="${str#?}"
+  done
+  printf %x\\n $h
+}
+
+verbose() { :; }
+[ "${MVNW_VERBOSE-}" != true ] || verbose() { printf %s\\n "${1-}"; }
+
+die() {
+  printf %s\\n "$1" >&2
+  exit 1
+}
+
+trim() {
+  # MWRAPPER-139:
+  #   Trims trailing and leading whitespace, carriage returns, tabs, and linefeeds.
+  #   Needed for removing poorly interpreted newline sequences when running in more
+  #   exotic environments such as mingw bash on Windows.
+  printf "%s" "${1}" | tr -d '[:space:]'
+}
+
+scriptDir="$(dirname "$0")"
+scriptName="$(basename "$0")"
+
+# parse distributionUrl and optional distributionSha256Sum, requires .mvn/wrapper/maven-wrapper.properties
+while IFS="=" read -r key value; do
+  case "${key-}" in
+  distributionUrl) distributionUrl=$(trim "${value-}") ;;
+  distributionSha256Sum) distributionSha256Sum=$(trim "${value-}") ;;
+  esac
+done <"$scriptDir/.mvn/wrapper/maven-wrapper.properties"
+[ -n "${distributionUrl-}" ] || die "cannot read distributionUrl property in $scriptDir/.mvn/wrapper/maven-wrapper.properties"
+
+case "${distributionUrl##*/}" in
+maven-mvnd-*bin.*)
+  MVN_CMD=mvnd.sh _MVNW_REPO_PATTERN=/maven/mvnd/
+  case "${PROCESSOR_ARCHITECTURE-}${PROCESSOR_ARCHITEW6432-}:$(uname -a)" in
+  *AMD64:CYGWIN* | *AMD64:MINGW*) distributionPlatform=windows-amd64 ;;
+  :Darwin*x86_64) distributionPlatform=darwin-amd64 ;;
+  :Darwin*arm64) distributionPlatform=darwin-aarch64 ;;
+  :Linux*x86_64*) distributionPlatform=linux-amd64 ;;
+  *)
+    echo "Cannot detect native platform for mvnd on $(uname)-$(uname -m), use pure java version" >&2
+    distributionPlatform=linux-amd64
+    ;;
+  esac
+  distributionUrl="${distributionUrl%-bin.*}-$distributionPlatform.zip"
+  ;;
+maven-mvnd-*) MVN_CMD=mvnd.sh _MVNW_REPO_PATTERN=/maven/mvnd/ ;;
+*) MVN_CMD="mvn${scriptName#mvnw}" _MVNW_REPO_PATTERN=/org/apache/maven/ ;;
+esac
+
+# apply MVNW_REPOURL and calculate MAVEN_HOME
+# maven home pattern: ~/.m2/wrapper/dists/{apache-maven-<version>,maven-mvnd-<version>-<platform>}/<hash>
+[ -z "${MVNW_REPOURL-}" ] || distributionUrl="$MVNW_REPOURL$_MVNW_REPO_PATTERN${distributionUrl#*"$_MVNW_REPO_PATTERN"}"
+distributionUrlName="${distributionUrl##*/}"
+distributionUrlNameMain="${distributionUrlName%.*}"
+distributionUrlNameMain="${distributionUrlNameMain%-bin}"
+MAVEN_USER_HOME="${MAVEN_USER_HOME:-${HOME}/.m2}"
+MAVEN_HOME="${MAVEN_USER_HOME}/wrapper/dists/${distributionUrlNameMain-}/$(hash_string "$distributionUrl")"
+
+exec_maven() {
+  unset MVNW_VERBOSE MVNW_USERNAME MVNW_PASSWORD MVNW_REPOURL || :
+  exec "$MAVEN_HOME/bin/$MVN_CMD" "$@" || die "cannot exec $MAVEN_HOME/bin/$MVN_CMD"
+}
+
+if [ -d "$MAVEN_HOME" ]; then
+  verbose "found existing MAVEN_HOME at $MAVEN_HOME"
+  exec_maven "$@"
+fi
+
+case "${distributionUrl-}" in
+*?-bin.zip | *?maven-mvnd-?*-?*.zip) ;;
+*) die "distributionUrl is not valid, must match *-bin.zip or maven-mvnd-*.zip, but found '${distributionUrl-}'" ;;
+esac
+
+# prepare tmp dir
+if TMP_DOWNLOAD_DIR="$(mktemp -d)" && [ -d "$TMP_DOWNLOAD_DIR" ]; then
+  clean() { rm -rf -- "$TMP_DOWNLOAD_DIR"; }
+  trap clean HUP INT TERM EXIT
+else
+  die "cannot create temp dir"
+fi
+
+mkdir -p -- "${MAVEN_HOME%/*}"
+
+# Download and Install Apache Maven
+verbose "Couldn't find MAVEN_HOME, downloading and installing it ..."
+verbose "Downloading from: $distributionUrl"
+verbose "Downloading to: $TMP_DOWNLOAD_DIR/$distributionUrlName"
+
+# select .zip or .tar.gz
+if ! command -v unzip >/dev/null; then
+  distributionUrl="${distributionUrl%.zip}.tar.gz"
+  distributionUrlName="${distributionUrl##*/}"
+fi
+
+# verbose opt
+__MVNW_QUIET_WGET=--quiet __MVNW_QUIET_CURL=--silent __MVNW_QUIET_UNZIP=-q __MVNW_QUIET_TAR=''
+[ "${MVNW_VERBOSE-}" != true ] || __MVNW_QUIET_WGET='' __MVNW_QUIET_CURL='' __MVNW_QUIET_UNZIP='' __MVNW_QUIET_TAR=v
+
+# normalize http auth
+case "${MVNW_PASSWORD:+has-password}" in
+'') MVNW_USERNAME='' MVNW_PASSWORD='' ;;
+has-password) [ -n "${MVNW_USERNAME-}" ] || MVNW_USERNAME='' MVNW_PASSWORD='' ;;
+esac
+
+if [ -z "${MVNW_USERNAME-}" ] && command -v wget >/dev/null; then
+  verbose "Found wget ... using wget"
+  wget ${__MVNW_QUIET_WGET:+"$__MVNW_QUIET_WGET"} "$distributionUrl" -O "$TMP_DOWNLOAD_DIR/$distributionUrlName" || die "wget: Failed to fetch $distributionUrl"
+elif [ -z "${MVNW_USERNAME-}" ] && command -v curl >/dev/null; then
+  verbose "Found curl ... using curl"
+  curl ${__MVNW_QUIET_CURL:+"$__MVNW_QUIET_CURL"} -f -L -o "$TMP_DOWNLOAD_DIR/$distributionUrlName" "$distributionUrl" || die "curl: Failed to fetch $distributionUrl"
+elif set_java_home; then
+  verbose "Falling back to use Java to download"
+  javaSource="$TMP_DOWNLOAD_DIR/Downloader.java"
+  targetZip="$TMP_DOWNLOAD_DIR/$distributionUrlName"
+  cat >"$javaSource" <<-END
+	public class Downloader extends java.net.Authenticator
+	{
+	  protected java.net.PasswordAuthentication getPasswordAuthentication()
+	  {
+	    return new java.net.PasswordAuthentication( System.getenv( "MVNW_USERNAME" ), System.getenv( "MVNW_PASSWORD" ).toCharArray() );
+	  }
+	  public static void main( String[] args ) throws Exception
+	  {
+	    setDefault( new Downloader() );
+	    java.nio.file.Files.copy( java.net.URI.create( args[0] ).toURL().openStream(), java.nio.file.Paths.get( args[1] ).toAbsolutePath().normalize() );
+	  }
+	}
+	END
+  # For Cygwin/MinGW, switch paths to Windows format before running javac and java
+  verbose " - Compiling Downloader.java ..."
+  "$(native_path "$JAVACCMD")" "$(native_path "$javaSource")" || die "Failed to compile Downloader.java"
+  verbose " - Running Downloader.java ..."
+  "$(native_path "$JAVACMD")" -cp "$(native_path "$TMP_DOWNLOAD_DIR")" Downloader "$distributionUrl" "$(native_path "$targetZip")"
+fi
+
+# If specified, validate the SHA-256 sum of the Maven distribution zip file
+if [ -n "${distributionSha256Sum-}" ]; then
+  distributionSha256Result=false
+  if [ "$MVN_CMD" = mvnd.sh ]; then
+    echo "Checksum validation is not supported for maven-mvnd." >&2
+    echo "Please disable validation by removing 'distributionSha256Sum' from your maven-wrapper.properties." >&2
+    exit 1
+  elif command -v sha256sum >/dev/null; then
+    if echo "$distributionSha256Sum  $TMP_DOWNLOAD_DIR/$distributionUrlName" | sha256sum -c - >/dev/null 2>&1; then
+      distributionSha256Result=true
+    fi
+  elif command -v shasum >/dev/null; then
+    if echo "$distributionSha256Sum  $TMP_DOWNLOAD_DIR/$distributionUrlName" | shasum -a 256 -c >/dev/null 2>&1; then
+      distributionSha256Result=true
+    fi
+  else
+    echo "Checksum validation was requested but neither 'sha256sum' or 'shasum' are available." >&2
+    echo "Please install either command, or disable validation by removing 'distributionSha256Sum' from your maven-wrapper.properties." >&2
+    exit 1
+  fi
+  if [ $distributionSha256Result = false ]; then
+    echo "Error: Failed to validate Maven distribution SHA-256, your Maven distribution might be compromised." >&2
+    echo "If you updated your Maven version, you need to update the specified distributionSha256Sum property." >&2
+    exit 1
+  fi
+fi
+
+# unzip and move
+if command -v unzip >/dev/null; then
+  unzip ${__MVNW_QUIET_UNZIP:+"$__MVNW_QUIET_UNZIP"} "$TMP_DOWNLOAD_DIR/$distributionUrlName" -d "$TMP_DOWNLOAD_DIR" || die "failed to unzip"
+else
+  tar xzf${__MVNW_QUIET_TAR:+"$__MVNW_QUIET_TAR"} "$TMP_DOWNLOAD_DIR/$distributionUrlName" -C "$TMP_DOWNLOAD_DIR" || die "failed to untar"
+fi
+
+# Find the actual extracted directory name (handles snapshots where filename != directory name)
+actualDistributionDir=""
+
+# First try the expected directory name (for regular distributions)
+if [ -d "$TMP_DOWNLOAD_DIR/$distributionUrlNameMain" ]; then
+  if [ -f "$TMP_DOWNLOAD_DIR/$distributionUrlNameMain/bin/$MVN_CMD" ]; then
+    actualDistributionDir="$distributionUrlNameMain"
+  fi
+fi
+
+# If not found, search for any directory with the Maven executable (for snapshots)
+if [ -z "$actualDistributionDir" ]; then
+  # enable globbing to iterate over items
+  set +f
+  for dir in "$TMP_DOWNLOAD_DIR"/*; do
+    if [ -d "$dir" ]; then
+      if [ -f "$dir/bin/$MVN_CMD" ]; then
+        actualDistributionDir="$(basename "$dir")"
+        break
+      fi
+    fi
+  done
+  set -f
+fi
+
+if [ -z "$actualDistributionDir" ]; then
+  verbose "Contents of $TMP_DOWNLOAD_DIR:"
+  verbose "$(ls -la "$TMP_DOWNLOAD_DIR")"
+  die "Could not find Maven distribution directory in extracted archive"
+fi
+
+verbose "Found extracted Maven distribution directory: $actualDistributionDir"
+printf %s\\n "$distributionUrl" >"$TMP_DOWNLOAD_DIR/$actualDistributionDir/mvnw.url"
+mv -- "$TMP_DOWNLOAD_DIR/$actualDistributionDir" "$MAVEN_HOME" || [ -d "$MAVEN_HOME" ] || die "fail to move MAVEN_HOME"
+
+clean || :
+exec_maven "$@"
+</file>
+
+<file path="mvnw.cmd">
+<# : batch portion
+@REM ----------------------------------------------------------------------------
+@REM Licensed to the Apache Software Foundation (ASF) under one
+@REM or more contributor license agreements.  See the NOTICE file
+@REM distributed with this work for additional information
+@REM regarding copyright ownership.  The ASF licenses this file
+@REM to you under the Apache License, Version 2.0 (the
+@REM "License"); you may not use this file except in compliance
+@REM with the License.  You may obtain a copy of the License at
+@REM
+@REM    http://www.apache.org/licenses/LICENSE-2.0
+@REM
+@REM Unless required by applicable law or agreed to in writing,
+@REM software distributed under the License is distributed on an
+@REM "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+@REM KIND, either express or implied.  See the License for the
+@REM specific language governing permissions and limitations
+@REM under the License.
+@REM ----------------------------------------------------------------------------
+
+@REM ----------------------------------------------------------------------------
+@REM Apache Maven Wrapper startup batch script, version 3.3.4
+@REM
+@REM Optional ENV vars
+@REM   MVNW_REPOURL - repo url base for downloading maven distribution
+@REM   MVNW_USERNAME/MVNW_PASSWORD - user and password for downloading maven
+@REM   MVNW_VERBOSE - true: enable verbose log; others: silence the output
+@REM ----------------------------------------------------------------------------
+
+@IF "%__MVNW_ARG0_NAME__%"=="" (SET __MVNW_ARG0_NAME__=%~nx0)
+@SET __MVNW_CMD__=
+@SET __MVNW_ERROR__=
+@SET __MVNW_PSMODULEP_SAVE=%PSModulePath%
+@SET PSModulePath=
+@FOR /F "usebackq tokens=1* delims==" %%A IN (`powershell -noprofile "& {$scriptDir='%~dp0'; $script='%__MVNW_ARG0_NAME__%'; icm -ScriptBlock ([Scriptblock]::Create((Get-Content -Raw '%~f0'))) -NoNewScope}"`) DO @(
+  IF "%%A"=="MVN_CMD" (set __MVNW_CMD__=%%B) ELSE IF "%%B"=="" (echo %%A) ELSE (echo %%A=%%B)
+)
+@SET PSModulePath=%__MVNW_PSMODULEP_SAVE%
+@SET __MVNW_PSMODULEP_SAVE=
+@SET __MVNW_ARG0_NAME__=
+@SET MVNW_USERNAME=
+@SET MVNW_PASSWORD=
+@IF NOT "%__MVNW_CMD__%"=="" ("%__MVNW_CMD__%" %*)
+@echo Cannot start maven from wrapper >&2 && exit /b 1
+@GOTO :EOF
+: end batch / begin powershell #>
+
+$ErrorActionPreference = "Stop"
+if ($env:MVNW_VERBOSE -eq "true") {
+  $VerbosePreference = "Continue"
+}
+
+# calculate distributionUrl, requires .mvn/wrapper/maven-wrapper.properties
+$distributionUrl = (Get-Content -Raw "$scriptDir/.mvn/wrapper/maven-wrapper.properties" | ConvertFrom-StringData).distributionUrl
+if (!$distributionUrl) {
+  Write-Error "cannot read distributionUrl property in $scriptDir/.mvn/wrapper/maven-wrapper.properties"
+}
+
+switch -wildcard -casesensitive ( $($distributionUrl -replace '^.*/','') ) {
+  "maven-mvnd-*" {
+    $USE_MVND = $true
+    $distributionUrl = $distributionUrl -replace '-bin\.[^.]*$',"-windows-amd64.zip"
+    $MVN_CMD = "mvnd.cmd"
+    break
+  }
+  default {
+    $USE_MVND = $false
+    $MVN_CMD = $script -replace '^mvnw','mvn'
+    break
+  }
+}
+
+# apply MVNW_REPOURL and calculate MAVEN_HOME
+# maven home pattern: ~/.m2/wrapper/dists/{apache-maven-<version>,maven-mvnd-<version>-<platform>}/<hash>
+if ($env:MVNW_REPOURL) {
+  $MVNW_REPO_PATTERN = if ($USE_MVND -eq $False) { "/org/apache/maven/" } else { "/maven/mvnd/" }
+  $distributionUrl = "$env:MVNW_REPOURL$MVNW_REPO_PATTERN$($distributionUrl -replace "^.*$MVNW_REPO_PATTERN",'')"
+}
+$distributionUrlName = $distributionUrl -replace '^.*/',''
+$distributionUrlNameMain = $distributionUrlName -replace '\.[^.]*$','' -replace '-bin$',''
+
+$MAVEN_M2_PATH = "$HOME/.m2"
+if ($env:MAVEN_USER_HOME) {
+  $MAVEN_M2_PATH = "$env:MAVEN_USER_HOME"
+}
+
+if (-not (Test-Path -Path $MAVEN_M2_PATH)) {
+    New-Item -Path $MAVEN_M2_PATH -ItemType Directory | Out-Null
+}
+
+$MAVEN_WRAPPER_DISTS = $null
+if ((Get-Item $MAVEN_M2_PATH).Target[0] -eq $null) {
+  $MAVEN_WRAPPER_DISTS = "$MAVEN_M2_PATH/wrapper/dists"
+} else {
+  $MAVEN_WRAPPER_DISTS = (Get-Item $MAVEN_M2_PATH).Target[0] + "/wrapper/dists"
+}
+
+$MAVEN_HOME_PARENT = "$MAVEN_WRAPPER_DISTS/$distributionUrlNameMain"
+$MAVEN_HOME_NAME = ([System.Security.Cryptography.SHA256]::Create().ComputeHash([byte[]][char[]]$distributionUrl) | ForEach-Object {$_.ToString("x2")}) -join ''
+$MAVEN_HOME = "$MAVEN_HOME_PARENT/$MAVEN_HOME_NAME"
+
+if (Test-Path -Path "$MAVEN_HOME" -PathType Container) {
+  Write-Verbose "found existing MAVEN_HOME at $MAVEN_HOME"
+  Write-Output "MVN_CMD=$MAVEN_HOME/bin/$MVN_CMD"
+  exit $?
+}
+
+if (! $distributionUrlNameMain -or ($distributionUrlName -eq $distributionUrlNameMain)) {
+  Write-Error "distributionUrl is not valid, must end with *-bin.zip, but found $distributionUrl"
+}
+
+# prepare tmp dir
+$TMP_DOWNLOAD_DIR_HOLDER = New-TemporaryFile
+$TMP_DOWNLOAD_DIR = New-Item -Itemtype Directory -Path "$TMP_DOWNLOAD_DIR_HOLDER.dir"
+$TMP_DOWNLOAD_DIR_HOLDER.Delete() | Out-Null
+trap {
+  if ($TMP_DOWNLOAD_DIR.Exists) {
+    try { Remove-Item $TMP_DOWNLOAD_DIR -Recurse -Force | Out-Null }
+    catch { Write-Warning "Cannot remove $TMP_DOWNLOAD_DIR" }
+  }
+}
+
+New-Item -Itemtype Directory -Path "$MAVEN_HOME_PARENT" -Force | Out-Null
+
+# Download and Install Apache Maven
+Write-Verbose "Couldn't find MAVEN_HOME, downloading and installing it ..."
+Write-Verbose "Downloading from: $distributionUrl"
+Write-Verbose "Downloading to: $TMP_DOWNLOAD_DIR/$distributionUrlName"
+
+$webclient = New-Object System.Net.WebClient
+if ($env:MVNW_USERNAME -and $env:MVNW_PASSWORD) {
+  $webclient.Credentials = New-Object System.Net.NetworkCredential($env:MVNW_USERNAME, $env:MVNW_PASSWORD)
+}
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+$webclient.DownloadFile($distributionUrl, "$TMP_DOWNLOAD_DIR/$distributionUrlName") | Out-Null
+
+# If specified, validate the SHA-256 sum of the Maven distribution zip file
+$distributionSha256Sum = (Get-Content -Raw "$scriptDir/.mvn/wrapper/maven-wrapper.properties" | ConvertFrom-StringData).distributionSha256Sum
+if ($distributionSha256Sum) {
+  if ($USE_MVND) {
+    Write-Error "Checksum validation is not supported for maven-mvnd. `nPlease disable validation by removing 'distributionSha256Sum' from your maven-wrapper.properties."
+  }
+  Import-Module $PSHOME\Modules\Microsoft.PowerShell.Utility -Function Get-FileHash
+  if ((Get-FileHash "$TMP_DOWNLOAD_DIR/$distributionUrlName" -Algorithm SHA256).Hash.ToLower() -ne $distributionSha256Sum) {
+    Write-Error "Error: Failed to validate Maven distribution SHA-256, your Maven distribution might be compromised. If you updated your Maven version, you need to update the specified distributionSha256Sum property."
+  }
+}
+
+# unzip and move
+Expand-Archive "$TMP_DOWNLOAD_DIR/$distributionUrlName" -DestinationPath "$TMP_DOWNLOAD_DIR" | Out-Null
+
+# Find the actual extracted directory name (handles snapshots where filename != directory name)
+$actualDistributionDir = ""
+
+# First try the expected directory name (for regular distributions)
+$expectedPath = Join-Path "$TMP_DOWNLOAD_DIR" "$distributionUrlNameMain"
+$expectedMvnPath = Join-Path "$expectedPath" "bin/$MVN_CMD"
+if ((Test-Path -Path $expectedPath -PathType Container) -and (Test-Path -Path $expectedMvnPath -PathType Leaf)) {
+  $actualDistributionDir = $distributionUrlNameMain
+}
+
+# If not found, search for any directory with the Maven executable (for snapshots)
+if (!$actualDistributionDir) {
+  Get-ChildItem -Path "$TMP_DOWNLOAD_DIR" -Directory | ForEach-Object {
+    $testPath = Join-Path $_.FullName "bin/$MVN_CMD"
+    if (Test-Path -Path $testPath -PathType Leaf) {
+      $actualDistributionDir = $_.Name
+    }
+  }
+}
+
+if (!$actualDistributionDir) {
+  Write-Error "Could not find Maven distribution directory in extracted archive"
+}
+
+Write-Verbose "Found extracted Maven distribution directory: $actualDistributionDir"
+Rename-Item -Path "$TMP_DOWNLOAD_DIR/$actualDistributionDir" -NewName $MAVEN_HOME_NAME | Out-Null
+try {
+  Move-Item -Path "$TMP_DOWNLOAD_DIR/$MAVEN_HOME_NAME" -Destination $MAVEN_HOME_PARENT | Out-Null
+} catch {
+  if (! (Test-Path -Path "$MAVEN_HOME" -PathType Container)) {
+    Write-Error "fail to move MAVEN_HOME"
+  }
+} finally {
+  try { Remove-Item $TMP_DOWNLOAD_DIR -Recurse -Force | Out-Null }
+  catch { Write-Warning "Cannot remove $TMP_DOWNLOAD_DIR" }
+}
+
+Write-Output "MVN_CMD=$MAVEN_HOME/bin/$MVN_CMD"
+</file>
+
+<file path="pom.xml">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>4.1.0</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.example</groupId>
+	<artifactId>razorpay</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name/>
+	<description/>
+	<url/>
+	<licenses>
+		<license/>
+	</licenses>
+	<developers>
+		<developer/>
+	</developers>
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
+	<properties>
+		<java.version>25</java.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webmvc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>1.6.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>0.12.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>0.12.6</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>0.12.6</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webmvc-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-compile</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<annotationProcessorPaths>
+								<path>
+									<groupId>org.projectlombok</groupId>
+									<artifactId>lombok</artifactId>
+								</path>
+								<path>
+									<groupId>org.projectlombok</groupId>
+									<artifactId>lombok-mapstruct-binding</artifactId>
+									<version>0.2.0</version>
+								</path>
+								<path>
+									<groupId>org.mapstruct</groupId>
+									<artifactId>mapstruct-processor</artifactId>
+									<version>1.6.0</version>
+								</path>
+							</annotationProcessorPaths>
+						</configuration>
+					</execution>
+					<execution>
+						<id>default-testCompile</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+						<configuration>
+							<annotationProcessorPaths>
+								<path>
+									<groupId>org.projectlombok</groupId>
+									<artifactId>lombok</artifactId>
+								</path>
+							</annotationProcessorPaths>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+</file>
+
+</files>
