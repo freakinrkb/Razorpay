@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class PaymentTransitionService {
+
     private final PaymentTransitionLogRepository paymentTransitionLogRepository;
     private final PaymentStateMachine paymentStateMachine;
 

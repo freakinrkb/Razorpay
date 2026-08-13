@@ -4,6 +4,7 @@ import com.example.razorpay.common.enums.OrderStatus;
 import com.example.razorpay.common.exception.BusinessRuleViolationException;
 import com.example.razorpay.common.exception.DuplicateResourceException;
 import com.example.razorpay.common.exception.ResourceNotFoundException;
+import com.example.razorpay.merchant.service.CustomerService;
 import com.example.razorpay.payment.dto.request.CreateOrderRequest;
 import com.example.razorpay.payment.dto.response.OrderResponse;
 import com.example.razorpay.payment.dto.response.PaymentResponse;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -33,6 +35,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
+    private final CustomerService customerService;
     private final OrderMapper orderMapper;
 
     @Value("${payment.order.default-order-expiry-minutes:30}")
@@ -45,6 +48,14 @@ public class OrderServiceImpl implements OrderService {
         if(request.receipt() != null && orderRepository.existsByMerchantIdAndReceipt(merchantId, request.receipt())){
             throw new DuplicateResourceException("ORDER_RECEIPT_DUPLICATE", "Order with receipt already exists: " + request.receipt());
         }
+        UUID customerId = null;
+        if (request.customer() != null) {
+            customerId = customerService.findOrCreate(merchantId,
+                    request.customer().email(),
+                    request.customer().name(),
+                    request.customer().phone()
+            );
+        }
         OrderRecord order = OrderRecord.builder()
                 .merchantId(merchantId)
                 .amount(request.amount())
@@ -54,7 +65,14 @@ public class OrderServiceImpl implements OrderService {
                 .expiresAt(LocalDateTime.now().plusMinutes(defaultOrderExpiryMinutes))
                 .build();
         order = orderRepository.save(order);
-
+//        eventPublisher.publish(EventAggregateType.ORDER, order.getId(), "ORDER_CREATED",
+//                Map.of("orderId", order.getId(),
+//                        "merchantId", merchantId.toString(),
+//                        "orderStatus", order.getOrderStatus().name(),
+//                        "amountUnits", order.getAmount().getAmountUnits(),
+//                        "amountCurrency", order.getAmount().getCurrency()
+//                )
+//        );
         return orderMapper.toResponse(order);
     }
 
@@ -79,7 +97,14 @@ public class OrderServiceImpl implements OrderService {
         }
         order.setOrderStatus(OrderStatus.CANCELLED);
         order = orderRepository.save(order);
-
+//        eventPublisher.publish(EventAggregateType.ORDER, order.getId(), "ORDER_CANCELLED",
+//                Map.of("orderId", order.getId(),
+//                        "merchantId", merchantId.toString(),
+//                        "orderStatus", order.getOrderStatus().name(),
+//                        "amountUnits", order.getAmount().getAmountUnits(),
+//                        "amountCurrency", order.getAmount().getCurrency()
+//                )
+//        );
         return orderMapper.toResponse(order);
     }
 

@@ -57,9 +57,6 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
-//        Authorization: Basic key_asdlfjaosduf:secret_asdflauouadf
-//        Authorization: Basic ASDFUAOSJDFLAKSJDFA89SDUFLIJalsdjflakjsdflk==
-
             String[] credentials = decode(header);
             if (credentials == null) {
                 throw new BadRequestException("Malformed API Key Header");

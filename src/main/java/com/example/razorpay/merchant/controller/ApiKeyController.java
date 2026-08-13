@@ -16,6 +16,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("/v1/merchants/{merchantId}/api-keys")
 public class ApiKeyController  {
+
     private final ApiKeyService apiKeyService;
     private final MerchantContext merchantContext;
 
@@ -30,7 +31,7 @@ public class ApiKeyController  {
 
     @GetMapping
     public ResponseEntity<ApiKeyService> listByMerchant(
-            @PathVariable UUID merchantId) { // Fixed naming mismatch
+            @PathVariable UUID merchantId) {
 
         return ResponseEntity.ok(apiKeyService.listByMerchant(merchantContext.getMerchantId()));
     }
@@ -38,11 +39,6 @@ public class ApiKeyController  {
     @DeleteMapping("/{keyId}")
     public void revoke(@PathVariable UUID merchantId, @PathVariable UUID keyId){
         apiKeyService.revoke(merchantContext.getMerchantId(),keyId);
-
-        // Minor bug note here: ResponseEntity.noContent().build() creates a response,
-        // but because your return type is 'void', it isn't actually being returned.
-        // To fix this later, change the method return type to ResponseEntity<Void>
-        // and add 'return' before ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{keyId}/rotate")

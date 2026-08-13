@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -86,7 +87,16 @@ public class PaymentServiceImpl implements PaymentService {
         payment = paymentRepository.save(payment);
         orderRepository.save(order);
 
-        // TODO: send an outbox (kafka event)
+//        eventPublisher.publish(EventAggregateType.PAYMENT, payment.getId(), "PAYMENT_CREATED",
+//                Map.of("orderId", order.getId().toString(),
+//                        "paymentId", payment.getId().toString(),
+//                        "merchantId", merchantId.toString(),
+//                        "paymentStatus", payment.getStatus().name(),
+//                        "amountUnits", order.getAmount().getAmountUnits(),
+//                        "amountCurrency", order.getAmount().getCurrency(),
+//                        "paymentMethod", payment.getMethod()
+//                )
+//        );
 
         return paymentMapper.toResponse(payment);
     }
@@ -94,7 +104,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentResponse capture(UUID merchantId, UUID paymentId) {
 
-        Payment payment = paymentRepository.findByIdAndMerchantId(paymentId, merchantId)
+        Payment payment = paymentRepository.findByIdAndMerchantIdForUpdate(paymentId, merchantId)
                 .orElseThrow(() -> new ResourceNotFoundException("Payment", paymentId));
 
         paymentTransitionService.apply(payment, PaymentEvent.CAPTURE_REQUEST);
@@ -105,7 +115,8 @@ public class PaymentServiceImpl implements PaymentService {
             paymentTransitionService.apply(payment, PaymentEvent.CAPTURE_SUCCESS);
             payment.setCapturedAt(LocalDateTime.now());
             log.info("Payment captured, paymentID: {}", paymentId);
-        } else if(paymentResult instanceof PaymentResult.Failure(String errorCode, String errorDescription)) {
+        }
+        else if(paymentResult instanceof PaymentResult.Failure(String errorCode, String errorDescription)) {
             paymentTransitionService.apply(payment, PaymentEvent.CAPTURE_FAIL);
             payment.setErrorCode(errorCode);
             payment.setErrorDescription(errorDescription);
@@ -114,14 +125,23 @@ public class PaymentServiceImpl implements PaymentService {
 
         payment = paymentRepository.save(payment);
 
-//        TODO: send an outbox (kafka event)
+//        eventPublisher.publish(EventAggregateType.PAYMENT, payment.getId(), "PAYMENT_STATUS_CHANGED",
+//                Map.of("orderId", payment.getOrder().getId().toString(),
+//                        "paymentId", payment.getId().toString(),
+//                        "merchantId", merchantId.toString(),
+//                        "paymentStatus", payment.getStatus().name(),
+//                        "amountUnits", payment.getAmount().getAmountUnits(),
+//                        "amountCurrency", payment.getAmount().getCurrency(),
+//                        "paymentMethod", payment.getMethod()
+//                )
+//        );
 
         return paymentMapper.toResponse(payment);
     }
 
     @Override
     public void resolveAuthorization(UUID paymentId, boolean approve, String bankRef, String errorCode, String errorDescription) {
-        Payment payment = paymentRepository.findById(paymentId)
+        Payment payment = paymentRepository.findByIdForUpdate(paymentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Payment", paymentId));
 
         if (payment.getStatus() != PaymentStatus.AUTHORIZING) {
@@ -157,5 +177,16 @@ public class PaymentServiceImpl implements PaymentService {
 
         paymentRepository.save(payment);
         orderRepository.save(orderRecord);
+
+//        eventPublisher.publish(EventAggregateType.PAYMENT, payment.getId(), "PAYMENT_STATUS_CHANGED",
+//                Map.of("orderId", payment.getOrder().getId().toString(),
+//                        "paymentId", payment.getId().toString(),
+//                        "merchantId", payment.getMerchantId().toString(),
+//                        "paymentStatus", payment.getStatus().name(),
+//                        "amountUnits", payment.getAmount().getAmountUnits(),
+//                        "amountCurrency", payment.getAmount().getCurrency(),
+//                        "paymentMethod", payment.getMethod()
+//                )
+//        );
     }
 }

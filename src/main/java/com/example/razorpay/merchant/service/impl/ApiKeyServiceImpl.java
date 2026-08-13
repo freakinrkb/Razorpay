@@ -48,7 +48,8 @@ public class ApiKeyServiceImpl implements ApiKeyService {
                 .environment(request.environment())
                 .build();
         apiKey = apiKeyRepository.save(apiKey);
-        return new ApiKeyCreateResponse(apiKey.getId(), keyId, rawSecret, request.environment());
+        return new ApiKeyCreateResponse(apiKey.getId(), keyId,
+                rawSecret, request.environment());
     }
 
     @Override
@@ -65,8 +66,6 @@ public class ApiKeyServiceImpl implements ApiKeyService {
         key.setEnabled(false);
         apiKeyCache.evict(key.getKeyId());
     }
-//key_id is unique becoz merchant id can have multiple key_id, that
-    //we are searching via key id
     @Transactional
     @Override
     public ApiKeyCreateResponse rotate(UUID merchantId, UUID keyId) {

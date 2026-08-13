@@ -107,6 +107,7 @@ public class VaultServiceImpl implements VaultService {
         return new TokenizeResponse(token, lastFour, cardBrand, request.expiryMonth(), request.expiryYear());
     }
 
+
     private CardBrand detectBrand(String pan) {
         if (pan.startsWith("4")) return CardBrand.VISA;
         if (pan.startsWith("5") || pan.startsWith("2")) return CardBrand.MASTERCARD;
