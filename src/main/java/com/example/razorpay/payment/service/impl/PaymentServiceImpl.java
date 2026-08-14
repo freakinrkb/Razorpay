@@ -1,5 +1,6 @@
 package com.example.razorpay.payment.service.impl;
 
+import com.example.razorpay.common.enums.EventAggregateType;
 import com.example.razorpay.common.enums.OrderStatus;
 import com.example.razorpay.common.enums.PaymentEvent;
 import com.example.razorpay.common.enums.PaymentStatus;
@@ -13,7 +14,9 @@ import com.example.razorpay.payment.gateway.PaymentGatewayRouter;
 import com.example.razorpay.payment.gateway.dto.PaymentRequest;
 import com.example.razorpay.payment.gateway.dto.PaymentResult;
 import com.example.razorpay.payment.mapper.PaymentMapper;
+import com.example.razorpay.payment.outbox.OutboxEventPublisher;
 import com.example.razorpay.payment.repository.OrderRepository;
+import com.example.razorpay.payment.repository.OutboxEventRepository;
 import com.example.razorpay.payment.repository.PaymentRepository;
 import com.example.razorpay.payment.service.PaymentService;
 import com.example.razorpay.payment.statemachine.PaymentTransitionService;
@@ -36,6 +39,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentGatewayRouter paymentGatewayRouter;
     private final PaymentMapper paymentMapper;
     private final PaymentTransitionService paymentTransitionService;
+    private final OutboxEventPublisher eventPublisher;
 
     @Override
     @Transactional()
@@ -87,16 +91,16 @@ public class PaymentServiceImpl implements PaymentService {
         payment = paymentRepository.save(payment);
         orderRepository.save(order);
 
-//        eventPublisher.publish(EventAggregateType.PAYMENT, payment.getId(), "PAYMENT_CREATED",
-//                Map.of("orderId", order.getId().toString(),
-//                        "paymentId", payment.getId().toString(),
-//                        "merchantId", merchantId.toString(),
-//                        "paymentStatus", payment.getStatus().name(),
-//                        "amountUnits", order.getAmount().getAmountUnits(),
-//                        "amountCurrency", order.getAmount().getCurrency(),
-//                        "paymentMethod", payment.getMethod()
-//                )
-//        );
+        eventPublisher.publish(EventAggregateType.PAYMENT, payment.getId(), "PAYMENT_CREATED",
+                Map.of("orderId", order.getId().toString(),
+                        "paymentId", payment.getId().toString(),
+                        "merchantId", merchantId.toString(),
+                        "paymentStatus", payment.getStatus().name(),
+                        "amountUnits", order.getAmount().getAmountUnits(),
+                        "amountCurrency", order.getAmount().getCurrency(),
+                        "paymentMethod", payment.getMethod()
+                )
+        );
 
         return paymentMapper.toResponse(payment);
     }
@@ -125,16 +129,16 @@ public class PaymentServiceImpl implements PaymentService {
 
         payment = paymentRepository.save(payment);
 
-//        eventPublisher.publish(EventAggregateType.PAYMENT, payment.getId(), "PAYMENT_STATUS_CHANGED",
-//                Map.of("orderId", payment.getOrder().getId().toString(),
-//                        "paymentId", payment.getId().toString(),
-//                        "merchantId", merchantId.toString(),
-//                        "paymentStatus", payment.getStatus().name(),
-//                        "amountUnits", payment.getAmount().getAmountUnits(),
-//                        "amountCurrency", payment.getAmount().getCurrency(),
-//                        "paymentMethod", payment.getMethod()
-//                )
-//        );
+        eventPublisher.publish(EventAggregateType.PAYMENT, payment.getId(), "PAYMENT_STATUS_CHANGED",
+                Map.of("orderId", payment.getOrder().getId().toString(),
+                        "paymentId", payment.getId().toString(),
+                        "merchantId", merchantId.toString(),
+                        "paymentStatus", payment.getStatus().name(),
+                        "amountUnits", payment.getAmount().getAmountUnits(),
+                        "amountCurrency", payment.getAmount().getCurrency(),
+                        "paymentMethod", payment.getMethod()
+                )
+        );
 
         return paymentMapper.toResponse(payment);
     }
@@ -178,15 +182,15 @@ public class PaymentServiceImpl implements PaymentService {
         paymentRepository.save(payment);
         orderRepository.save(orderRecord);
 
-//        eventPublisher.publish(EventAggregateType.PAYMENT, payment.getId(), "PAYMENT_STATUS_CHANGED",
-//                Map.of("orderId", payment.getOrder().getId().toString(),
-//                        "paymentId", payment.getId().toString(),
-//                        "merchantId", payment.getMerchantId().toString(),
-//                        "paymentStatus", payment.getStatus().name(),
-//                        "amountUnits", payment.getAmount().getAmountUnits(),
-//                        "amountCurrency", payment.getAmount().getCurrency(),
-//                        "paymentMethod", payment.getMethod()
-//                )
-//        );
+        eventPublisher.publish(EventAggregateType.PAYMENT, payment.getId(), "PAYMENT_STATUS_CHANGED",
+                Map.of("orderId", payment.getOrder().getId().toString(),
+                        "paymentId", payment.getId().toString(),
+                        "merchantId", payment.getMerchantId().toString(),
+                        "paymentStatus", payment.getStatus().name(),
+                        "amountUnits", payment.getAmount().getAmountUnits(),
+                        "amountCurrency", payment.getAmount().getCurrency(),
+                        "paymentMethod", payment.getMethod()
+                )
+        );
     }
 }
