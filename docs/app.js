@@ -156,9 +156,6 @@ function openModal({kicker,title,tag,tabs,hash}) {
   const tabBtns = tabs.map((t,i) =>
     `<button data-tab="${i}" class="${i===0?'on':''}">${t.label}</button>`).join('');
   $('#mBody').innerHTML = `<div class="tabs">${tabBtns}</div>${body}`;
-  $('#mRecall').innerHTML = '';
-  $('#mFiles').innerHTML = '';
-  $('#mHowtoWrap').style.display = 'none';
   document.querySelectorAll('#mBody [data-tab]').forEach(b =>
     b.addEventListener('click', () => {
       document.querySelectorAll('#mBody [data-tab]').forEach(x=>x.classList.toggle('on', x===b));
