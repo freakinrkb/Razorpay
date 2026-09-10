@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Razorpay Clone — Animated Project Journey</title>
+<meta name="description" content="Interactive animated map of the Razorpay clone: phases, architecture, click-anything explanations.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="bg-orbs" aria-hidden="true"><span></span><span></span><span></span></div>
+
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">freakinrkb / Razorpay &nbsp;·&nbsp; Spring Boot · PG + Redis + Kafka</p>
+    <h1>Razorpay Clone <em>Journey</em></h1>
+    <p class="lede">An animated, clickable memory of the whole build — where you are, how money flows, and what’s next. Click <strong>anything</strong>: every card and every node explains itself.</p>
+    <div class="hero-cta">
+      <a class="btn primary" href="#map">Explore the live map</a>
+      <a class="btn ghost" href="#timeline">Replay the timeline</a>
+      <a class="btn ghost" id="repoLink" href="https://github.com/freakinrkb/Razorpay" target="_blank" rel="noopener">GitHub repo ↗</a>
+    </div>
+    <div class="youarehere" id="youAreHere">📍 <strong>You are here:</strong> Phase 4 — Webhook Delivery + DLQ (written, uncommitted) · <a href="#phase-4">jump ↓</a></div>
+  </div>
+  <div class="flow-strip" aria-hidden="true">
+    <div class="flow-track" id="flowTrack"></div>
+  </div>
+</header>
+
+<main>
+  <section id="map" class="section">
+    <div class="section-head">
+      <h2>System map <span class="hint">— click any node</span></h2>
+      <p>Request flow, left → right, top → bottom. Pulsing edges are live paths. Amber = needs attention. Dashed = backlog.</p>
+      <div class="legend">
+        <span><i class="dot done"></i>done</span>
+        <span><i class="dot wip"></i>you are here</span>
+        <span><i class="dot next"></i>backlog</span>
+        <span><i class="dot warn"></i>needs fix</span>
+      </div>
+    </div>
+    <div class="arch-wrap">
+      <svg id="archSvg" viewBox="0 0 1200 640" role="img" aria-label="Architecture diagram"></svg>
+      <div id="archCards" class="arch-cards"></div>
+    </div>
+  </section>
+
+  <section id="timeline" class="section">
+    <div class="section-head">
+      <h2>Build timeline <span class="hint">— scroll, it animates</span></h2>
+      <p>One card per phase, mapped 1:1 to your git history. Deep-linkable: <code>#/phase-4</code>.</p>
+    </div>
+    <div class="timeline" id="timelineEl"></div>
+  </section>
+
+  <section id="extend" class="section">
+    <div class="section-head"><h2>How this page grows with the project</h2></div>
+    <div class="extend-grid">
+      <div class="card"><h3>1. Append JSON</h3><p>Add one entry to <code>docs/journey.json → phases[]</code>. No HTML edits needed.</p></div>
+      <div class="card"><h3>2. Push</h3><p>Pages redeploys from <code>main /docs</code> automatically. Run <code>docs/gen-from-git.sh</code> to draft entries from git log.</p></div>
+      <div class="card"><h3>3. Share</h3><p>Every card has an anchor (<code>#/phase-3</code>). Send the link; it scrolls + opens the explanation.</p></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>Generated 2026-09-10 · Source: <code>docs/journey.json</code> · <a href="https://github.com/freakinrkb/Razorpay" target="_blank" rel="noopener">freakinrkb/Razorpay</a> · Enable Pages: repo Settings → Pages → Deploy from <code>main</code> → <code>/docs</code></p>
+</footer>
+
+<div class="modal-backdrop" id="modalBackdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true">
+    <button class="modal-x" id="modalX" aria-label="Close">✕</button>
+    <p class="modal-kicker" id="mKicker"></p>
+    <h3 id="mTitle"></h3>
+    <p class="modal-tag" id="mTag"></p>
+    <p id="mBody"></p>
+    <div class="modal-recall" id="mRecall"></div>
+    <h4>Key files</h4>
+    <ul class="file-list" id="mFiles"></ul>
+    <div id="mHowtoWrap"><h4>Try it / recall it</h4><ol class="howto" id="mHowto"></ol></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
