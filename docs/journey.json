@@ -143,28 +143,155 @@
    ]
   },
   {
-   "date": "next",
-   "id": "phase-5",
-   "status": "next",
-   "title": "Phase 5 — Next Up (not started)",
-   "commit": "backlog",
-   "stats": "5 gaps to close",
-   "tagline": "Uncomment, fill in, expose: simulator, order events, refunds, settlements, DLQ replay.",
-   "recall": "1) Uncomment @Scheduled in BankCallbackSimulator:24. 2) Uncomment ORDER_CREATED/CANCELLED publish in OrderServiceImpl:68,100. 3) Build RefundService. 4) Build SettlementService + scheduler. 5) DLQ replay API (replayedAt is never set today).",
-   "files": [
-    "src/main/java/com/example/razorpay/payment/simulator/BankCallbackSimulator.java",
-    "src/main/java/com/example/razorpay/payment/service/impl/OrderServiceImpl.java",
-    "src/main/java/com/example/razorpay/payment/statemachine/PaymentTransitionService.java"
+   "checklist": [
+    "Port SettlementEngine (nightly @Scheduled + @SchedulerLock)",
+    "Port SettlementTransactionExecutor + BankTransferProcessor(+Impl)",
+    "Add SettlementRepository + SettlementPaymentRepository",
+    "Add ops outbox trio (Publisher/Poller/ResultHandler) + OutboxEvent entity",
+    "Stub bank transfer synchronously first, async callback second"
    ],
+   "commit": "teacher: operations-service/settlement/*",
+   "date": "by Sun",
    "howto": [
-    "Start with the simulator — without it async authorize never resolves",
-    "Then order events — one-line uncomment each",
-    "Then DLQ replay endpoint: POST /api/dlq/{id}/replay"
+    "Create operations/settlement/ package in the monolith first — split later",
+    "Stub BankTransferProcessor to return success synchronously",
+    "Verify: nightly run settles CAPTURED payments, emits settlement.events"
    ],
+   "id": "phase-5",
    "nodes": [
-    "simulator",
-    "refundsettle"
-   ]
+    "settle"
+   ],
+   "recall": "The money-actually-moves step and the biggest logic gap: your monolith has Settlement entities only, the teacher runs a full nightly engine. Port it as a monolith package first — the split comes later.",
+   "stats": "~15 files to port",
+   "status": "next",
+   "tagline": "Nightly engine that pays merchants — entities today, runtime by Sunday.",
+   "title": "Phase 5 — Settlement runtime"
+  },
+  {
+   "checklist": [
+    "Add Internal* controllers (merchant, api-key, customer, vault, settlement-view)",
+    "Add MerchantContextFilter (reads X-* gateway headers)",
+    "Extract PaymentAuthorizationRecorder as saga seam",
+    "Define Feign-shaped client interfaces per seam (no split yet)"
+   ],
+   "commit": "teacher: */controller/Internal* + */api/* + */client/*",
+   "date": "by Sun",
+   "howto": [
+    "Prefix internal routes with /internal/* in the monolith",
+    "Move tenant reads to MerchantContextFilter",
+    "Verify: public flows unchanged, internal routes serve fixtures"
+   ],
+   "id": "phase-6",
+   "nodes": [
+    "auth",
+    "order"
+   ],
+   "recall": "Pure refactors, zero behavior change: every future service boundary becomes a real HTTP call instead of a method call. Do this before extracting anything.",
+   "stats": "~12 files",
+   "status": "next",
+   "tagline": "Draw the split lines inside the monolith — no behavior change.",
+   "title": "Phase 6 — Service seams"
+  },
+  {
+   "checklist": [
+    "Extract enums + ErrorResponse + exceptions",
+    "Extract BaseEntity/Money + audit + MerchantContext(Filter)",
+    "Extract idempotency + 4 rate limiters + ApiKeyCache",
+    "Extract KafkaProperties + SignerUtil + AesEncryptionConfig + shared DTOs",
+    "Wire via AutoConfiguration.imports in each service"
+   ],
+   "commit": "teacher: common-lib (58 files, ~18 new)",
+   "date": "by Sun",
+   "howto": [
+    "New common-lib Maven module, version 1.0.0",
+    "Move, don't fork — delete from monolith roots after",
+    "Verify: monolith builds against the jar before any split"
+   ],
+   "id": "phase-7",
+   "nodes": [
+    "ratelimit",
+    "idempotency"
+   ],
+   "recall": "Your common/ becomes a versioned jar with auto-configurations — the thing that makes 7 services feel like one codebase.",
+   "stats": "58 files, ~18 new",
+   "status": "next",
+   "tagline": "common/ graduates to a shared starter jar.",
+   "title": "Phase 7 — common-lib extraction"
+  },
+  {
+   "checklist": [
+    "Gateway: GatewayAuthFilter + Jwt/ApiKey handlers + PublicRouteMatcher (11 files)",
+    "Config Server: git-backed, CONFIG_SERVER_URL wiring (2 files)",
+    "Discovery: Eureka server + client registration (2 files)",
+    "Order matters: gateway → config → discovery, each runnable alone"
+   ],
+   "commit": "teacher: Part-1 API setup + resilience4j",
+   "date": "by Sun",
+   "howto": [
+    "Stand up config-service first (empty git repo works)",
+    "Register monolith as Eureka client to taste discovery",
+    "Put gateway in front last — public routes first"
+   ],
+   "id": "phase-8",
+   "nodes": [
+    "apigw",
+    "discovery",
+    "configsvr"
+   ],
+   "recall": "One public door (gateway :8080), one config truth (git repo), one registry (Eureka :8761). Teacher did this as Part-1 with Resilience4j on Feign calls.",
+   "stats": "15 files across 3 services",
+   "status": "next",
+   "tagline": "Edge auth, central config, service registry.",
+   "title": "Phase 8 — Gateway + platform"
+  },
+  {
+   "checklist": [
+    "Add actuator + Micrometer + Zipkin deps per service",
+    "Expose health,info,prometheus endpoints",
+    "Point tracing sender at zipkin:9411, sampling 1.0",
+    "Import teacher prometheus.yml + grafana provisioning (fix grafana/ path)"
+   ],
+   "commit": "teacher: Part-2 observability (dd856f3)",
+   "date": "by Sun",
+   "howto": [
+    "docker compose up observability/docker-compose.yml",
+    "Hit /actuator/prometheus on each service",
+    "Open Grafana :3000 (admin/admin), Zipkin :9411"
+   ],
+   "id": "phase-9",
+   "nodes": [
+    "infracore"
+   ],
+   "recall": "Teacher's Part-2: Prometheus scrapes :8080/9010/9020/9030/9040 every 5s, Grafana renders, Zipkin traces every request (sampling 1.0). Watch the compose mount path — repo has provisioning/, compose expects grafana/.",
+   "stats": "4 files + dep wiring",
+   "status": "next",
+   "tagline": "Metrics, dashboards, traces — Part-2 of the teacher.",
+   "title": "Phase 9 — Observability"
+  },
+  {
+   "checklist": [
+    "Apply namespace + configmap + secrets (ROTATE k8s-secrets.env — it's checked in!)",
+    "Deploy stateful: postgres (4 DBs via init ConfigMap), redis, kafka, zipkin, prometheus, grafana",
+    "Deploy services ×6 (no discovery-service — K8s DNS replaces Eureka)",
+    "Expose gateway via NodePort 30080→8080, verify end-to-end"
+   ],
+   "commit": "teacher: Part-2 k8s setup (32194b3)",
+   "date": "by Sun",
+   "howto": [
+    "kind create cluster -f k8s/kind-config.yaml",
+    "kubectl apply -k k8s/",
+    "Smoke: gateway NodePort → signup → order → payment → webhook"
+   ],
+   "id": "phase-10",
+   "nodes": [
+    "apigw",
+    "settle"
+   ],
+   "recall": "Kind + Kustomize, ns razorpay-core. Postgres init creates 4 DBs (merchant/payment/operations/vault). Eureka is skipped in-cluster. Secrets file is committed — rotate before anything real.",
+   "stats": "17 manifests",
+   "status": "next",
+   "tagline": "Kind + Kustomize deploy — the Sunday finish line.",
+   "title": "Phase 10 — K8s deploy"
   }
  ],
  "nodes": [
@@ -382,6 +509,63 @@
     "src/main/resources/application.yaml"
    ],
    "recall": "docker compose up -d is step zero of every demo."
+  },
+  {
+   "body": "Servlet Gateway on :8080 (NodePort 30080). Public routes pass through; the rest need Basic keyId:secret (Redis cache → merchant lookup, BCrypt + grace hash, 60/min limit) or Bearer JWT. Injects X-Merchant-Id, X-Environment, X-Key-Id downstream.",
+   "col": 0,
+   "files": [
+    "api-gateway-service/security/GatewayAuthFilter.java",
+    "api-gateway-service/security/ApiKeyAuthHandler.java",
+    "api-gateway-service/security/JwtAuthHandler.java"
+   ],
+   "id": "apigw",
+   "label": "API Gateway",
+   "phase": "phase-8",
+   "recall": "The only public door. Everything identity-flavored moves here; services trust the X-* headers.",
+   "row": 4,
+   "sub": "edge auth + limit"
+  },
+  {
+   "body": "Eureka registry on :8761 for local dev. All services register; Feign resolves merchant-service, vault-service etc. by name.",
+   "col": 1,
+   "files": [
+    "discovery-service/application.yaml"
+   ],
+   "id": "discovery",
+   "label": "Discovery",
+   "phase": "phase-8",
+   "recall": "Local dev: Eureka. K8s: cluster DNS. Know which profile you're running.",
+   "row": 4,
+   "sub": "Eureka 8761"
+  },
+  {
+   "body": "Serves YAML from the distributed-razrorpay-config git repo on :8888. Disabled Eureka on the k8s profile. Every service boots from it.",
+   "col": 2,
+   "files": [
+    "config-service/application.yaml",
+    "k8s/infra/configmap.yaml"
+   ],
+   "id": "configsvr",
+   "label": "Config Server",
+   "phase": "phase-8",
+   "recall": "Change a port, topic or route in git — restart services, no rebuilds.",
+   "row": 4,
+   "sub": ":8888 git-backed"
+  },
+  {
+   "body": "Nightly @Scheduled + @SchedulerLock engine: settles CAPTURED payments per merchant, executes bank transfers, emits settlement events via the ops outbox trio. Monolith has only the entities today.",
+   "col": 3,
+   "files": [
+    "operations-service/settlement/SettlementEngine.java",
+    "operations-service/settlement/SettlementTransactionExecutor.java",
+    "operations-service/settlement/BankTransferProcessorImpl.java"
+   ],
+   "id": "settle",
+   "label": "Settlement",
+   "phase": "phase-5",
+   "recall": "The money- actually-moves step. Engine → executor → bank → callback → events.",
+   "row": 4,
+   "sub": "nightly engine"
   }
  ],
  "meta": {
@@ -389,7 +573,7 @@
   "pages": "https://freakinrkb.github.io/Razorpay/",
   "generated": "2026-09-10",
   "howToExtend": "To add a phase: append an entry to phases[] in journey.json with matching node ids, then push — GitHub Pages redeploys automatically. Anchors #/phase-4 deep-link each card.",
-  "version": "v2-deep"
+  "version": "v3-sunday"
  },
  "tech": [
   {
@@ -496,6 +680,62 @@
    "ref": "common/ratelimit/TokenBucketRateLimiter.java:28-62",
    "why": "Token-bucket refill and sliding-window eviction must be atomic — Lua runs check-and-update inside Redis, closing the race plain Java has.",
    "witty": ""
+  },
+  {
+   "id": "t-feign",
+   "name": "OpenFeign clients",
+   "ref": "payment-service/client/VaultServiceClient.java · ops/client/PaymentServiceClient.java",
+   "why": "Declarative HTTP interfaces replace in-process calls at each seam (payment→vault/merchant, ops→payment/merchant, gateway→merchant). Eureka name + K8s URL override.",
+   "witty": "Method calls that grew up into network calls."
+  },
+  {
+   "id": "t-eureka",
+   "name": "Eureka discovery (:8761)",
+   "ref": "discovery-service/application.yaml",
+   "why": "Local-dev registry: services register on boot, Feign resolves merchant-service/vault-service by name. Skipped in K8s (cluster DNS instead).",
+   "witty": "Phone book for services. K8s brings its own."
+  },
+  {
+   "id": "t-config",
+   "name": "Spring Config Server (:8888)",
+   "ref": "config-service/application.yaml · k8s/infra/configmap.yaml",
+   "why": "All ports, DB URLs, topics, gateway routes live in the distributed-razrorpay-config git repo. Services boot with config import + retry 10×3s, fail-fast off.",
+   "witty": "One git repo to configure them all."
+  },
+  {
+   "id": "t-resilience",
+   "name": "Resilience4j",
+   "ref": "vault-service/processor/CardPaymentProcessor.java (@Bulkhead)",
+   "why": "Circuit breakers on Feign/adapter calls stop a dead vault-service from freezing payments; the single bulkhead guards the slow vault charge path.",
+   "witty": "Fuses and bulkheads for the failure ship."
+  },
+  {
+   "id": "t-shedlock",
+   "name": "ShedLock (@SchedulerLock)",
+   "ref": "payment-service/config/SchedularLockConfig.java",
+   "why": "One shared lock row so nightly settlement and outbox polling run on exactly one replica. Plain @Scheduled is unsafe at 2+ pods.",
+   "witty": "Only one cook in the nightly kitchen."
+  },
+  {
+   "id": "t-actuator",
+   "name": "Actuator + Micrometer + Prometheus",
+   "ref": "observability/prometheus.yml (scrape 5s, 5 targets)",
+   "why": "Each service exposes /actuator/prometheus; Prometheus scrapes gateway+4 services + config every 5s; Grafana provisioning renders dashboards.",
+   "witty": "Dials on every engine."
+  },
+  {
+   "id": "t-zipkin",
+   "name": "Zipkin tracing (:9411)",
+   "ref": "observability/docker-compose.yml (openzipkin/zipkin)",
+   "why": "micrometer-tracing ships every span (sampling 1.0) so a checkout can be followed gateway→payment→vault→kafka→ops in one waterfall.",
+   "witty": "Follow one rupee across 5 services."
+  },
+  {
+   "id": "t-k8s",
+   "name": "K8s: Kind + Kustomize",
+   "ref": "k8s/kustomization.yaml · k8s/kind-config.yaml",
+   "why": "ns razorpay-core; stateful postgres (4 DBs)/redis/kafka/zipkin/prometheus/grafana + 6 service deployments; gateway on NodePort 30080. Secrets via secretGenerator (rotate the checked-in env file!).",
+   "witty": "Sunday's finish line."
   }
  ],
  "annotations": [
@@ -744,6 +984,85 @@
    "id": "ann-lombok",
    "pitfall": "",
    "why": "Removes ~40% boilerplate; constructor injection makes dependencies explicit and testable."
+  },
+  {
+   "body": "Declares a declarative HTTP client interface; @EnableFeignClients activates them. Calls resolve through Eureka by service name with optional URL override for K8s.",
+   "examples": [
+    "payment-service/client/VaultServiceClient.java",
+    "api-gateway-service/client/ApiKeyLookupClient.java"
+   ],
+   "group": "Cloud",
+   "id": "ann-feign",
+   "pitfall": "",
+   "why": "Replaces in-process calls at every service seam: payment→vault, payment→merchant, ops→payment, gateway→merchant.",
+   "title": "@FeignClient + @EnableFeignClients"
+  },
+  {
+   "body": "Turns a service into the Eureka registry. Clients register on boot; Feign resolves names like merchant-service through it.",
+   "examples": [
+    "discovery-service/*Application.java (@EnableEurekaServer)"
+   ],
+   "group": "Cloud",
+   "id": "ann-eureka",
+   "pitfall": "Eureka is NOT deployed to K8s in the teacher project (no discovery-service.yaml) — K8s DNS takes over there.",
+   "why": "Local dev uses Eureka for name→address; K8s profile switches to svc.cluster.local DNS.",
+   "title": "@EnableEurekaServer"
+  },
+  {
+   "body": "Wraps a Feign call or adapter so repeated failures trip the circuit and fail fast instead of piling up threads.",
+   "examples": [
+    "payment-service/gateway/adapter/CardPaymentAdapter.java (vault-service)"
+   ],
+   "group": "Cloud",
+   "id": "ann-cb",
+   "pitfall": "",
+   "why": "A dead vault-service must not cascade and freeze payment threads — the breaker opens and checkout degrades.",
+   "title": "@CircuitBreaker (Resilience4j)"
+  },
+  {
+   "body": "Caps concurrent calls on a bulkheaded path. The vault charge processor is the only bulkheaded call in the teacher codebase.",
+   "examples": [
+    "vault-service/processor/CardPaymentProcessor.java (@Bulkhead vault-card-processor)"
+   ],
+   "group": "Cloud",
+   "id": "ann-bulkhead",
+   "pitfall": "",
+   "why": "Encryption + PSP calls are the slowest hop — the bulkhead keeps them from eating all request threads.",
+   "title": "@Bulkhead (Resilience4j)"
+  },
+  {
+   "body": "Guarantees a @Scheduled job runs on only one replica at a time via a shared lock row. Payment + operations schedulers both use it.",
+   "examples": [
+    "payment-service/config/SchedularLockConfig.java",
+    "operations-service settlement/SettlementEngine.java"
+   ],
+   "group": "Cloud",
+   "id": "ann-shedlock",
+   "pitfall": "Your monolith schedulers have NO lock — safe today (1 replica), unsafe the moment you scale to 2.",
+   "why": "Nightly settlement must not double-pay merchants when two pods both wake up at midnight.",
+   "title": "@SchedulerLock (ShedLock)"
+  },
+  {
+   "body": "Gateway routing predicates live in the remote config repo, but the auth enforcement is a local OncePerRequestFilter at HIGHEST_PRECEDENCE+1 — before everything.",
+   "examples": [
+    "api-gateway-service/security/GatewayAuthFilter.java"
+   ],
+   "group": "Cloud",
+   "id": "ann-gwfilter",
+   "pitfall": "",
+   "why": "One choke point injects X-Merchant-Id/X-Environment/X-Key-Id so downstream services never parse credentials.",
+   "title": "Gateway auth filter chain"
+  },
+  {
+   "body": "Pulls YAML from the Config Server at boot with fail-fast off and 10×3s retry. Every business service + gateway uses it; secrets arrive as env, never in git.",
+   "examples": [
+    "k8s/infra/configmap.yaml (CONFIG_SERVER_URL, FAIL_FAST=false)"
+   ],
+   "group": "Cloud",
+   "id": "ann-configimport",
+   "pitfall": "",
+   "why": "One git repo (distributed-razrorpay-config) owns all ports, DB URLs, topics and routes across 7 services.",
+   "title": "config import: configserver"
   }
  ],
  "patterns": [
@@ -881,6 +1200,67 @@
    "phase": "phase-0",
    "problem": "Pessimistic row lock serializes concurrent capture/callback on one payment — no double-capture.",
    "title": "Pessimistic locking"
+  },
+  {
+   "files": [
+    "api-gateway-service/security/GatewayAuthFilter.java",
+    "api-gateway-service/security/ApiKeyAuthHandler.java",
+    "api-gateway-service/security/JwtAuthHandler.java",
+    "api-gateway-service/security/PublicRouteMatcher.java"
+   ],
+   "id": "pat-apigw",
+   "phase": "phase-8",
+   "problem": "Auth, rate-limit and identity propagation in one edge filter — 7 services stop repeating credential logic.",
+   "title": "API Gateway"
+  },
+  {
+   "files": [
+    "discovery-service/",
+    "payment-service/client/VaultServiceClient.java"
+   ],
+   "id": "pat-discovery",
+   "phase": "phase-8",
+   "problem": "Services call names (vault-service), not IPs — registry decouples deploy topology from code.",
+   "title": "Service Discovery"
+  },
+  {
+   "files": [
+    "config-service/",
+    "k8s/infra/configmap.yaml"
+   ],
+   "id": "pat-config",
+   "phase": "phase-8",
+   "problem": "Ports, DB URLs, topics, routes in one git repo — environment differences become config, not code branches.",
+   "title": "Centralized Config"
+  },
+  {
+   "files": [
+    "payment-service/client/CustomerServiceClient.java",
+    "operations-service/client/PaymentServiceClient.java"
+   ],
+   "id": "pat-lb",
+   "phase": "phase-6",
+   "problem": "Feign + Eureka ribbon-picks a healthy instance per call — no hardcoded URLs outside K8s overrides.",
+   "title": "Client-side load balancing"
+  },
+  {
+   "files": [
+    "payment-service/config/SchedularLockConfig.java",
+    "operations-service/config/SchedularLockConfig.java"
+   ],
+   "id": "pat-dlock",
+   "phase": "phase-5",
+   "problem": "One shared lock row stops twin pods from double-settling or double-polling the outbox.",
+   "title": "Distributed lock"
+  },
+  {
+   "files": [
+    "payment-service/saga/PaymentAuthorizationRecorder.java"
+   ],
+   "id": "pat-saga",
+   "phase": "phase-6",
+   "problem": "Authorization side-effects recorded as a saga seam today — the future split point for a standalone saga orchestrator.",
+   "title": "Saga seam"
   }
  ]
 }

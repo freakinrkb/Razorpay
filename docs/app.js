@@ -17,7 +17,7 @@ function renderStrip() {
   $('#flowTrack').innerHTML = items + items; // loop seamlessly
 }
 
-const COLS = [70, 360, 650, 940], ROWS = [70, 230, 390, 540], W = 220, H = 74;
+const COLS = [70, 360, 650, 940], ROWS = [70, 230, 390, 540, 700], W = 220, H = 74;
 
 function nodeById(id){ return DATA.nodes.find(n=>n.id===id); }
 
@@ -32,6 +32,8 @@ function renderArch() {
     ['webhookcfg','webhookdlv','slow'], ['webhookdlv','dlq',''],
     ['payment-gw','refundsettle','backlog'], ['order','refundsettle','backlog'],
     ['auth','infracore','slow'], ['outbox','infracore','slow'],
+    ['apigw','auth',''], ['discovery','apigw','slow'], ['configsvr','discovery','slow'],
+    ['payment-gw','settle','backlog'], ['settle','kafka',''],
   ];
   let defs = `<defs><linearGradient id="edgeGrad" x1="0" y1="0" x2="1" y2="0">
     <stop offset="0" stop-color="#7c8cff"/><stop offset="1" stop-color="#38e1c6"/></linearGradient></defs>`;
@@ -175,7 +177,7 @@ function openPhase(id) {
   const p = DATA.phases.find(x=>x.id===id); if(!p) return;
   const relT = (DATA.tech||[]).filter(t => (p.nodes||[]).some(n => (t.why+t.ref).includes(n)) ).slice(0,4);
   openModal({kicker:`${p.date} · ${p.commit} · ${p.stats}`, title:p.title, tag:p.tagline, hash:id, tabs:[
-    {label:'Explanation', html:`<p>${p.recall}</p>${relT.length?`<h4>Key tech in this phase</h4><ul>${relT.map(t=>`<li><strong>${t.name}</strong> — ${t.why}</li>`).join('')}</ul>`:''}`},
+    {label:'Explanation', html:`<p>${p.recall}</p>${(p.checklist||[]).length?`<h4>Sunday checklist</h4><ul class="checklist">${p.checklist.map(c=>`<li>${c}</li>`).join('')}</ul>`:''}${relT.length?`<h4>Key tech in this phase</h4><ul>${relT.map(t=>`<li><strong>${t.name}</strong> — ${t.why}</li>`).join('')}</ul>`:''}`},
     {label:'Files', html:`<ul class="file-list">${filesHtml(p.files)}</ul>`},
     {label:'Replay', html:`<ol class="howto">${howtoHtml(p.howto)}</ol>`},
   ]});
