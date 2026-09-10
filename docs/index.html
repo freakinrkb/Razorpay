@@ -18,6 +18,7 @@
     <div class="hero-cta">
       <a class="btn primary" href="#map">Explore the live map</a>
       <a class="btn ghost" href="#timeline">Replay the timeline</a>
+      <a class="btn ghost" href="#tech">Tech & patterns</a>
       <a class="btn ghost" id="repoLink" href="https://github.com/freakinrkb/Razorpay" target="_blank" rel="noopener">GitHub repo ↗</a>
     </div>
     <div class="youarehere" id="youAreHere">📍 <strong>You are here:</strong> Phase 4 — Webhook Delivery + DLQ (written, uncommitted) · <a href="#phase-4">jump ↓</a></div>
@@ -51,6 +52,31 @@
       <p>One card per phase, mapped 1:1 to your git history. Deep-linkable: <code>#/phase-4</code>.</p>
     </div>
     <div class="timeline" id="timelineEl"></div>
+  </section>
+
+  <section id="tech" class="section">
+    <div class="section-head">
+      <h2>Tech stack <span class="hint">— what · why · where</span></h2>
+      <p>Every tool in the project, justified against your actual code. Click any card for the full story.</p>
+    </div>
+    <div class="grid" id="techGrid"></div>
+  </section>
+
+  <section id="annotations" class="section">
+    <div class="section-head">
+      <h2>Annotation glossary <span class="hint">— only what you actually use</span></h2>
+      <p>Each entry shows what it does, why it's <em>in this project</em>, and the exact file proving it.</p>
+      <div class="filter-row" id="annFilters"></div>
+    </div>
+    <div class="grid" id="annGrid"></div>
+  </section>
+
+  <section id="patterns" class="section">
+    <div class="section-head">
+      <h2>Design patterns <span class="hint">— pattern → where → problem solved</span></h2>
+      <p>Twelve patterns, each traced to the files that implement it and the problem it kills here.</p>
+    </div>
+    <div class="grid" id="patGrid"></div>
   </section>
 
   <section id="extend" class="section">

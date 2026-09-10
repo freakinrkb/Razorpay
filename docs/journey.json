@@ -1,1 +1,886 @@
-{"phases":[{"date":"2026-08-10","id":"phase-0","status":"done","title":"Phase 0 — Monolith Scaffold","commit":"53b9020 · Initial commit","stats":"129 files · +9342 lines","tagline":"Auth, Orders, Payments, Vault, infra — the skeleton everything hangs on.","recall":"If you forget everything else, remember this: Merchant owns everything. Order groups attempts. Payment moves through a state machine. Vault keeps raw cards out of your DB.","files":["src/main/java/com/example/razorpay/merchant/security/WebSecurityConfig.java","src/main/java/com/example/razorpay/merchant/security/ApiKeyAuthenticationFilter.java","src/main/java/com/example/razorpay/merchant/security/JwtUtil.java","src/main/java/com/example/razorpay/payment/service/impl/OrderServiceImpl.java","src/main/java/com/example/razorpay/payment/service/impl/PaymentServiceImpl.java","src/main/java/com/example/razorpay/payment/statemachine/PaymentStateMachine.java","src/main/java/com/example/razorpay/vault/service/impl/VaultServiceImpl.java","src/main/resources/application.yaml","services.docker-compose.yaml"],"howto":["docker compose -f services.docker-compose.yaml up -d postgres redis","./mvnw spring-boot:run","POST /api/auth/signup → POST /api/auth/login → use JWT","POST /api/orders with X-API-Key header"],"nodes":["auth","order","payment-gw","vault","infracore"]},{"date":"2026-08-12","id":"phase-1","status":"done","title":"Phase 1 — Idempotency","commit":"b6dc63c · Idempotency added","stats":"5 files · +204 lines","tagline":"Same POST twice with the same key = one charge, one replayed response.","recall":"Filter runs before controllers. Key scope is merchantId:key. IN_PROGRESS (30s) blocks doubles, COMPLETED (24h) replays the saved response.","files":["src/main/java/com/example/razorpay/common/idempotency/IdempotencyFilter.java","src/main/java/com/example/razorpay/common/idempotency/RedisIdempotencyStore.java","src/main/java/com/example/razorpay/common/idempotency/IdempotencyStore.java","src/main/java/com/example/razorpay/common/exception/IdempotencyConflictException.java"],"howto":["POST /api/payments with header X-Idempotency-Key: abc-123","Retry same request → identical response, no second charge","Different key → new payment"],"nodes":["idempotency"]},{"date":"2026-08-14","id":"phase-2","status":"done","title":"Phase 2 — Customer + 4 Rate Limiters","commit":"a71b357 · several changes","stats":"27 files · +552/−32","tagline":"findOrCreate customer on every order + swappable abuse protection.","recall":"Customer is keyed by (merchantId, email) — auto-created inside createOrder. Rate limiter is one interface, 4 beans, chosen by app.rate-limit.method (fixed active). ApiKey filter enforces 100/min.","files":["src/main/java/com/example/razorpay/merchant/service/impl/CustomerServiceImpl.java","src/main/java/com/example/razorpay/common/ratelimit/RateLimiter.java","src/main/java/com/example/razorpay/common/ratelimit/FixedWindowRateLimiter.java","src/main/java/com/example/razorpay/common/ratelimit/SlidingWindowRateLimiter.java","src/main/java/com/example/razorpay/common/ratelimit/SlidingWindowLuaLimiter.java","src/main/java/com/example/razorpay/common/ratelimit/TokenBucketRateLimiter.java"],"howto":["POST /api/orders with { customer: { email, name, phone } } → customer row reused","Set app.rate-limit.method: sliding-lua → restart → atomic Lua limiting","Exceed 100/min → 429 + X-RateLimit-* headers"],"nodes":["customer","ratelimit"]},{"date":"2026-08-15","id":"phase-3","status":"done","title":"Phase 3 — Outbox + Webhook Config (committed)","commit":"a7dc102 · Webhook and outbox has been added","stats":"20 files · +724/−73","tagline":"Payments publish reliably to Kafka; merchants choose which events hit their URL.","recall":"publish() saves OutboxEvent in the SAME DB transaction as the payment. OutboxPoller (5s) forwards to Kafka. MerchantWebhookConfig stores targetUrl + secret + event filter. Kafka topics: payments/orders/refunds/settlements.events.","files":["src/main/java/com/example/razorpay/payment/entity/OutboxEvent.java","src/main/java/com/example/razorpay/payment/outbox/OutboxEventPublisher.java","src/main/java/com/example/razorpay/payment/outbox/OutboxPoller.java","src/main/java/com/example/razorpay/merchant/controller/WebhookConfigController.java","src/main/java/com/example/razorpay/merchant/service/impl/WebhookConfigServiceImpl.java","src/main/java/com/example/razorpay/common/dto/WebhookTarget.java"],"howto":["Configure: POST /api/webhook-configs { targetUrl, secret, events }","Create/capture a payment → row in outbox_event → Kafka payments.events","Watch it: localhost:9021 (Control Center)"],"nodes":["outbox","kafka","webhookcfg"]},{"date":"uncommitted","id":"phase-4","status":"wip","title":"Phase 4 — Webhook Delivery + DLQ (YOU ARE HERE)","commit":"uncommitted · 14 files · +618","stats":"10 staged + 4 modified · needs re-add","tagline":"Kafka → signed POST with retries → dead-letter when hopeless. Written, not yet committed.","recall":"Consumer looks up active configs, HMAC-signs payload (SignerUtil), saves WebhookEvent PENDING, pushes to Redis ZSET. Scheduler (1s poll + 10s DB reconcile) delivers on virtual threads. 7 tries: 1m, 5m, 30m, 2h, 8h, 24h → DEAD + DlqEvent. FIX BEFORE COMMIT: re-add worktree (package com.example…), Lombok on entities, fix trusted.packages in application.yaml:40.","files":["src/main/java/com/example/razorpay/operations/webhook/WebhookKafkaConsumer.java","src/main/java/com/example/razorpay/operations/webhook/WebhookRetryQueue.java","src/main/java/com/example/razorpay/operations/webhook/WebhookDeliveryScheduler.java","src/main/java/com/example/razorpay/operations/webhook/WebhookDeliverExecutor.java","src/main/java/com/example/razorpay/operations/webhook/WebhookDlqRecorder.java","src/main/java/com/example/razorpay/common/util/SignerUtil.java","src/main/java/com/example/razorpay/operations/entity/WebhookEvent.java","src/main/java/com/example/razorpay/operations/entity/DlqEvent.java"],"howto":["git add -A && git commit -m 'Webhook delivery pipeline'","Fix application.yaml trusted.packages → com.example.razorpay.*","Test: POST to DummyMerchantWebhookController → watch attempts column grow"],"nodes":["webhookdlv","dlq"]},{"date":"next","id":"phase-5","status":"next","title":"Phase 5 — Next Up (not started)","commit":"backlog","stats":"5 gaps to close","tagline":"Uncomment, fill in, expose: simulator, order events, refunds, settlements, DLQ replay.","recall":"1) Uncomment @Scheduled in BankCallbackSimulator:24. 2) Uncomment ORDER_CREATED/CANCELLED publish in OrderServiceImpl:68,100. 3) Build RefundService. 4) Build SettlementService + scheduler. 5) DLQ replay API (replayedAt is never set today).","files":["src/main/java/com/example/razorpay/payment/simulator/BankCallbackSimulator.java","src/main/java/com/example/razorpay/payment/service/impl/OrderServiceImpl.java","src/main/java/com/example/razorpay/payment/statemachine/PaymentTransitionService.java"],"howto":["Start with the simulator — without it async authorize never resolves","Then order events — one-line uncomment each","Then DLQ replay endpoint: POST /api/dlq/{id}/replay"],"nodes":["simulator","refundsettle"]}],"nodes":[{"id":"auth","label":"Auth","sub":"JWT + API keys","col":0,"row":0,"phase":"phase-0","body":"Dual auth. Signup hashes with BCrypt, login returns JWT (JwtUtil). API keys go through ApiKeyAuthenticationFilter: X-API-Key → RedisApiKeyCache → MerchantContext ThreadLocal. WebSecurityConfig chains both filters.","files":["merchant/security/WebSecurityConfig.java","merchant/security/JwtUtil.java","merchant/security/ApiKeyAuthenticationFilter.java"],"recall":"MerchantContext holds merchantId per request — every query is merchant-scoped."},{"id":"ratelimit","label":"Rate Limit","sub":"4 strategies","col":1,"row":0,"phase":"phase-2","body":"One RateLimiter interface, four beans switched by app.rate-limit.method: fixed (active), sliding, sliding-lua (atomic, best), bucket. Enforced inside the ApiKey filter at 100/min → 429 with X-RateLimit-* headers. Fail-open on Redis outage.","files":["common/ratelimit/RateLimiter.java","common/ratelimit/FixedWindowRateLimiter.java","common/ratelimit/SlidingWindowLuaLimiter.java"],"recall":"To compare algorithms, just flip one YAML key and restart."},{"id":"idempotency","label":"Idempotency","sub":"X-Idempotency-Key","col":2,"row":0,"phase":"phase-1","body":"OncePerRequestFilter on POST/PUT/PATCH. Claims merchantId:key via setIfAbsent. IN_PROGRESS=30s blocks concurrent doubles; COMPLETED=24h replays the cached response body. Conflict → 409.","files":["common/idempotency/IdempotencyFilter.java","common/idempotency/RedisIdempotencyStore.java"],"recall":"Transparent — no controller code needed."},{"id":"customer","label":"Customer","sub":"findOrCreate","col":0,"row":1,"phase":"phase-2","body":"Keyed by (merchantId, email). Auto-created inside createOrder when request.customer is present. No dedicated controller — lives under orders.","files":["merchant/service/impl/CustomerServiceImpl.java","merchant/repository/CustomerRepository.java"],"recall":"Same email + same merchant = same row, always."},{"id":"order","label":"Orders","sub":"receipt dedup","col":1,"row":1,"phase":"phase-0","body":"OrderController create/get/cancel/listPayments. Receipt must be unique per merchant (DuplicateResourceException). expiresAt = +30m. NOTE: ORDER_CREATED / ORDER_CANCELLED outbox publish is commented out (OrderServiceImpl:68,100) — orders emit nothing today.","files":["payment/service/impl/OrderServiceImpl.java","payment/controller/OrderController.java"],"recall":"Uncomment two lines to put orders on the event bus."},{"id":"payment-gw","label":"Payments","sub":"state machine","col":2,"row":1,"phase":"phase-0","body":"initiate → ATTEMPTED → gateway router (Card/UPI/NetBanking adapters + processor strategies) → Pending/Success/Failure. capture uses pessimistic lock. Every transition writes PaymentTransitionLog. resolveAuthorization auto-captures. Publishes PAYMENT_CREATED / PAYMENT_STATUS_CHANGED via outbox.","files":["payment/service/impl/PaymentServiceImpl.java","payment/statemachine/PaymentStateMachine.java","payment/gateway/PaymentGatewayRouter.java"],"recall":"State machine is the source of truth; gateway result is just input."},{"id":"simulator","label":"Bank Simulator","sub":"DISABLED","col":3,"row":1,"phase":"phase-5","body":"Fakes bank latency/success-rate per method + ChaosMode. BUT @Scheduled is commented out (BankCallbackSimulator:24) so processCallbacks() never runs — async authorizations hang. First backlog item: uncomment it.","files":["payment/simulator/BankCallbackSimulator.java"],"recall":"Without this, Pending payments never resolve."},{"id":"vault","label":"Vault","sub":"AES tokenize","col":0,"row":2,"phase":"phase-0","body":"PAN never touches payment tables. AES-GCM with vault.master-key encrypts → token returned. Detokenize only inside Vault. ExpiryYear validator guards input.","files":["vault/service/impl/VaultServiceImpl.java","vault/controller/VaultController.java"],"recall":"PCI boundary: raw cards stop here."},{"id":"outbox","label":"Outbox","sub":"same-TX publish","col":1,"row":2,"phase":"phase-3","body":"OutboxEventPublisher.publish() saves the event in the same DB transaction as the payment — no lost events on crash. OutboxPoller every 5s sends PENDING rows to Kafka (idempotent producer). Gap: no SKIP LOCKED, so multi-instance can double-send.","files":["payment/outbox/OutboxEventPublisher.java","payment/outbox/OutboxPoller.java","payment/entity/OutboxEvent.java"],"recall":"DB first, Kafka second — always."},{"id":"kafka","label":"Kafka","sub":"4 topics","col":2,"row":2,"phase":"phase-3","body":"KRaft single-broker (confluent-local:7.5.0). Topics: payments/orders/refunds/settlements.events. Manual ack, earliest offset. UI at :9021 Control Center.","files":["common/config/KafkaProperties.java","services.docker-compose.yaml"],"recall":"topicFor(aggregateType) routes every event."},{"id":"webhookcfg","label":"Webhook Config","sub":"per-merchant URLs","col":3,"row":2,"phase":"phase-3","body":"Merchants register targetUrl + secret + event filter (ALL or CSV) via WebhookConfigController. MerchantWebhookApi.getActiveConfigsForEvent() is what the consumer calls per event.","files":["merchant/controller/WebhookConfigController.java","merchant/service/impl/WebhookConfigServiceImpl.java"],"recall":"Secret per config → per-target HMAC signature."},{"id":"webhookdlv","label":"Delivery","sub":"YOU ARE HERE","col":1,"row":3,"phase":"phase-4","body":"Consumer persists WebhookEvent PENDING + enqueues in Redis ZSET (score=retryAt). Scheduler: 1s pollDue → virtual-thread deliver; 10s reconcile PENDING from DB. Executor POSTs with X-Razorpay-Signature, backoff 1m→24h, max 7 attempts.","files":["operations/webhook/WebhookKafkaConsumer.java","operations/webhook/WebhookRetryQueue.java","operations/webhook/WebhookDeliveryScheduler.java","operations/webhook/WebhookDeliverExecutor.java"],"recall":"Redis is the timer, Postgres is the truth."},{"id":"dlq","label":"DLQ","sub":"after 7 fails","col":2,"row":3,"phase":"phase-4","body":"WebhookDlqRecorder marks event DEAD and writes DlqEvent (finalError + payload). No replay API yet — replayedAt is never set. Next: POST /api/dlq/{id}/replay.","files":["operations/webhook/WebhookDlqRecorder.java","operations/entity/DlqEvent.java"],"recall":"Dead doesn't mean gone — it means waiting for replay."},{"id":"refundsettle","label":"Refund/Settle","sub":"BACKLOG","col":3,"row":3,"phase":"phase-5","body":"Only entities exist (Refund, Settlement, SettlementPayment). No service, repo query, scheduler, or controller. Settlement math: net = gross − refunds − fee − GST.","files":["operations/entity/Settlement.java","payment/entity/Refund.java"],"recall":"Biggest unbuilt vertical."},{"id":"infracore","label":"Infra","sub":"PG+Redis+Kafka","col":0,"row":3,"phase":"phase-0","body":"services.docker-compose.yaml: postgres:18, redis:7 (appendonly), kafka KRaft + control-center. app.yaml: ddl-auto update, virtual threads on, fixed rate-limit, delivery redis-key webhook-retry batch 100.","files":["services.docker-compose.yaml","src/main/resources/application.yaml"],"recall":"docker compose up -d is step zero of every demo."}],"meta":{"repo":"https://github.com/freakinrkb/Razorpay","pages":"https://freakinrkb.github.io/Razorpay/","generated":"2026-09-10","howToExtend":"To add a phase: append an entry to phases[] in journey.json with matching node ids, then push — GitHub Pages redeploys automatically. Anchors #/phase-4 deep-link each card."}}
+{
+ "phases": [
+  {
+   "date": "2026-08-10",
+   "id": "phase-0",
+   "status": "done",
+   "title": "Phase 0 — Monolith Scaffold",
+   "commit": "53b9020 · Initial commit",
+   "stats": "129 files · +9342 lines",
+   "tagline": "Auth, Orders, Payments, Vault, infra — the skeleton everything hangs on.",
+   "recall": "If you forget everything else, remember this: Merchant owns everything. Order groups attempts. Payment moves through a state machine. Vault keeps raw cards out of your DB.",
+   "files": [
+    "src/main/java/com/example/razorpay/merchant/security/WebSecurityConfig.java",
+    "src/main/java/com/example/razorpay/merchant/security/ApiKeyAuthenticationFilter.java",
+    "src/main/java/com/example/razorpay/merchant/security/JwtUtil.java",
+    "src/main/java/com/example/razorpay/payment/service/impl/OrderServiceImpl.java",
+    "src/main/java/com/example/razorpay/payment/service/impl/PaymentServiceImpl.java",
+    "src/main/java/com/example/razorpay/payment/statemachine/PaymentStateMachine.java",
+    "src/main/java/com/example/razorpay/vault/service/impl/VaultServiceImpl.java",
+    "src/main/resources/application.yaml",
+    "services.docker-compose.yaml"
+   ],
+   "howto": [
+    "docker compose -f services.docker-compose.yaml up -d postgres redis",
+    "./mvnw spring-boot:run",
+    "POST /api/auth/signup → POST /api/auth/login → use JWT",
+    "POST /api/orders with X-API-Key header"
+   ],
+   "nodes": [
+    "auth",
+    "order",
+    "payment-gw",
+    "vault",
+    "infracore"
+   ]
+  },
+  {
+   "date": "2026-08-12",
+   "id": "phase-1",
+   "status": "done",
+   "title": "Phase 1 — Idempotency",
+   "commit": "b6dc63c · Idempotency added",
+   "stats": "5 files · +204 lines",
+   "tagline": "Same POST twice with the same key = one charge, one replayed response.",
+   "recall": "Filter runs before controllers. Key scope is merchantId:key. IN_PROGRESS (30s) blocks doubles, COMPLETED (24h) replays the saved response.",
+   "files": [
+    "src/main/java/com/example/razorpay/common/idempotency/IdempotencyFilter.java",
+    "src/main/java/com/example/razorpay/common/idempotency/RedisIdempotencyStore.java",
+    "src/main/java/com/example/razorpay/common/idempotency/IdempotencyStore.java",
+    "src/main/java/com/example/razorpay/common/exception/IdempotencyConflictException.java"
+   ],
+   "howto": [
+    "POST /api/payments with header X-Idempotency-Key: abc-123",
+    "Retry same request → identical response, no second charge",
+    "Different key → new payment"
+   ],
+   "nodes": [
+    "idempotency"
+   ]
+  },
+  {
+   "date": "2026-08-14",
+   "id": "phase-2",
+   "status": "done",
+   "title": "Phase 2 — Customer + 4 Rate Limiters",
+   "commit": "a71b357 · several changes",
+   "stats": "27 files · +552/−32",
+   "tagline": "findOrCreate customer on every order + swappable abuse protection.",
+   "recall": "Customer is keyed by (merchantId, email) — auto-created inside createOrder. Rate limiter is one interface, 4 beans, chosen by app.rate-limit.method (fixed active). ApiKey filter enforces 100/min.",
+   "files": [
+    "src/main/java/com/example/razorpay/merchant/service/impl/CustomerServiceImpl.java",
+    "src/main/java/com/example/razorpay/common/ratelimit/RateLimiter.java",
+    "src/main/java/com/example/razorpay/common/ratelimit/FixedWindowRateLimiter.java",
+    "src/main/java/com/example/razorpay/common/ratelimit/SlidingWindowRateLimiter.java",
+    "src/main/java/com/example/razorpay/common/ratelimit/SlidingWindowLuaLimiter.java",
+    "src/main/java/com/example/razorpay/common/ratelimit/TokenBucketRateLimiter.java"
+   ],
+   "howto": [
+    "POST /api/orders with { customer: { email, name, phone } } → customer row reused",
+    "Set app.rate-limit.method: sliding-lua → restart → atomic Lua limiting",
+    "Exceed 100/min → 429 + X-RateLimit-* headers"
+   ],
+   "nodes": [
+    "customer",
+    "ratelimit"
+   ]
+  },
+  {
+   "date": "2026-08-15",
+   "id": "phase-3",
+   "status": "done",
+   "title": "Phase 3 — Outbox + Webhook Config (committed)",
+   "commit": "a7dc102 · Webhook and outbox has been added",
+   "stats": "20 files · +724/−73",
+   "tagline": "Payments publish reliably to Kafka; merchants choose which events hit their URL.",
+   "recall": "publish() saves OutboxEvent in the SAME DB transaction as the payment. OutboxPoller (5s) forwards to Kafka. MerchantWebhookConfig stores targetUrl + secret + event filter. Kafka topics: payments/orders/refunds/settlements.events.",
+   "files": [
+    "src/main/java/com/example/razorpay/payment/entity/OutboxEvent.java",
+    "src/main/java/com/example/razorpay/payment/outbox/OutboxEventPublisher.java",
+    "src/main/java/com/example/razorpay/payment/outbox/OutboxPoller.java",
+    "src/main/java/com/example/razorpay/merchant/controller/WebhookConfigController.java",
+    "src/main/java/com/example/razorpay/merchant/service/impl/WebhookConfigServiceImpl.java",
+    "src/main/java/com/example/razorpay/common/dto/WebhookTarget.java"
+   ],
+   "howto": [
+    "Configure: POST /api/webhook-configs { targetUrl, secret, events }",
+    "Create/capture a payment → row in outbox_event → Kafka payments.events",
+    "Watch it: localhost:9021 (Control Center)"
+   ],
+   "nodes": [
+    "outbox",
+    "kafka",
+    "webhookcfg"
+   ]
+  },
+  {
+   "date": "uncommitted",
+   "id": "phase-4",
+   "status": "wip",
+   "title": "Phase 4 — Webhook Delivery + DLQ (YOU ARE HERE)",
+   "commit": "uncommitted · 14 files · +618",
+   "stats": "10 staged + 4 modified · needs re-add",
+   "tagline": "Kafka → signed POST with retries → dead-letter when hopeless. Written, not yet committed.",
+   "recall": "Consumer looks up active configs, HMAC-signs payload (SignerUtil), saves WebhookEvent PENDING, pushes to Redis ZSET. Scheduler (1s poll + 10s DB reconcile) delivers on virtual threads. 7 tries: 1m, 5m, 30m, 2h, 8h, 24h → DEAD + DlqEvent. FIX BEFORE COMMIT: re-add worktree (package com.example…), Lombok on entities, fix trusted.packages in application.yaml:40.",
+   "files": [
+    "src/main/java/com/example/razorpay/operations/webhook/WebhookKafkaConsumer.java",
+    "src/main/java/com/example/razorpay/operations/webhook/WebhookRetryQueue.java",
+    "src/main/java/com/example/razorpay/operations/webhook/WebhookDeliveryScheduler.java",
+    "src/main/java/com/example/razorpay/operations/webhook/WebhookDeliverExecutor.java",
+    "src/main/java/com/example/razorpay/operations/webhook/WebhookDlqRecorder.java",
+    "src/main/java/com/example/razorpay/common/util/SignerUtil.java",
+    "src/main/java/com/example/razorpay/operations/entity/WebhookEvent.java",
+    "src/main/java/com/example/razorpay/operations/entity/DlqEvent.java"
+   ],
+   "howto": [
+    "git add -A && git commit -m 'Webhook delivery pipeline'",
+    "Fix application.yaml trusted.packages → com.example.razorpay.*",
+    "Test: POST to DummyMerchantWebhookController → watch attempts column grow"
+   ],
+   "nodes": [
+    "webhookdlv",
+    "dlq"
+   ]
+  },
+  {
+   "date": "next",
+   "id": "phase-5",
+   "status": "next",
+   "title": "Phase 5 — Next Up (not started)",
+   "commit": "backlog",
+   "stats": "5 gaps to close",
+   "tagline": "Uncomment, fill in, expose: simulator, order events, refunds, settlements, DLQ replay.",
+   "recall": "1) Uncomment @Scheduled in BankCallbackSimulator:24. 2) Uncomment ORDER_CREATED/CANCELLED publish in OrderServiceImpl:68,100. 3) Build RefundService. 4) Build SettlementService + scheduler. 5) DLQ replay API (replayedAt is never set today).",
+   "files": [
+    "src/main/java/com/example/razorpay/payment/simulator/BankCallbackSimulator.java",
+    "src/main/java/com/example/razorpay/payment/service/impl/OrderServiceImpl.java",
+    "src/main/java/com/example/razorpay/payment/statemachine/PaymentTransitionService.java"
+   ],
+   "howto": [
+    "Start with the simulator — without it async authorize never resolves",
+    "Then order events — one-line uncomment each",
+    "Then DLQ replay endpoint: POST /api/dlq/{id}/replay"
+   ],
+   "nodes": [
+    "simulator",
+    "refundsettle"
+   ]
+  }
+ ],
+ "nodes": [
+  {
+   "id": "auth",
+   "label": "Auth",
+   "sub": "JWT + API keys",
+   "col": 0,
+   "row": 0,
+   "phase": "phase-0",
+   "body": "Dual auth. Signup hashes with BCrypt, login returns JWT (JwtUtil). API keys go through ApiKeyAuthenticationFilter: X-API-Key → RedisApiKeyCache → MerchantContext ThreadLocal. WebSecurityConfig chains both filters.",
+   "files": [
+    "merchant/security/WebSecurityConfig.java",
+    "merchant/security/JwtUtil.java",
+    "merchant/security/ApiKeyAuthenticationFilter.java"
+   ],
+   "recall": "MerchantContext holds merchantId per request — every query is merchant-scoped."
+  },
+  {
+   "id": "ratelimit",
+   "label": "Rate Limit",
+   "sub": "4 strategies",
+   "col": 1,
+   "row": 0,
+   "phase": "phase-2",
+   "body": "One RateLimiter interface, four beans switched by app.rate-limit.method: fixed (active), sliding, sliding-lua (atomic, best), bucket. Enforced inside the ApiKey filter at 100/min → 429 with X-RateLimit-* headers. Fail-open on Redis outage.",
+   "files": [
+    "common/ratelimit/RateLimiter.java",
+    "common/ratelimit/FixedWindowRateLimiter.java",
+    "common/ratelimit/SlidingWindowLuaLimiter.java"
+   ],
+   "recall": "To compare algorithms, just flip one YAML key and restart."
+  },
+  {
+   "id": "idempotency",
+   "label": "Idempotency",
+   "sub": "X-Idempotency-Key",
+   "col": 2,
+   "row": 0,
+   "phase": "phase-1",
+   "body": "OncePerRequestFilter on POST/PUT/PATCH. Claims merchantId:key via setIfAbsent. IN_PROGRESS=30s blocks concurrent doubles; COMPLETED=24h replays the cached response body. Conflict → 409.",
+   "files": [
+    "common/idempotency/IdempotencyFilter.java",
+    "common/idempotency/RedisIdempotencyStore.java"
+   ],
+   "recall": "Transparent — no controller code needed."
+  },
+  {
+   "id": "customer",
+   "label": "Customer",
+   "sub": "findOrCreate",
+   "col": 0,
+   "row": 1,
+   "phase": "phase-2",
+   "body": "Keyed by (merchantId, email). Auto-created inside createOrder when request.customer is present. No dedicated controller — lives under orders.",
+   "files": [
+    "merchant/service/impl/CustomerServiceImpl.java",
+    "merchant/repository/CustomerRepository.java"
+   ],
+   "recall": "Same email + same merchant = same row, always."
+  },
+  {
+   "id": "order",
+   "label": "Orders",
+   "sub": "receipt dedup",
+   "col": 1,
+   "row": 1,
+   "phase": "phase-0",
+   "body": "OrderController create/get/cancel/listPayments. Receipt must be unique per merchant (DuplicateResourceException). expiresAt = +30m. NOTE: ORDER_CREATED / ORDER_CANCELLED outbox publish is commented out (OrderServiceImpl:68,100) — orders emit nothing today.",
+   "files": [
+    "payment/service/impl/OrderServiceImpl.java",
+    "payment/controller/OrderController.java"
+   ],
+   "recall": "Uncomment two lines to put orders on the event bus."
+  },
+  {
+   "id": "payment-gw",
+   "label": "Payments",
+   "sub": "state machine",
+   "col": 2,
+   "row": 1,
+   "phase": "phase-0",
+   "body": "initiate → ATTEMPTED → gateway router (Card/UPI/NetBanking adapters + processor strategies) → Pending/Success/Failure. capture uses pessimistic lock. Every transition writes PaymentTransitionLog. resolveAuthorization auto-captures. Publishes PAYMENT_CREATED / PAYMENT_STATUS_CHANGED via outbox.",
+   "files": [
+    "payment/service/impl/PaymentServiceImpl.java",
+    "payment/statemachine/PaymentStateMachine.java",
+    "payment/gateway/PaymentGatewayRouter.java"
+   ],
+   "recall": "State machine is the source of truth; gateway result is just input."
+  },
+  {
+   "id": "simulator",
+   "label": "Bank Simulator",
+   "sub": "DISABLED",
+   "col": 3,
+   "row": 1,
+   "phase": "phase-5",
+   "body": "Fakes bank latency/success-rate per method + ChaosMode. BUT @Scheduled is commented out (BankCallbackSimulator:24) so processCallbacks() never runs — async authorizations hang. First backlog item: uncomment it.",
+   "files": [
+    "payment/simulator/BankCallbackSimulator.java"
+   ],
+   "recall": "Without this, Pending payments never resolve."
+  },
+  {
+   "id": "vault",
+   "label": "Vault",
+   "sub": "AES tokenize",
+   "col": 0,
+   "row": 2,
+   "phase": "phase-0",
+   "body": "PAN never touches payment tables. AES-GCM with vault.master-key encrypts → token returned. Detokenize only inside Vault. ExpiryYear validator guards input.",
+   "files": [
+    "vault/service/impl/VaultServiceImpl.java",
+    "vault/controller/VaultController.java"
+   ],
+   "recall": "PCI boundary: raw cards stop here."
+  },
+  {
+   "id": "outbox",
+   "label": "Outbox",
+   "sub": "same-TX publish",
+   "col": 1,
+   "row": 2,
+   "phase": "phase-3",
+   "body": "OutboxEventPublisher.publish() saves the event in the same DB transaction as the payment — no lost events on crash. OutboxPoller every 5s sends PENDING rows to Kafka (idempotent producer). Gap: no SKIP LOCKED, so multi-instance can double-send.",
+   "files": [
+    "payment/outbox/OutboxEventPublisher.java",
+    "payment/outbox/OutboxPoller.java",
+    "payment/entity/OutboxEvent.java"
+   ],
+   "recall": "DB first, Kafka second — always."
+  },
+  {
+   "id": "kafka",
+   "label": "Kafka",
+   "sub": "4 topics",
+   "col": 2,
+   "row": 2,
+   "phase": "phase-3",
+   "body": "KRaft single-broker (confluent-local:7.5.0). Topics: payments/orders/refunds/settlements.events. Manual ack, earliest offset. UI at :9021 Control Center.",
+   "files": [
+    "common/config/KafkaProperties.java",
+    "services.docker-compose.yaml"
+   ],
+   "recall": "topicFor(aggregateType) routes every event."
+  },
+  {
+   "id": "webhookcfg",
+   "label": "Webhook Config",
+   "sub": "per-merchant URLs",
+   "col": 3,
+   "row": 2,
+   "phase": "phase-3",
+   "body": "Merchants register targetUrl + secret + event filter (ALL or CSV) via WebhookConfigController. MerchantWebhookApi.getActiveConfigsForEvent() is what the consumer calls per event.",
+   "files": [
+    "merchant/controller/WebhookConfigController.java",
+    "merchant/service/impl/WebhookConfigServiceImpl.java"
+   ],
+   "recall": "Secret per config → per-target HMAC signature."
+  },
+  {
+   "id": "webhookdlv",
+   "label": "Delivery",
+   "sub": "YOU ARE HERE",
+   "col": 1,
+   "row": 3,
+   "phase": "phase-4",
+   "body": "Consumer persists WebhookEvent PENDING + enqueues in Redis ZSET (score=retryAt). Scheduler: 1s pollDue → virtual-thread deliver; 10s reconcile PENDING from DB. Executor POSTs with X-Razorpay-Signature, backoff 1m→24h, max 7 attempts.",
+   "files": [
+    "operations/webhook/WebhookKafkaConsumer.java",
+    "operations/webhook/WebhookRetryQueue.java",
+    "operations/webhook/WebhookDeliveryScheduler.java",
+    "operations/webhook/WebhookDeliverExecutor.java"
+   ],
+   "recall": "Redis is the timer, Postgres is the truth."
+  },
+  {
+   "id": "dlq",
+   "label": "DLQ",
+   "sub": "after 7 fails",
+   "col": 2,
+   "row": 3,
+   "phase": "phase-4",
+   "body": "WebhookDlqRecorder marks event DEAD and writes DlqEvent (finalError + payload). No replay API yet — replayedAt is never set. Next: POST /api/dlq/{id}/replay.",
+   "files": [
+    "operations/webhook/WebhookDlqRecorder.java",
+    "operations/entity/DlqEvent.java"
+   ],
+   "recall": "Dead doesn't mean gone — it means waiting for replay."
+  },
+  {
+   "id": "refundsettle",
+   "label": "Refund/Settle",
+   "sub": "BACKLOG",
+   "col": 3,
+   "row": 3,
+   "phase": "phase-5",
+   "body": "Only entities exist (Refund, Settlement, SettlementPayment). No service, repo query, scheduler, or controller. Settlement math: net = gross − refunds − fee − GST.",
+   "files": [
+    "operations/entity/Settlement.java",
+    "payment/entity/Refund.java"
+   ],
+   "recall": "Biggest unbuilt vertical."
+  },
+  {
+   "id": "infracore",
+   "label": "Infra",
+   "sub": "PG+Redis+Kafka",
+   "col": 0,
+   "row": 3,
+   "phase": "phase-0",
+   "body": "services.docker-compose.yaml: postgres:18, redis:7 (appendonly), kafka KRaft + control-center. app.yaml: ddl-auto update, virtual threads on, fixed rate-limit, delivery redis-key webhook-retry batch 100.",
+   "files": [
+    "services.docker-compose.yaml",
+    "src/main/resources/application.yaml"
+   ],
+   "recall": "docker compose up -d is step zero of every demo."
+  }
+ ],
+ "meta": {
+  "repo": "https://github.com/freakinrkb/Razorpay",
+  "pages": "https://freakinrkb.github.io/Razorpay/",
+  "generated": "2026-09-10",
+  "howToExtend": "To add a phase: append an entry to phases[] in journey.json with matching node ids, then push — GitHub Pages redeploys automatically. Anchors #/phase-4 deep-link each card.",
+  "version": "v2-deep"
+ },
+ "tech": [
+  {
+   "id": "t-pg",
+   "name": "PostgreSQL 18",
+   "ref": "pom.xml:33-36 · application.yaml:4-19",
+   "why": "System of record: merchants, API keys, orders, payments, outbox, webhooks, settlements all live as JPA @Entities. ddl-auto:update while building; jsonb columns carry flexible event payloads.",
+   "witty": "The truth. If it's not in Postgres, it didn't happen."
+  },
+  {
+   "id": "t-redis-cache",
+   "name": "Redis — API-key cache",
+   "ref": "merchant/cache/RedisApiKeyCache.java:26,40-42",
+   "why": "Every merchant API call authenticates — hitting Postgres + BCrypt each time would melt. apikey:{id} cached 5 min, evicted on revoke/rotate.",
+   "witty": ""
+  },
+  {
+   "id": "t-redis-limit",
+   "name": "Redis — rate limiting",
+   "ref": "common/ratelimit/FixedWindowRateLimiter.java:22-25",
+   "why": "Counters (INCR + EXPIRE) enforce 100 req/min per API key inside the auth filter. 4 algorithms, one YAML switch; Lua variants make check-and-set atomic.",
+   "witty": ""
+  },
+  {
+   "id": "t-redis-idem",
+   "name": "Redis — idempotency store",
+   "ref": "common/idempotency/RedisIdempotencyStore.java:23,34",
+   "why": "SETNX claims merchantId:key as IN_PROGRESS (30s) then stores the completed response (24h). Double-clicks and retries replay instead of re-charging.",
+   "witty": ""
+  },
+  {
+   "id": "t-redis-zset",
+   "name": "Redis — webhook retry queue",
+   "ref": "operations/webhook/WebhookRetryQueue.java:28,35,48",
+   "why": "A sorted set scored by retry timestamp is a delay queue with no extra infra: pollDue = 'everything whose time has come'.",
+   "witty": ""
+  },
+  {
+   "id": "t-kafka-outbox",
+   "name": "Kafka — outbox relay",
+   "ref": "payment/outbox/OutboxPoller.java:28-47",
+   "why": "DB is written first, Kafka second (5s poller, idempotent producer, merchantId as key). Crash between the two loses nothing — the row is still PENDING.",
+   "witty": "The postman. DB writes the letter, Kafka delivers it."
+  },
+  {
+   "id": "t-kafka-webhook",
+   "name": "Kafka — webhook fan-out",
+   "ref": "operations/webhook/WebhookKafkaConsumer.java:36-42",
+   "why": "One domain event → N merchant deliveries. Manual ack: infra failure = redeliver, logic error = DLQ + ack. Control Center on :9021 to watch it.",
+   "witty": ""
+  },
+  {
+   "id": "t-auth",
+   "name": "JWT + API keys (dual auth)",
+   "ref": "merchant/security/JwtUtil.java:24-33",
+   "why": "Humans get short-lived JWTs (dashboard), machines get revocable keyId.secret pairs with env scoping and grace periods. Two @Order'd chains, stateless sessions.",
+   "witty": "Humans show ID. Machines show keys."
+  },
+  {
+   "id": "t-mapstruct",
+   "name": "MapStruct + Lombok",
+   "ref": "pom.xml:42-45 · merchant/mapper/ApiKeyMapper.java:15",
+   "why": "Compile-time DTO mapping (no reflection) + no boilerplate. Secrets mapped once in mappers, never hand-copied in services.",
+   "witty": ""
+  },
+  {
+   "id": "t-validation",
+   "name": "Bean Validation",
+   "ref": "merchant/controller/AuthController.java:25",
+   "why": "@Valid at every controller + constraints on DTOs (email, Luhn card check, https-only webhook URLs). Bad input dies at the edge as 400.",
+   "witty": "Bouncers at every door."
+  },
+  {
+   "id": "t-vthreads",
+   "name": "Java 25 virtual threads",
+   "ref": "application.yaml:44-46",
+   "why": "Webhook POSTs, JPA calls and Kafka sends all block — virtual threads make millions of blocked fibers cheap. Scheduler uses newVirtualThreadPerTaskExecutor.",
+   "witty": ""
+  },
+  {
+   "id": "t-vault",
+   "name": "AES-GCM vault (envelope)",
+   "ref": "vault/service/impl/VaultServiceImpl.java:83-85",
+   "why": "Raw PAN never touches payment tables: random data-key encrypts the card, master key encrypts the data-key. PCI blast radius ends here.",
+   "witty": "Cards go in, tokens come out. Raw numbers never leave."
+  },
+  {
+   "id": "t-hmac",
+   "name": "HMAC-SHA256 webhooks",
+   "ref": "common/util/SignerUtil.java:15-20",
+   "why": "Each delivery carries X-Razorpay-Signature over {event,payload} with the merchant's own secret — receivers can prove it came from you.",
+   "witty": "Wax seal on every letter."
+  },
+  {
+   "id": "t-rest",
+   "name": "RestClient (3s/5s)",
+   "ref": "operations/config/WebhookClientConfig.java:12-19",
+   "why": "Synchronous merchant POSTs with tight connect/read timeouts — slow receivers fail fast into the retry queue instead of clogging deliverers.",
+   "witty": ""
+  },
+  {
+   "id": "t-lua",
+   "name": "Inline Lua scripts",
+   "ref": "common/ratelimit/TokenBucketRateLimiter.java:28-62",
+   "why": "Token-bucket refill and sliding-window eviction must be atomic — Lua runs check-and-update inside Redis, closing the race plain Java has.",
+   "witty": ""
+  }
+ ],
+ "annotations": [
+  {
+   "body": "Marks the entry point and turns on auto-configuration + component scanning. Everything under com.example.razorpay gets discovered from here.",
+   "examples": [
+    "RazorpayApplication.java:8"
+   ],
+   "group": "Core",
+   "id": "ann-boot",
+   "pitfall": "",
+   "why": "One annotation boots the whole monolith; @EnableScheduling and @EnableJpaAuditing sit beside it.",
+   "title": "@SpringBootApplication"
+  },
+  {
+   "body": "Declares a class as a factory of beans. Method-level @Bean registers singletons (RestClient, passwordEncoder, processor maps) into the context.",
+   "examples": [
+    "common/config/AppConfig.java:19",
+    "operations/config/WebhookClientConfig.java:11"
+   ],
+   "group": "Core",
+   "id": "ann-config",
+   "pitfall": "",
+   "why": "All wiring lives here: security chains, adapter/processor maps, RestClient with 3s/5s timeouts.",
+   "title": "@Configuration + @Bean"
+  },
+  {
+   "body": "Injects a value from application.yaml (with :default fallback). Used for secrets, TTLs, rate limits, expiry minutes.",
+   "examples": [
+    "merchant/security/JwtUtil.java:18 (jwt.secret-key)",
+    "payment/service/impl/OrderServiceImpl.java:41 (order expiry :30)"
+   ],
+   "group": "Core",
+   "id": "ann-value",
+   "pitfall": "",
+   "why": "No hardcoded secrets or tunables — change YAML, restart, done.",
+   "title": "@Value"
+  },
+  {
+   "body": "Binds a whole YAML subtree to a typed object. KafkaProperties reads app.kafka.*, SimulatorConfig reads payment.simulator.*.",
+   "examples": [
+    "common/config/KafkaProperties.java:13"
+   ],
+   "group": "Core",
+   "id": "ann-configprops",
+   "pitfall": "",
+   "why": "Type-safe config with IDE completion instead of scattered @Value strings.",
+   "title": "@ConfigurationProperties"
+  },
+  {
+   "body": "Creates a bean only when app.rate-limit.method matches. Exactly one of the 4 RateLimiter beans exists at runtime.",
+   "examples": [
+    "common/ratelimit/FixedWindowRateLimiter.java:13 (fixed)",
+    "common/ratelimit/SlidingWindowLuaLimiter.java:17 (sliding-lua)"
+   ],
+   "group": "Core",
+   "id": "ann-conditional",
+   "pitfall": "",
+   "why": "This is the whole 4-algorithm switch: flip one YAML key, restart, different limiter.",
+   "title": "@ConditionalOnProperty"
+  },
+  {
+   "body": "Generic stereotype for singletons with logic (routers, state machine, retry queue, signer). @Service is its domain-logic sibling.",
+   "examples": [
+    "payment/gateway/PaymentGatewayRouter.java:12",
+    "common/util/SignerUtil.java:10"
+   ],
+   "group": "Core",
+   "id": "ann-component",
+   "pitfall": "",
+   "why": "Routers, state machine, SignerUtil are all @Component — infrastructure plumbing, not business services.",
+   "title": "@Component / @Service"
+  },
+  {
+   "body": "Orders the two security chains: JWT chain first, API-key chain second. First match wins.",
+   "examples": [
+    "merchant/security/WebSecurityConfig.java:22 (@Order(1))",
+    "merchant/security/WebSecurityConfig.java:38 (@Order(2))"
+   ],
+   "group": "Core",
+   "id": "ann-order",
+   "pitfall": "",
+   "why": "Without @Order the two filter chains would compete unpredictably.",
+   "title": "@Order"
+  },
+  {
+   "body": "Runs a method on a fixed delay without cron. Powers the three background loops: outbox relay (5s), webhook dispatch (1s), DB reconcile (10s).",
+   "examples": [
+    "payment/outbox/OutboxPoller.java:28",
+    "operations/webhook/WebhookDeliveryScheduler.java:45,58"
+   ],
+   "group": "Core",
+   "id": "ann-scheduled",
+   "pitfall": "BankCallbackSimulator's @Scheduled is commented out — async authorizations never resolve until you uncomment it.",
+   "why": "All async movement in the system is just @Scheduled polling, no message broker magic on the consume side.",
+   "title": "@Scheduled"
+  },
+  {
+   "body": "Subscribes a method to Kafka topics. The webhook consumer listens on all 4 domain-event topics with manual ack.",
+   "examples": [
+    "operations/webhook/WebhookKafkaConsumer.java:36"
+   ],
+   "group": "Core",
+   "id": "ann-kafkalistener",
+   "pitfall": "",
+   "why": "One listener fans one domain event out to N merchant webhook deliveries.",
+   "title": "@KafkaListener"
+  },
+  {
+   "body": "Makes a method transactional. Variants used: plain (payment write + outbox in one TX), readOnly (queries), REQUIRES_NEW (DLQ write must survive outer rollback).",
+   "examples": [
+    "payment/service/impl/PaymentServiceImpl.java:45",
+    "operations/webhook/WebhookDlqRecorder.java:26 (REQUIRES_NEW)"
+   ],
+   "group": "Core",
+   "id": "ann-transactional",
+   "pitfall": "",
+   "why": "Outbox correctness depends on it: payment row + event row commit atomically.",
+   "title": "@Transactional"
+  },
+  {
+   "body": "Marks a class as a REST endpoint; method annotations map HTTP verbs to paths. All controllers are thin — they validate and delegate.",
+   "examples": [
+    "payment/controller/OrderController.java:19 (/v1/orders)",
+    "vault/controller/VaultController.java:26 (/tokenize)"
+   ],
+   "group": "Web",
+   "id": "ann-rest",
+   "pitfall": "",
+   "why": "Controllers hold zero business logic; services + state machine do the work.",
+   "title": "@RestController + mappings"
+  },
+  {
+   "body": "Central error translator: exceptions become clean JSON + status codes (409 duplicate, 404 not found, 429 rate-limit, 400 validation).",
+   "examples": [
+    "common/exception/GlobalExceptionHandler.java:13"
+   ],
+   "group": "Web",
+   "id": "ann-advice",
+   "pitfall": "",
+   "why": "Clients never see stack traces — every failure is a typed ErrorResponse.",
+   "title": "@RestControllerAdvice"
+  },
+  {
+   "body": "Marks a persistent class. Every table (merchant, payment, outbox_event, webhook_event…) is one @Entity extending BaseEntity audit fields.",
+   "examples": [
+    "merchant/entity/Merchant.java:11",
+    "operations/entity/WebhookEvent.java:14"
+   ],
+   "group": "JPA",
+   "id": "ann-entity",
+   "pitfall": "",
+   "why": "BaseEntity gives every row id + created/modified timestamps + actor for free.",
+   "title": "@Entity + @MappedSuperclass"
+  },
+  {
+   "body": "Value object without identity. Money (amountUnits + currency) is embedded into Payment, Order, Settlement — never its own table.",
+   "examples": [
+    "common/entity/Money.java:7",
+    "operations/entity/Settlement.java:22 (@Embedded gross/fee/gst/net)"
+   ],
+   "group": "JPA",
+   "id": "ann-embed",
+   "pitfall": "",
+   "why": "Money logic (currency handling) lives in one place, reused across 5+ entities.",
+   "title": "@Embeddable / @Embedded"
+  },
+  {
+   "body": "Stores a Map/object as Postgres jsonb instead of a joined table. Event payloads and webhook bodies live in one column.",
+   "examples": [
+    "operations/entity/WebhookEvent.java:33-35",
+    "payment/entity/OutboxEvent.java (payload)"
+   ],
+   "group": "JPA",
+   "id": "ann-json",
+   "pitfall": "",
+   "why": "Flexible event schemas without migrations every time a payload field changes.",
+   "title": "@JdbcTypeCode(JSON)"
+  },
+  {
+   "body": "Takes a DB row-lock while reading. Capture and callback load the Payment row FOR UPDATE so two concurrent captures can't double-charge.",
+   "examples": [
+    "payment/repository/PaymentRepository.java:23-25"
+   ],
+   "group": "JPA",
+   "id": "ann-lock",
+   "pitfall": "",
+   "why": "The anti-double-charge guarantee at the database level.",
+   "title": "@Lock(PESSIMISTIC_WRITE) + @Query"
+  },
+  {
+   "body": "Persists enums as readable strings (CARD, PENDING, DEAD) instead of fragile ordinals. All status columns use it.",
+   "examples": [
+    "merchant/entity/Merchant.java:36",
+    "operations/entity/WebhookEvent.java:43"
+   ],
+   "group": "JPA",
+   "id": "ann-enum",
+   "pitfall": "",
+   "why": "Adding a new enum value never corrupts existing rows — ordinals would.",
+   "title": "@Enumerated(STRING)"
+  },
+  {
+   "body": "Triggers validation on request bodies. Every POST validates before any service code runs; failures become 400 via the advice.",
+   "examples": [
+    "merchant/controller/AuthController.java:25",
+    "vault/controller/VaultController.java:27"
+   ],
+   "group": "Validation",
+   "id": "ann-valid",
+   "pitfall": "",
+   "why": "Bad input (bad email, short PAN, non-https webhook URL) is rejected at the edge.",
+   "title": "@Valid + constraints"
+  },
+  {
+   "body": "Luhn checksum on card numbers plus @Pattern for PAN/CVV shapes and a custom @ExpiryYear validator. Vault input is the most guarded in the system.",
+   "examples": [
+    "vault/dto/request/TokenizeRequest.java:11 (@LuhnCheck)",
+    "vault/validation/ExpiryYearValidator.java:8"
+   ],
+   "group": "Validation",
+   "id": "ann-luhn",
+   "pitfall": "",
+   "why": "Fake card numbers die before encryption — no junk in the vault.",
+   "title": "@LuhnCheck + @ExpiryYear"
+  },
+  {
+   "body": "Generates DTO↔entity mapping code at compile time. componentModel=SPRING makes mappers injectable; @Mapping handles renames and secret fields.",
+   "examples": [
+    "merchant/mapper/ApiKeyMapper.java:15 (rawSecret→keySecret)",
+    "payment/mapper/PaymentMapper.java:14 (order.id→orderId)"
+   ],
+   "group": "Mapping",
+   "id": "ann-mapstruct",
+   "pitfall": "",
+   "why": "Entities (with secrets, audit, Money embeds) never leak onto the wire; zero hand-written mapping.",
+   "title": "@Mapper + @Mapping"
+  },
+  {
+   "body": "Generates constructors, getters, builders, loggers. @RequiredArgsConstructor is the DI style everywhere; @Builder builds test/entity objects; @Slf4j gives log.",
+   "examples": [
+    "merchant/entity/Merchant.java:15-19",
+    "payment/service/impl/PaymentServiceImpl.java:33 (@Slf4j)"
+   ],
+   "group": "Mapping",
+   "id": "ann-lombok",
+   "pitfall": "",
+   "why": "Removes ~40% boilerplate; constructor injection makes dependencies explicit and testable."
+  }
+ ],
+ "patterns": [
+  {
+   "files": [
+    "payment/processor/PaymentProcessor.java",
+    "payment/processor/strategy/CardPaymentProcessor.java",
+    "payment/processor/strategy/UpiPaymentProcessor.java",
+    "payment/processor/strategy/NetBankingPaymentProcessor.java",
+    "payment/config/PaymentProcessorConfig.java"
+   ],
+   "id": "pat-strategy",
+   "phase": "phase-0",
+   "problem": "Per-method charge logic (CARD/UPI/NETBANKING) isolated — new method = new @Component, no if/else in the service.",
+   "title": "Strategy (payment processors)"
+  },
+  {
+   "files": [
+    "payment/processor/PaymentProcessorRouter.java",
+    "payment/gateway/PaymentGatewayRouter.java",
+    "payment/config/PaymentAdapterConfig.java"
+   ],
+   "id": "pat-router",
+   "phase": "phase-0",
+   "problem": "Single Map.get(method) lookup that fails fast if unregistered — one choke point for both internal and gateway dispatch.",
+   "title": "Router ×2"
+  },
+  {
+   "files": [
+    "payment/gateway/PaymentAdapter.java",
+    "payment/gateway/adapter/CardPaymentAdapter.java",
+    "payment/gateway/adapter/UpiPaymentAdapter.java",
+    "payment/gateway/adapter/NetBankingPaymentAdapter.java"
+   ],
+   "id": "pat-adapter",
+   "phase": "phase-0",
+   "problem": "Hides heterogeneous bank/PSP APIs behind one PaymentResult — the service never touches provider SDKs.",
+   "title": "Adapter (gateway)"
+  },
+  {
+   "files": [
+    "merchant/security/JwtAuthenticationFilter.java",
+    "merchant/security/ApiKeyAuthenticationFilter.java",
+    "common/idempotency/IdempotencyFilter.java",
+    "merchant/security/WebSecurityConfig.java"
+   ],
+   "id": "pat-filter",
+   "phase": "phase-1",
+   "problem": "Composable per-request pipeline: JWT for dashboards, API-key+HMAC for merchant APIs, idempotency replay — ordered chains, stateless sessions.",
+   "title": "Filter chain"
+  },
+  {
+   "files": [
+    "payment/entity/OutboxEvent.java",
+    "payment/outbox/OutboxEventPublisher.java",
+    "payment/outbox/OutboxPoller.java",
+    "payment/outbox/OutboxResultHandler.java"
+   ],
+   "id": "pat-outbox",
+   "phase": "phase-3",
+   "problem": "Event row saved in the SAME transaction as the payment — Kafka can be down at write time and nothing is lost; poller relays at-least-once.",
+   "title": "Transactional Outbox"
+  },
+  {
+   "files": [
+    "operations/webhook/WebhookDeliverExecutor.java",
+    "operations/webhook/WebhookRetryQueue.java",
+    "operations/webhook/WebhookDeliveryScheduler.java"
+   ],
+   "id": "pat-retry",
+   "phase": "phase-4",
+   "problem": "Merchant endpoints flap — 7 attempts over 1m→24h on a Redis time-ordered queue, DB reconcile heals lost entries, virtual threads deliver.",
+   "title": "Retry with backoff"
+  },
+  {
+   "files": [
+    "operations/entity/DlqEvent.java",
+    "operations/webhook/WebhookDlqRecorder.java",
+    "operations/webhook/WebhookKafkaConsumer.java"
+   ],
+   "id": "pat-dlq",
+   "phase": "phase-4",
+   "problem": "Poison/undeliverable events park in dlq_event (REQUIRES_NEW) for audit/replay instead of retrying forever.",
+   "title": "Dead-letter queue"
+  },
+  {
+   "files": [
+    "payment/statemachine/PaymentStateMachine.java",
+    "payment/statemachine/PaymentTransitionService.java"
+   ],
+   "id": "pat-state",
+   "phase": "phase-0",
+   "problem": "Illegal jumps (capture before authorize) throw InvalidStateTransitionException; every move is audit-logged with actor.",
+   "title": "State machine"
+  },
+  {
+   "files": [
+    "merchant/dto/",
+    "payment/dto/",
+    "merchant/mapper/",
+    "payment/mapper/"
+   ],
+   "id": "pat-dto",
+   "phase": "phase-0",
+   "problem": "Entities never touch the wire — secrets, audit fields and Money embeds stay server-side.",
+   "title": "DTO + Mapper"
+  },
+  {
+   "files": [
+    "merchant/cache/ApiKeyCache.java",
+    "merchant/cache/RedisApiKeyCache.java",
+    "merchant/security/ApiKeyAuthenticationFilter.java"
+   ],
+   "id": "pat-cache",
+   "phase": "phase-0",
+   "problem": "API-key lookups hit Redis (5-min TTL) not Postgres+BCrypt per request; revoke/rotate explicitly evicts.",
+   "title": "Cache-aside"
+  },
+  {
+   "files": [
+    "merchant/security/MerchantContext.java",
+    "common/idempotency/IdempotencyFilter.java"
+   ],
+   "id": "pat-context",
+   "phase": "phase-0",
+   "problem": "Request-scoped merchant holder instead of ThreadLocal — safe on virtual threads, read by filters and services.",
+   "title": "Request-scoped context"
+  },
+  {
+   "files": [
+    "payment/repository/PaymentRepository.java",
+    "payment/service/impl/PaymentServiceImpl.java"
+   ],
+   "id": "pat-lock",
+   "phase": "phase-0",
+   "problem": "Pessimistic row lock serializes concurrent capture/callback on one payment — no double-capture.",
+   "title": "Pessimistic locking"
+  }
+ ]
+}
