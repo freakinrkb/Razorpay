@@ -35,6 +35,9 @@ public class OrderRecord  extends BaseEntity {
     @Embedded
     private Money amount;
 
+    @Column(name = "customer_id")
+    private UUID customerId;
+
     @Column(length = 100)
     private String receipt;
 

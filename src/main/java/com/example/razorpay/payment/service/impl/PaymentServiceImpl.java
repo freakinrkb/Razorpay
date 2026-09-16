@@ -44,7 +44,9 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional()
     public PaymentResponse initiate(UUID merchantId, PaymentInitRequest request) {
-        OrderRecord order = orderRepository.findByIdAndMerchantId(request.orderId(), merchantId)
+//        OrderRecord order = orderRepository.findByIdAndMerchantId(request.orderId(), merchantId)
+//                .orElseThrow(() -> new ResourceNotFoundException("Order", request.orderId()));
+        OrderRecord order = orderRepository.findByIdAndMerchantIdForUpdate(request.orderId(), merchantId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order", request.orderId()));
 
         if(order.getOrderStatus() != OrderStatus.CREATED && order.getOrderStatus() != OrderStatus.ATTEMPTED) {
@@ -168,6 +170,7 @@ public class PaymentServiceImpl implements PaymentService {
                 paymentTransitionService.apply(payment, PaymentEvent.CAPTURE_SUCCESS);
                 payment.setCapturedAt(LocalDateTime.now());
                 orderRecord.setOrderStatus(OrderStatus.PAID);
+
             } else if (captureResult instanceof PaymentResult.Failure(String code, String description)){
                 paymentTransitionService.apply(payment, PaymentEvent.CAPTURE_FAIL);
                 payment.setErrorCode(code);

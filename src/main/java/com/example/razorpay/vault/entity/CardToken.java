@@ -1,5 +1,6 @@
 package com.example.razorpay.vault.entity;
 
+import com.example.razorpay.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,7 +14,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CardToken {
+public class CardToken extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -21,7 +22,7 @@ public class CardToken {
     @Column(nullable = false, length = 50, unique = true)
     private String token;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "vault_card_id", nullable = false)
     private VaultCard vaultCard;
 

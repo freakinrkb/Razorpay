@@ -85,7 +85,7 @@ public class VaultServiceImpl implements VaultService {
         byte[] encryptedDek = dekEncrypter.encrypt(dek);
 
         VaultCard vaultCard = vaultCardRepository.save(VaultCard.builder()
-                .brand(String.valueOf(cardBrand))
+                .brand(cardBrand)
                 .expiryYear(request.expiryYear().toString())
                 .expiryMonth(request.expiryMonth().toString())
                 .bin(bin)

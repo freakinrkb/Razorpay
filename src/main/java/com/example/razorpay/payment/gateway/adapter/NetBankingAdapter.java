@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 @RequiredArgsConstructor
-@Component
+@Component("NETBANKING")
 @Slf4j
 public class NetBankingAdapter implements PaymentAdapter {
 
@@ -26,7 +26,7 @@ public class NetBankingAdapter implements PaymentAdapter {
         try {
             PaymentProcessorRequest paymentProcessorRequest = PaymentProcessorRequest.nonCard(
                     request.paymentId(),
-                    PaymentMethod.UPI,
+                    PaymentMethod.NETBANKING,
                     request.amount(),
                     request.methodDetails()
             );
@@ -46,7 +46,7 @@ public class NetBankingAdapter implements PaymentAdapter {
             };
         } catch(Exception e) {
             log.warn("UPI failed, paymentId: {}", request.paymentId());
-            return new PaymentResult.Failure("UPI_FAILED", e.getMessage());
+            return new PaymentResult.Failure("NBK_FAILED", e.getMessage());
         }
     }
 
