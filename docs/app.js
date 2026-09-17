@@ -65,7 +65,7 @@ function renderTimeline() {
   const el = $('#timelineEl');
   el.innerHTML = DATA.phases.map(p => `
     <button class="tcard" id="${p.id}" data-status="${p.status}" data-phase="${p.id}">
-      <div class="meta"><span class="pill ${p.status}">${p.status==='wip'?'● YOU ARE HERE':p.status}</span><span>${p.date}</span><span>${p.commit}</span><span>${p.stats}</span></div>
+      <div class="meta"><span class="pill ${p.status}">${p.status==='wip'?'● YOU ARE HERE':p.status==='partial'?'◐ PARTIAL':p.status}</span><span>${p.date}</span><span>${p.commit}</span><span>${p.stats}</span></div>
       <h3>${p.title}</h3>
       <p class="tag">${p.tagline}</p>
       <p>${p.recall}</p>

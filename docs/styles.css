@@ -61,12 +61,15 @@ h1 em{font-style:normal;background:linear-gradient(90deg,var(--accent),var(--acc
 .tcard::before{content:"";position:absolute;left:-31px;top:26px;width:15px;height:15px;border-radius:50%;background:var(--bg);border:3px solid var(--accent)}
 .tcard[data-status="wip"]{border-color:rgba(255,178,36,.55)}
 .tcard[data-status="wip"]::before{border-color:var(--amber);box-shadow:0 0 0 6px rgba(255,178,36,.15);animation:pulse 1.8s infinite}
+.tcard[data-status="partial"]{border-color:rgba(255,178,36,.45);border-style:dashed}
+.tcard[data-status="partial"]::before{border-color:var(--amber)}
 .tcard[data-status="next"]{border-style:dashed;opacity:.85}
 @keyframes pulse{50%{box-shadow:0 0 0 11px rgba(255,178,36,.05)}}
 .tcard .meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:.8rem;color:var(--muted)}
 .pill{border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-weight:600}
 .pill.done{color:var(--green);border-color:rgba(61,220,132,.5)}
 .pill.wip{color:var(--amber);border-color:rgba(255,178,36,.6)}
+.pill.partial{color:var(--amber);border-color:rgba(255,178,36,.6);border-style:dashed}
 .pill.next{color:var(--muted)}
 .tcard h3{margin:.4em 0 .2em;font-size:1.35rem}
 .tcard .tag{color:var(--accent2);margin:0 0 .5em}

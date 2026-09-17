@@ -8,7 +8,7 @@
    "commit": "53b9020 · Initial commit",
    "stats": "129 files · +9342 lines",
    "tagline": "Auth, Orders, Payments, Vault, infra — the skeleton everything hangs on.",
-   "recall": "If you forget everything else, remember this: Merchant owns everything. Order groups attempts. Payment moves through a state machine. Vault keeps raw cards out of your DB.",
+   "recall": "If you forget everything else, remember this: Merchant owns everything. Order groups attempts. Payment moves through a state machine. Vault keeps raw cards out of your DB. Sep 16 hardening: @EnableJpaAuditing(auditorAwareRef) + @ConfigurationPropertiesScan on the app. Caution: kafka trusted.packages still points at stale com.codingshuttle.* (harmless today via LinkedHashMap default).",
    "files": [
     "src/main/java/com/example/razorpay/merchant/security/WebSecurityConfig.java",
     "src/main/java/com/example/razorpay/merchant/security/ApiKeyAuthenticationFilter.java",
@@ -100,7 +100,8 @@
     "src/main/java/com/example/razorpay/payment/outbox/OutboxPoller.java",
     "src/main/java/com/example/razorpay/merchant/controller/WebhookConfigController.java",
     "src/main/java/com/example/razorpay/merchant/service/impl/WebhookConfigServiceImpl.java",
-    "src/main/java/com/example/razorpay/common/dto/WebhookTarget.java"
+    "src/main/java/com/example/razorpay/common/dto/WebhookTarget.java",
+    "src/main/java/com/example/razorpay/merchant/service/impl/MerchantLookupServiceImpl.java"
    ],
    "howto": [
     "Configure: POST /api/webhook-configs { targetUrl, secret, events }",
@@ -116,12 +117,12 @@
   {
    "date": "uncommitted",
    "id": "phase-4",
-   "status": "wip",
+   "status": "done",
    "title": "Phase 4 — Webhook Delivery + DLQ (YOU ARE HERE)",
-   "commit": "uncommitted · 14 files · +618",
-   "stats": "10 staged + 4 modified · needs re-add",
-   "tagline": "Kafka → signed POST with retries → dead-letter when hopeless. Written, not yet committed.",
-   "recall": "Consumer looks up active configs, HMAC-signs payload (SignerUtil), saves WebhookEvent PENDING, pushes to Redis ZSET. Scheduler (1s poll + 10s DB reconcile) delivers on virtual threads. 7 tries: 1m, 5m, 30m, 2h, 8h, 24h → DEAD + DlqEvent. FIX BEFORE COMMIT: re-add worktree (package com.example…), Lombok on entities, fix trusted.packages in application.yaml:40.",
+   "commit": "6211401 · webhook pipeline + lookup split",
+   "stats": "22 files · +758/−38 · committed Sep 16",
+   "tagline": "Kafka → signed POST with retries → dead-letter when hopeless. Shipped Sep 16.",
+   "recall": "Committed Sep 16 (6211401). Consumer looks up active configs via MerchantLookupService (secret decrypted per-target, Base64→bytesEncryptor), HMAC-signs the payload, saves WebhookEvent PENDING, pushes to the Redis ZSET. Scheduler (1s poll + 10s DB reconcile) delivers on virtual threads. 7 tries: 1m, 5m, 30m, 2h, 8h, 24h → DEAD + DlqEvent row.",
    "files": [
     "src/main/java/com/example/razorpay/operations/webhook/WebhookKafkaConsumer.java",
     "src/main/java/com/example/razorpay/operations/webhook/WebhookRetryQueue.java",
@@ -133,9 +134,9 @@
     "src/main/java/com/example/razorpay/operations/entity/DlqEvent.java"
    ],
    "howto": [
-    "git add -A && git commit -m 'Webhook delivery pipeline'",
-    "Fix application.yaml trusted.packages → com.example.razorpay.*",
-    "Test: POST to DummyMerchantWebhookController → watch attempts column grow"
+    "git show 6211401 --stat — the 22-file delivery pipeline",
+    "POST to /webhook/** (public since Sep 16) → watch the attempts column grow",
+    "Exhaust retries → WebhookEvent DEAD + DlqEvent row for replay"
    ],
    "nodes": [
     "webhookdlv",
@@ -144,52 +145,52 @@
   },
   {
    "checklist": [
-    "Port SettlementEngine (nightly @Scheduled + @SchedulerLock)",
-    "Port SettlementTransactionExecutor + BankTransferProcessor(+Impl)",
-    "Add SettlementRepository + SettlementPaymentRepository",
-    "Add ops outbox trio (Publisher/Poller/ResultHandler) + OutboxEvent entity",
-    "Stub bank transfer synchronously first, async callback second"
+    "Verify: cron fired 23:00 → Settlement rows INITIATED",
+    "Verify: TRANSFER_PENDING → PROCESSED via the 5s simulator",
+    "Next hardening: ShedLock + real bank adapter"
    ],
-   "commit": "teacher: operations-service/settlement/*",
+   "commit": "87876f6 · settlement engine",
    "date": "by Sun",
    "howto": [
-    "Create operations/settlement/ package in the monolith first — split later",
-    "Stub BankTransferProcessor to return success synchronously",
-    "Verify: nightly run settles CAPTURED payments, emits settlement.events"
+    "git show 87876f6 --stat — engine, executor, bank stub, 2 repos",
+    "Trigger SettlementEngine.run() → inspect Settlement + SettlementPayment rows",
+    "Watch settlement.events on Kafka Control Center :9021"
    ],
    "id": "phase-5",
    "nodes": [
     "settle"
    ],
-   "recall": "The money-actually-moves step and the biggest logic gap: your monolith has Settlement entities only, the teacher runs a full nightly engine. Port it as a monolith package first — the split comes later.",
-   "stats": "~15 files to port",
-   "status": "next",
-   "tagline": "Nightly engine that pays merchants — entities today, runtime by Sunday.",
+   "recall": "Runs cron 0 0 23 * * * via SettlementEngine, fans out per active merchant on virtual threads. Executor math: fee 2%, GST 18%; INITIATED → TRANSFER_PENDING → PROCESSED/FAILED with SETTLEMENT_* outbox events. Bank call is a stub (TXN_+random); a 5s simulator resolves TRANSFER_PENDING as success. Caution: no ShedLock yet — safe on one replica only.",
+   "stats": "13 files · +370 · committed Sep 16",
+   "status": "done",
+   "tagline": "Nightly engine that pays merchants — shipped Sep 16.",
    "title": "Phase 5 — Settlement runtime"
   },
   {
    "checklist": [
-    "Add Internal* controllers (merchant, api-key, customer, vault, settlement-view)",
-    "Add MerchantContextFilter (reads X-* gateway headers)",
-    "Extract PaymentAuthorizationRecorder as saga seam",
-    "Define Feign-shaped client interfaces per seam (no split yet)"
+    "MerchantLookupService split — DONE (6211401)",
+    "PaymentLookupService — DONE (6211401)",
+    "Internal* controllers (/internal/*) — OPEN",
+    "MerchantContextFilter (X-* headers) — OPEN",
+    "Feign-shaped client interfaces — OPEN",
+    "PaymentAuthorizationRecorder saga seam — OPEN"
    ],
-   "commit": "teacher: */controller/Internal* + */api/* + */client/*",
+   "commit": "6211401 (lookup half) · rest open",
    "date": "by Sun",
    "howto": [
-    "Prefix internal routes with /internal/* in the monolith",
-    "Move tenant reads to MerchantContextFilter",
-    "Verify: public flows unchanged, internal routes serve fixtures"
+    "Read merchant/api/MerchantLookupService.java — the 3 seam methods",
+    "Prefix the next internal routes with /internal/* in the monolith",
+    "Keep public flows green while seams go in (zero behavior change)"
    ],
    "id": "phase-6",
    "nodes": [
     "auth",
     "order"
    ],
-   "recall": "Pure refactors, zero behavior change: every future service boundary becomes a real HTTP call instead of a method call. Do this before extracting anything.",
-   "stats": "~12 files",
-   "status": "next",
-   "tagline": "Draw the split lines inside the monolith — no behavior change.",
+   "recall": "Half-done Sep 16 (6211401): MerchantLookupService split (getActiveConfigsForEvent + listActiveMerchantIds + getSettlementBankDetails) and PaymentLookupService (locking query on CAPTURED) landed. Verified absent by repo-wide grep: Internal* controllers, MerchantContextFilter, Feign clients, saga seam.",
+   "stats": "lookup services done · internal APIs open",
+   "status": "partial",
+   "tagline": "Half-done: lookups landed, internal seams still open.",
    "title": "Phase 6 — Service seams"
   },
   {
@@ -302,7 +303,7 @@
    "col": 0,
    "row": 0,
    "phase": "phase-0",
-   "body": "Dual auth. Signup hashes with BCrypt, login returns JWT (JwtUtil). API keys go through ApiKeyAuthenticationFilter: X-API-Key → RedisApiKeyCache → MerchantContext ThreadLocal. WebSecurityConfig chains both filters.",
+   "body": "Dual auth. Signup hashes with BCrypt, login returns JWT (JwtUtil). API keys go through ApiKeyAuthenticationFilter: X-API-Key → RedisApiKeyCache → MerchantContext ThreadLocal. WebSecurityConfig chains both filters. Sep 16: /webhook/** added to the public JWT routes (dummy merchant sink needs no credentials).",
    "files": [
     "merchant/security/WebSecurityConfig.java",
     "merchant/security/JwtUtil.java",
@@ -374,7 +375,7 @@
    "col": 2,
    "row": 1,
    "phase": "phase-0",
-   "body": "initiate → ATTEMPTED → gateway router (Card/UPI/NetBanking adapters + processor strategies) → Pending/Success/Failure. capture uses pessimistic lock. Every transition writes PaymentTransitionLog. resolveAuthorization auto-captures. Publishes PAYMENT_CREATED / PAYMENT_STATUS_CHANGED via outbox.",
+   "body": "initiate → ATTEMPTED → gateway router (Card/UPI/NetBanking adapters + processor strategies) → Pending/Success/Failure. capture uses pessimistic lock. Every transition writes PaymentTransitionLog. resolveAuthorization auto-captures. Publishes PAYMENT_CREATED / PAYMENT_STATUS_CHANGED via outbox. Sep 16: NetBankingAdapter correctly routes NETBANKING with NBK codes (stale “UPI failed” log line remains); InvalidStateTransitionException now carries fromState/toEvent.",
    "files": [
     "payment/service/impl/PaymentServiceImpl.java",
     "payment/statemachine/PaymentStateMachine.java",
@@ -402,7 +403,7 @@
    "col": 0,
    "row": 2,
    "phase": "phase-0",
-   "body": "PAN never touches payment tables. AES-GCM with vault.master-key encrypts → token returned. Detokenize only inside Vault. ExpiryYear validator guards input.",
+   "body": "PAN never touches payment tables. AES-GCM with vault.master-key encrypts → token returned. Detokenize only inside Vault. ExpiryYear validator guards input. Sep 16 hardening: duplicate dekEncrypter bean removed (single masterKeyEncryptor); brand is now a CardBrand enum; CardToken extends BaseEntity with EAGER card fetch.",
    "files": [
     "vault/service/impl/VaultServiceImpl.java",
     "vault/controller/VaultController.java"
@@ -445,17 +446,18 @@
    "col": 3,
    "row": 2,
    "phase": "phase-3",
-   "body": "Merchants register targetUrl + secret + event filter (ALL or CSV) via WebhookConfigController. MerchantWebhookApi.getActiveConfigsForEvent() is what the consumer calls per event.",
+   "body": "Merchants register targetUrl + secret + event filter (ALL or CSV) via WebhookConfigController. MerchantLookupService.getActiveConfigsForEvent() is what the consumer calls per event (secret decrypted per-target); listActiveMerchantIds() + getSettlementBankDetails() feed the settlement engine.",
    "files": [
     "merchant/controller/WebhookConfigController.java",
-    "merchant/service/impl/WebhookConfigServiceImpl.java"
+    "merchant/service/impl/WebhookConfigServiceImpl.java",
+    "merchant/api/MerchantLookupService.java"
    ],
    "recall": "Secret per config → per-target HMAC signature."
   },
   {
    "id": "webhookdlv",
    "label": "Delivery",
-   "sub": "YOU ARE HERE",
+   "sub": "shipped Sep 16",
    "col": 1,
    "row": 3,
    "phase": "phase-4",
@@ -553,7 +555,7 @@
    "sub": ":8888 git-backed"
   },
   {
-   "body": "Nightly @Scheduled + @SchedulerLock engine: settles CAPTURED payments per merchant, executes bank transfers, emits settlement events via the ops outbox trio. Monolith has only the entities today.",
+   "body": "Nightly cron 23:00: per-merchant virtual-thread fan-out; fee 2%, GST 18%; TRANSFER_PENDING via stub bank (TXN_+random); 5s simulator resolves success; SETTLEMENT_PROCESSED/FAILED outbox events. No ShedLock yet — single replica.",
    "col": 3,
    "files": [
     "operations-service/settlement/SettlementEngine.java",
@@ -563,7 +565,7 @@
    "id": "settle",
    "label": "Settlement",
    "phase": "phase-5",
-   "recall": "The money- actually-moves step. Engine → executor → bank → callback → events.",
+   "recall": "The money-actually-moves step, now real: engine → executor → bank stub → callback → events.",
    "row": 4,
    "sub": "nightly engine"
   }
@@ -573,7 +575,7 @@
   "pages": "https://freakinrkb.github.io/Razorpay/",
   "generated": "2026-09-10",
   "howToExtend": "To add a phase: append an entry to phases[] in journey.json with matching node ids, then push — GitHub Pages redeploys automatically. Anchors #/phase-4 deep-link each card.",
-  "version": "v3-sunday"
+  "version": "v4-settled"
  },
  "tech": [
   {
