@@ -17,9 +17,13 @@ function renderStrip() {
   $('#flowTrack').innerHTML = items + items; // loop seamlessly
 }
 
-const COLS = [70, 360, 650, 940], ROWS = [70, 230, 390, 540, 700], W = 220, H = 74;
+const COLS = [70, 360, 650, 940], ROWS = [70, 230, 390, 540, 700, 860], W = 220, H = 74;
 
 function nodeById(id){ return DATA.nodes.find(n=>n.id===id); }
+function repoPath(f){
+  return (f.startsWith('Razorpay-Microservices/') || f.startsWith('razorpay-config/'))
+    ? f : 'src/main/java/com/example/razorpay/'+f;
+}
 
 function renderArch() {
   const svg = $('#archSvg');
@@ -34,6 +38,8 @@ function renderArch() {
     ['auth','infracore','slow'], ['outbox','infracore','slow'],
     ['apigw','auth',''], ['discovery','apigw','slow'], ['configsvr','discovery','slow'],
     ['payment-gw','settle','backlog'], ['settle','kafka',''],
+    ['apigw','merchant-svc',''], ['apigw','payment-svc',''], ['apigw','vault-svc',''], ['apigw','ops-svc','slow'],
+    ['payment-svc','vault-svc',''], ['ops-svc','payment-svc','slow'], ['ops-svc','merchant-svc','slow'],
   ];
   let defs = `<defs><linearGradient id="edgeGrad" x1="0" y1="0" x2="1" y2="0">
     <stop offset="0" stop-color="#7c8cff"/><stop offset="1" stop-color="#38e1c6"/></linearGradient></defs>`;
@@ -186,7 +192,7 @@ function openNode(id) {
   document.querySelector(`.anode[data-node="${id}"]`)?.classList.add('active');
   openModal({kicker:`System map · belongs to ${ph?ph.title:'—'}`, title:n.label+' — '+n.sub, tag:'', tabs:[
     {label:'Explanation', html:`<p>${n.body}</p><div class="modal-recall">${recallHtml(n.recall)}</div>`},
-    {label:'Files', html:`<ul class="file-list">${filesHtml((n.files||[]).map(f=>'src/main/java/com/example/razorpay/'+f))}</ul>`},
+    {label:'Files', html:`<ul class="file-list">${filesHtml((n.files||[]).map(repoPath))}</ul>`},
     ...(ph?.howto?.length ? [{label:'Replay', html:`<ol class="howto">${howtoHtml(ph.howto)}</ol>`}] : []),
   ]});
 }

@@ -8,7 +8,7 @@
    "commit": "53b9020 · Initial commit",
    "stats": "129 files · +9342 lines",
    "tagline": "Auth, Orders, Payments, Vault, infra — the skeleton everything hangs on.",
-   "recall": "If you forget everything else, remember this: Merchant owns everything. Order groups attempts. Payment moves through a state machine. Vault keeps raw cards out of your DB. Sep 16 hardening: @EnableJpaAuditing(auditorAwareRef) + @ConfigurationPropertiesScan on the app. Caution: kafka trusted.packages still points at stale com.codingshuttle.* (harmless today via LinkedHashMap default).",
+   "recall": "If you forget everything else, remember this: Merchant owns everything. Order groups attempts. Payment moves through a state machine. Vault keeps raw cards out of your DB. Sep 16 hardening: @EnableJpaAuditing(auditorAwareRef) + @ConfigurationPropertiesScan on the app. Caution: kafka trusted.packages still points at RESOLVED in the split: trusted.packages is now com.razorpay.*.",
    "files": [
     "src/main/java/com/example/razorpay/merchant/security/WebSecurityConfig.java",
     "src/main/java/com/example/razorpay/merchant/security/ApiKeyAuthenticationFilter.java",
@@ -168,70 +168,66 @@
   },
   {
    "checklist": [
-    "MerchantLookupService split — DONE (6211401)",
-    "PaymentLookupService — DONE (6211401)",
-    "Internal* controllers (/internal/*) — OPEN",
-    "MerchantContextFilter (X-* headers) — OPEN",
-    "Feign-shaped client interfaces — OPEN",
-    "PaymentAuthorizationRecorder saga seam — OPEN"
+    "Open Razorpay-Microservices: 4 service dirs + common-lib",
+    "Hit each service on :9010 / :9020 / :9030 / :9040",
+    "Trace a payment → vault Feign call end-to-end"
    ],
-   "commit": "6211401 (lookup half) · rest open",
+   "commit": "extraction: 4 bounded-context services (Razorpay-Microservices)",
    "date": "by Sun",
    "howto": [
-    "Read merchant/api/MerchantLookupService.java — the 3 seam methods",
-    "Prefix the next internal routes with /internal/* in the monolith",
-    "Keep public flows green while seams go in (zero behavior change)"
+    "Browse https://github.com/freakinrkb/Razorpay-Microservices",
+    "Compare merchant/ package vs merchant-service dir — near 1:1 move",
+    "Run one service standalone with local defaults from razorpay-config"
    ],
    "id": "phase-6",
    "nodes": [
-    "auth",
-    "order"
+    "merchant-svc",
+    "payment-svc",
+    "ops-svc",
+    "vault-svc"
    ],
-   "recall": "Half-done Sep 16 (6211401): MerchantLookupService split (getActiveConfigsForEvent + listActiveMerchantIds + getSettlementBankDetails) and PaymentLookupService (locking query on CAPTURED) landed. Verified absent by repo-wide grep: Internal* controllers, MerchantContextFilter, Feign clients, saga seam.",
-   "stats": "lookup services done · internal APIs open",
-   "status": "partial",
-   "tagline": "Half-done: lookups landed, internal seams still open.",
+   "recall": "Sep 18: bounded contexts extracted into Razorpay-Microservices — merchant (identity + internal controllers), payment (Vault/Customer Feign), operations (Merchant/Payment Feign), vault (internal controller). The Sep-16 lookup services became the inter-service seams.",
+   "stats": "merchant 52 · payment 62 · ops 41 · vault 24",
+   "status": "done",
+   "tagline": "Seams became services — extraction done Sep 18.",
    "title": "Phase 6 — Service seams"
   },
   {
    "checklist": [
-    "Extract enums + ErrorResponse + exceptions",
-    "Extract BaseEntity/Money + audit + MerchantContext(Filter)",
-    "Extract idempotency + 4 rate limiters + ApiKeyCache",
-    "Extract KafkaProperties + SignerUtil + AesEncryptionConfig + shared DTOs",
-    "Wire via AutoConfiguration.imports in each service"
+    "Open common-lib: 66 files across shared packages",
+    "Confirm no permitAll SecurityConfig remains (security moved to gateway)",
+    "Verify services build against the jar, not copied sources"
    ],
-   "commit": "teacher: common-lib (58 files, ~18 new)",
+   "commit": "common-lib: shared kernel (Razorpay-Microservices)",
    "date": "by Sun",
    "howto": [
-    "New common-lib Maven module, version 1.0.0",
-    "Move, don't fork — delete from monolith roots after",
-    "Verify: monolith builds against the jar before any split"
+    "Browse https://github.com/freakinrkb/Razorpay-Microservices/tree/main/common-lib",
+    "Read the META-INF auto-configuration imports — the wiring trick",
+    "Toggle a shared default and watch all services inherit it"
    ],
    "id": "phase-7",
    "nodes": [
     "ratelimit",
     "idempotency"
    ],
-   "recall": "Your common/ becomes a versioned jar with auto-configurations — the thing that makes 7 services feel like one codebase.",
-   "stats": "58 files, ~18 new",
-   "status": "next",
-   "tagline": "common/ graduates to a shared starter jar.",
+   "recall": "common-lib (66 files): enums, entities, exceptions, rate-limit, idempotency, kafka, crypto-only security plus a header-to-context web filter so gateway identity propagates downstream. Optional JPA dep; direct masterKeyEncryptor bean (no duplicate).",
+   "stats": "66 files · enums/entities/exceptions/kafka/security",
+   "status": "done",
+   "tagline": "common/ graduates to a shared starter jar — done Sep 18.",
    "title": "Phase 7 — common-lib extraction"
   },
   {
    "checklist": [
-    "Gateway: GatewayAuthFilter + Jwt/ApiKey handlers + PublicRouteMatcher (11 files)",
-    "Config Server: git-backed, CONFIG_SERVER_URL wiring (2 files)",
-    "Discovery: Eureka server + client registration (2 files)",
-    "Order matters: gateway → config → discovery, each runnable alone"
+    "Open the gateway routes in razorpay-config/api-gateway-service.yml",
+    "Signup → gateway :8080 → routed to merchant :9010 with X-Merchant-Id injected",
+    "Kill a service → Eureka de-registers → gateway stops routing to it"
    ],
-   "commit": "teacher: Part-1 API setup + resilience4j",
+   "commit": "gateway + config + discovery (Razorpay-Microservices)",
    "date": "by Sun",
    "howto": [
-    "Stand up config-service first (empty git repo works)",
-    "Register monolith as Eureka client to taste discovery",
-    "Put gateway in front last — public routes first"
+    "Browse https://github.com/freakinrkb/Razorpay-Microservices/tree/main/api-gateway-service",
+    "Read https://github.com/freakinrkb/razorpay-config — application.yml + 5 service files",
+    "Flip a route predicate in config, restart gateway, no rebuild"
    ],
    "id": "phase-8",
    "nodes": [
@@ -239,10 +235,10 @@
     "discovery",
     "configsvr"
    ],
-   "recall": "One public door (gateway :8080), one config truth (git repo), one registry (Eureka :8761). Teacher did this as Part-1 with Resilience4j on Feign calls.",
-   "stats": "15 files across 3 services",
-   "status": "next",
-   "tagline": "Edge auth, central config, service registry.",
+   "recall": "api-gateway-service on :8080 with JWT + API-key filters and 4 lb:// routes (merchant/payment/vault/operations); config-service (:8888) backed by freakinrkb/razorpay-config (master, 6 yml, local defaults + k8s ${ENV} overrides); discovery-service (Eureka :8761). The security refactor: gateway owns auth, per-service chains stripped, trust-inbound-headers OFF, edge limit 200/min vs 100/min inside.",
+   "stats": "gateway 18 files · config 6 yml · eureka :8761",
+   "status": "done",
+   "tagline": "Edge auth, central config, service registry — done Sep 18.",
    "title": "Phase 8 — Gateway + platform"
   },
   {
@@ -513,17 +509,16 @@
    "recall": "docker compose up -d is step zero of every demo."
   },
   {
-   "body": "Servlet Gateway on :8080 (NodePort 30080). Public routes pass through; the rest need Basic keyId:secret (Redis cache → merchant lookup, BCrypt + grace hash, 60/min limit) or Bearer JWT. Injects X-Merchant-Id, X-Environment, X-Key-Id downstream.",
+   "body": "Edge on :8080: public /v1/auth/**, /webhook/**, /actuator/** pass through; the rest need Basic keyId:secret or Bearer JWT (GatewayAuthFilter + handlers, trust-inbound-headers OFF). Routes: merchant /v1/auth+merchants, payment /v1/orders+payments, vault /v1/vault/**, operations /webhook/** — all lb:// via Eureka. Edge limit 200/min (fixed).",
    "col": 0,
    "files": [
-    "api-gateway-service/security/GatewayAuthFilter.java",
-    "api-gateway-service/security/ApiKeyAuthHandler.java",
-    "api-gateway-service/security/JwtAuthHandler.java"
+    "Razorpay-Microservices/api-gateway-service (18 files: GatewayAuthFilter, Jwt/ApiKey handlers, routes)",
+    "razorpay-config/api-gateway-service.yml (routes, public paths, 200/min)"
    ],
    "id": "apigw",
    "label": "API Gateway",
    "phase": "phase-8",
-   "recall": "The only public door. Everything identity-flavored moves here; services trust the X-* headers.",
+   "recall": "The only public door. One filter chain to guard them all.",
    "row": 4,
    "sub": "edge auth + limit"
   },
@@ -541,16 +536,16 @@
    "sub": "Eureka 8761"
   },
   {
-   "body": "Serves YAML from the distributed-razrorpay-config git repo on :8888. Disabled Eureka on the k8s profile. Every service boots from it.",
+   "body": "Serves YAML from freakinrkb/razorpay-config (master, 6 files) on :8888: shared application.yml (virtual threads, PG/Redis/Kafka, Eureka) + per-service files with local defaults and k8s-profile ${ENV} overrides. Every service boots from it.",
    "col": 2,
    "files": [
-    "config-service/application.yaml",
-    "k8s/infra/configmap.yaml"
+    "razorpay-config/application.yml (shared: threads, jpa, redis, kafka, eureka)",
+    "razorpay-config/{merchant,payment,operations,vault,api-gateway}-service.yml"
    ],
    "id": "configsvr",
    "label": "Config Server",
    "phase": "phase-8",
-   "recall": "Change a port, topic or route in git — restart services, no rebuilds.",
+   "recall": "Change config in git, restart services — no rebuilds.",
    "row": 4,
    "sub": ":8888 git-backed"
   },
@@ -568,6 +563,62 @@
    "recall": "The money-actually-moves step, now real: engine → executor → bank stub → callback → events.",
    "row": 4,
    "sub": "nightly engine"
+  },
+  {
+   "id": "merchant-svc",
+   "label": "merchant-svc",
+   "sub": ":9010 · merchant-db",
+   "col": 0,
+   "row": 5,
+   "phase": "phase-6",
+   "body": "Identity bounded context: signup/login, API keys, customers, webhook configs. Serves internal controllers to gateway, payment and ops. Own DB: razorpay-merchant-db.",
+   "recall": "If it knows who you are, it lives here.",
+   "files": [
+    "Razorpay-Microservices/merchant-service (52 files: auth, apikey, customer, webhook-config + internal controllers)",
+    "razorpay-config/merchant-service.yml (:9010, merchant-db, 100/min)"
+   ]
+  },
+  {
+   "id": "payment-svc",
+   "label": "payment-svc",
+   "sub": ":9020 · payment-db",
+   "col": 1,
+   "row": 5,
+   "phase": "phase-6",
+   "body": "Orders + payments + state machine, calling merchant-service (customers) and vault-service (charge) over Feign (2s connect / 3s read, vault 5s). Circuit breakers: merchant 10s, vault 15s. Own DB: razorpay-payment-db.",
+   "recall": "Money-in-motion — and the noisiest Feign caller.",
+   "files": [
+    "Razorpay-Microservices/payment-service (62 files: orders/payments, Vault/Customer Feign, outbox, mapstruct)",
+    "razorpay-config/payment-service.yml (Feign timeouts, breakers, simulator)"
+   ]
+  },
+  {
+   "id": "ops-svc",
+   "label": "ops-svc",
+   "sub": ":9030 · operations-db",
+   "col": 2,
+   "row": 5,
+   "phase": "phase-6",
+   "body": "Async side: webhook fan-out + nightly settlement, calling merchant-service and payment-service over Feign with @Retry 3 attempts / 500ms. Own DB: razorpay-operations-db.",
+   "recall": "Retries, DLQ, settlement — everything that must survive the night.",
+   "files": [
+    "Razorpay-Microservices/operations-service (41 files: webhooks/settlement, Merchant/Payment Feign)",
+    "razorpay-config/operations-service.yml (retry 3×500ms, webhook ZSET)"
+   ]
+  },
+  {
+   "id": "vault-svc",
+   "label": "vault-svc",
+   "sub": ":9040 · vault-db",
+   "col": 3,
+   "row": 5,
+   "phase": "phase-6",
+   "body": "PCI vault: tokenize/charge behind an internal controller, guarded by a thread-pool bulkhead (5 core / 10 max / 20 queue). Own DB: razorpay-vault-db.",
+   "recall": "Smallest service, highest stakes.",
+   "files": [
+    "Razorpay-Microservices/vault-service (24 files: tokenize/charge, internal controller)",
+    "razorpay-config/vault-service.yml (master-key, bulkhead 5/10/20)"
+   ]
   }
  ],
  "meta": {
@@ -575,7 +626,9 @@
   "pages": "https://freakinrkb.github.io/Razorpay/",
   "generated": "2026-09-10",
   "howToExtend": "To add a phase: append an entry to phases[] in journey.json with matching node ids, then push — GitHub Pages redeploys automatically. Anchors #/phase-4 deep-link each card.",
-  "version": "v4-settled"
+  "version": "v5-split",
+  "microservices": "https://github.com/freakinrkb/Razorpay-Microservices",
+  "configRepo": "https://github.com/freakinrkb/razorpay-config"
  },
  "tech": [
   {
@@ -738,6 +791,27 @@
    "ref": "k8s/kustomization.yaml · k8s/kind-config.yaml",
    "why": "ns razorpay-core; stateful postgres (4 DBs)/redis/kafka/zipkin/prometheus/grafana + 6 service deployments; gateway on NodePort 30080. Secrets via secretGenerator (rotate the checked-in env file!).",
    "witty": "Sunday's finish line."
+  },
+  {
+   "id": "t-configrepo",
+   "name": "Config repo (razorpay-config)",
+   "ref": "master: application.yml + 5 service ymls",
+   "why": "Six files own every port, DB URL, topic, route and secret placeholder: local defaults for laptops, k8s-profile ${ENV} overrides for clusters. Config-server reads this repo; services never carry environment diffs in code.",
+   "witty": "One repo of YAML to rule the environments."
+  },
+  {
+   "id": "t-gwauth",
+   "name": "Gateway-owned auth",
+   "ref": "api-gateway-service/security/* (11 files)",
+   "why": "Sep-18 refactor stripped per-service chains/filters: one GatewayAuthFilter (public-route matcher → Basic/JWT handlers → X-Merchant-Id/Environment/Key-Id injection, trust-inbound-headers OFF) guards all 4 route groups at 200/min.",
+   "witty": "Check passports at the border, not in every town."
+  },
+  {
+   "id": "t-perdb",
+   "name": "Database per service",
+   "ref": "razorpay-{merchant,payment,operations,vault}-db",
+   "why": "Each bounded context owns its tables and its connection string (local :9090, k8s per-service user + ${*_DB_PASSWORD}). No cross-service joins — integration happens over Feign/Kafka, which is what makes the split real.",
+   "witty": "Good fences make good services."
   }
  ],
  "annotations": [
@@ -1065,6 +1139,17 @@
    "pitfall": "",
    "why": "One git repo (distributed-razrorpay-config) owns all ports, DB URLs, topics and routes across 7 services.",
    "title": "config import: configserver"
+  },
+  {
+   "id": "ann-retry",
+   "group": "Cloud",
+   "title": "@Retry (Resilience4j)",
+   "body": "Retries a failed call with backoff before giving up. The operations service retries merchant/payment Feign calls up to 3 attempts, 500ms apart.",
+   "examples": [
+    "razorpay-config/operations-service.yml (resilience4j.retry.instances.*)"
+   ],
+   "why": "Transient blips (a restarting pod) heal without surfacing errors to merchants.",
+   "pitfall": ""
   }
  ],
  "patterns": [
@@ -1263,6 +1348,24 @@
    "phase": "phase-6",
    "problem": "Authorization side-effects recorded as a saga seam today — the future split point for a standalone saga orchestrator.",
    "title": "Saga seam"
+  },
+  {
+   "id": "pat-bc",
+   "phase": "phase-6",
+   "title": "Bounded-context extraction",
+   "problem": "Identity, money-in-motion, async ops and PCI each became a deployable with its own DB — the monolith packages mapped near 1:1, so the split was a move, not a rewrite.",
+   "files": [
+    "Razorpay-Microservices/{merchant,payment,operations,vault}-service"
+   ]
+  },
+  {
+   "id": "pat-gwown",
+   "phase": "phase-8",
+   "title": "Gateway-owned auth",
+   "problem": "Credential parsing, rate limiting and identity propagation live in exactly one place — services trust injected X-* headers and keep only crypto helpers.",
+   "files": [
+    "Razorpay-Microservices/api-gateway-service/security/*"
+   ]
   }
  ]
 }

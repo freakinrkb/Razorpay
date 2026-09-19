@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Razorpay Clone — Animated Project Journey</title>
 <meta name="description" content="Interactive animated map of the Razorpay clone: phases, architecture, click-anything explanations.">
-<link rel="stylesheet" href="styles.css?v=v4">
+<link rel="stylesheet" href="styles.css?v=v5">
 </head>
 <body>
 <div class="bg-orbs" aria-hidden="true"><span></span><span></span><span></span></div>
@@ -21,9 +21,9 @@
       <a class="btn ghost" href="#tech">Tech & patterns</a>
       <a class="btn ghost" id="repoLink" href="https://github.com/freakinrkb/Razorpay" target="_blank" rel="noopener">GitHub repo ↗</a>
     </div>
-    <div class="youarehere" id="youAreHere">✅ <strong>Shipped Sep 16:</strong> Phases 4+5 (webhooks, settlement) · <strong>Head:</strong> finish Phase 6 seams → gateway · <a href="#phase-6">jump ↓</a></div>
-    <div class="ver-badge">site v4-settled · phases 4+5 done, phase 6 half-done · hard-refresh if stale (Cmd+Shift+R)</div>
-    <div class="whatsnew">🆕 <strong>v4 — Settled &amp; Delivered:</strong> Phase 4 → done (6211401), Phase 5 → done (87876f6, cron 23:00, fee 2%/GST 18%), Phase 6 → partial (lookups ✅, internal APIs ☐), Sep-16 hardening notes + ⚠️ cautions (no ShedLock, stub bank, stale trusted.packages).</div>
+    <div class="youarehere" id="youAreHere">✅ <strong>Shipped Sep 18:</strong> split to microservices (P6–P8) · <strong>Head:</strong> observability → k8s · <a href="#phase-9">jump ↓</a></div>
+    <div class="ver-badge">site v5-split · monolith → 4 services + gateway + config · hard-refresh if stale (Cmd+Shift+R)</div>
+    <div class="whatsnew">🆕 <strong>v5 — Split &amp; Wired:</strong> P6–P8 → done (extraction, common-lib 66 files, gateway :8080 + razorpay-config + Eureka), 4 clickable service nodes (:9010–:9040) with Feign/resilience numbers, gateway-owned auth story, stale-package caution resolved.</div>
   </div>
   <div class="flow-strip" aria-hidden="true">
     <div class="flow-track" id="flowTrack"></div>
@@ -43,7 +43,7 @@
       </div>
     </div>
     <div class="arch-wrap">
-      <svg id="archSvg" viewBox="0 0 1200 800" role="img" aria-label="Architecture diagram"></svg>
+      <svg id="archSvg" viewBox="0 0 1200 960" role="img" aria-label="Architecture diagram"></svg>
       <div id="archCards" class="arch-cards"></div>
     </div>
   </section>
@@ -92,7 +92,7 @@
 </main>
 
 <footer>
-  <p>Generated 2026-09-10 · Source: <code>docs/journey.json</code> · <a href="https://github.com/freakinrkb/Razorpay" target="_blank" rel="noopener">freakinrkb/Razorpay</a> · Enable Pages: repo Settings → Pages → Deploy from <code>main</code> → <code>/docs</code></p>
+  <p>v5-split · Source: <code>docs/journey.json</code> · <a href="https://github.com/freakinrkb/Razorpay" target="_blank" rel="noopener">Razorpay (monolith)</a> · <a href="https://github.com/freakinrkb/Razorpay-Microservices" target="_blank" rel="noopener">Razorpay-Microservices</a> · <a href="https://github.com/freakinrkb/razorpay-config" target="_blank" rel="noopener">razorpay-config</a></p>
 </footer>
 
 <div class="modal-backdrop" id="modalBackdrop" hidden>
@@ -105,6 +105,6 @@
   </div>
 </div>
 
-<script src="app.js?v=v4"></script>
+<script src="app.js?v=v5"></script>
 </body>
 </html>
